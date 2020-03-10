@@ -3,4 +3,5 @@ services:
   python:
     build: .
     image: plato/eas:v1
-
+    volumes:
+    - ./datadir:/datadir

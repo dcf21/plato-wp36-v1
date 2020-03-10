@@ -6,5 +6,5 @@ WORKDIR /code
 ADD src src
 
 WORKDIR /code/src/python_modules/plato_wp36/
-RUN pip install plato_wp36
+RUN python setup.py develop
 
