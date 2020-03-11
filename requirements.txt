@@ -1,0 +1,6 @@
+astropy
+cython
+flask
+numpy
+pyyaml
+scipy

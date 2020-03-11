@@ -1,7 +1,7 @@
 version: '3'
 services:
-  python:
+  plato_eas:
     build: .
     image: plato/eas:v1
     volumes:
-    - ./datadir:/datadir
+    - ./datadir:/plato_eas/datadir
