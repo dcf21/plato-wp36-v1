@@ -26,6 +26,7 @@ here = path.abspath(path.dirname(__file__))
 vre = re_compile("__version__ = \"(.*?)\"")
 version = vre.findall(read(path.join(here, "plato_wp36", "__init__.py")))[0]
 
+# Python module properties
 setup(
     name="plato_wp36",
     version=version,

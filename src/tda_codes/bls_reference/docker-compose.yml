@@ -1,0 +1,7 @@
+version: '3'
+services:
+  plato_eas:
+    build: .
+    image: plato/eas/bls_reference:v1
+    volumes:
+    - ../../../datadir:/plato_eas/datadir

@@ -4,5 +4,5 @@
 
 from plato_wp36.run_time_logger import RunTimeLogger
 
-# Make sure that sqlite3 database exists to hold code run time data
+# Make sure that sqlite3 database exists to hold the run times for each transit detection algorithm
 RunTimeLogger(refresh=True)

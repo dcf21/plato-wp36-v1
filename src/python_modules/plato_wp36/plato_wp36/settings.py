@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 # settings.py
 
+"""
+Compile the settings to be used for this installation of the EAS pipeline code. We merge default values for each
+setting below with local overrides which can be placed in the YAML file
+<configuration_local/installation_settings.conf>.
+"""
+
 import os
 import re
 import sys
 
-# Fetch path to local installation settings
+# Fetch path to local installation settings file
 our_path = os.path.abspath(__file__)
 root_path = re.match(r"(.*/src/)", our_path).group(1)
 if not os.path.exists(os.path.join(root_path, "../configuration_local/installation_settings.conf")):
@@ -38,9 +44,11 @@ for line in open(os.path.join(root_path, "../configuration_local/installation_se
 
     installation_info[words[0].strip()] = value
 
-# The settings below control how the observatory controller works
+# The path to the <datadir> directory which is shared between Docker containers, used to store both input and output
+# data from the pipeline
 data_directory = os.path.join(root_path, "../datadir")
 
+# The default settings are below
 settings = {
     'softwareVersion': 1,
 
@@ -54,6 +62,8 @@ settings = {
     'debug': installation_info['debug'],
 }
 
+# If the <datadir> directory isn't mounted properly, then things will be badly wrong, as the Docker container can't
+# access persistent data volume.
 assert os.path.exists(settings['dataPath']), """
 You need to create a directory or symlink <datadir> in the root of your working
 copy of the pipeline, where we store all recorded data.
