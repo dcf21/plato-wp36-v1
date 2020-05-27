@@ -6,11 +6,12 @@
 Run speed tests with all available TDAs, and record results in output database
 """
 
-import os
-import argparse
+import glob
 import logging
+import os
 
-from plato_wp36 import fetch_tda_list, settings
+import argparse
+from plato_wp36 import fetch_tda_list, lcsg_lc_reader, settings, run_time_logger, task_timer
 
 time_periods = [
     7 * 86400,
@@ -24,9 +25,51 @@ time_periods = [
 
 available_tdas = fetch_tda_list.fetch_tda_list()
 
+lightcurves_path = "lightcurves_v2/csvs/bright/plato_bright*"
+
+lightcurve_list = glob.glob(
+    os.path.join(settings.settings['dataPath'], lightcurves_path)
+)
+
+# Limit to 4 LCs for now
+lightcurve_list = lightcurve_list[:4]
+
+
+def speed_test(lc_duration, tda_name, lc_filename):
+    logging.info("Running <{lc_filename}> through <{tda_name}> with duration {lc_days:.1f}.".format(
+        lc_filename=lc_filename,
+        tda_name=tda_name,
+        lc_days=lc_duration / 86400)
+    )
+
+    # Make sure that sqlite3 database exists to hold the run times for each transit detection algorithm
+    time_log = run_time_logger.RunTimeLogger()
+
+    # Load lightcurve
+    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load', lc_length=lc_duration,
+                              time_logger=time_log):
+        lc = lcsg_lc_reader.read_lcsg_lightcurve(
+            filename=lc_filename,
+            gzipped=True,
+            cut_off_time=lc_duration / 86400
+        )
+
 
 def run_speed_test():
     logging.info("Starting speed test of TDAs {}".format(available_tdas))
+
+    # Loop over time period
+    for lc_duration in time_periods:
+        # Loop over TDAs
+        for tda_name in available_tdas:
+            # Loop over lightcurves
+            for lc_filename in lightcurve_list:
+                # Process LC
+                speed_test(
+                    lc_duration=lc_duration,
+                    tda_name=tda_name,
+                    lc_filename=lc_filename
+                )
 
 
 if __name__ == "__main__":

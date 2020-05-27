@@ -105,6 +105,7 @@ class RunTimeLogger:
             # Open connection to new, empty database
             db = sqlite3.connect(self.db_path)
             c = db.cursor()
+            c.row_factory = sqlite3.Row
 
             # SQLite databases work faster if primary keys don't auto increment, so remove keyword from schema
             schema = re.sub("AUTO_INCREMENT", "", self._schema)
@@ -128,15 +129,16 @@ class RunTimeLogger:
         # Open connection to sqlite3 database
         db = sqlite3.connect(self.db_path)
         c = db.cursor()
+        c.row_factory = sqlite3.Row
 
         # Look up the ID for this server
-        c.execute("SELECT server_id FROM eas_servers WHERE hostname=%s;", (hostname,))
+        c.execute("SELECT server_id FROM eas_servers WHERE hostname=?;", (hostname,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_servers (hostname) VALUES (%s);", (hostname,))
-            c.execute("SELECT server_id FROM eas_servers WHERE hostname=%s;", (hostname,))
+            c.execute("INSERT INTO eas_servers (hostname) VALUES (?);", (hostname,))
+            c.execute("SELECT server_id FROM eas_servers WHERE hostname=?;", (hostname,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
@@ -157,15 +159,16 @@ class RunTimeLogger:
         # Open connection to sqlite3 database
         db = sqlite3.connect(self.db_path)
         c = db.cursor()
+        c.row_factory = sqlite3.Row
 
         # Look up the ID for this TDA code
-        c.execute("SELECT code_id FROM eas_tda_codes WHERE name=%s;", (code_name,))
+        c.execute("SELECT code_id FROM eas_tda_codes WHERE name=?;", (code_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_tda_codes (name) VALUES (%s);", (code_name,))
-            c.execute("SELECT code_id FROM eas_tda_codes WHERE name=%s;", (code_name,))
+            c.execute("INSERT INTO eas_tda_codes (name) VALUES (?);", (code_name,))
+            c.execute("SELECT code_id FROM eas_tda_codes WHERE name=?;", (code_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
@@ -186,15 +189,16 @@ class RunTimeLogger:
         # Open connection to sqlite3 database
         db = sqlite3.connect(self.db_path)
         c = db.cursor()
+        c.row_factory = sqlite3.Row
 
         # Look up the ID for this lightcurve
-        c.execute("SELECT target_id FROM eas_targets WHERE name=%s;", (lightcurve_name,))
+        c.execute("SELECT target_id FROM eas_targets WHERE name=?;", (lightcurve_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_targets (name) VALUES (%s);", (lightcurve_name,))
-            c.execute("SELECT target_id FROM eas_targets WHERE name=%s;", (lightcurve_name,))
+            c.execute("INSERT INTO eas_targets (name) VALUES (?);", (lightcurve_name,))
+            c.execute("SELECT target_id FROM eas_targets WHERE name=?;", (lightcurve_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
@@ -214,15 +218,16 @@ class RunTimeLogger:
         # Open connection to sqlite3 database
         db = sqlite3.connect(self.db_path)
         c = db.cursor()
+        c.row_factory = sqlite3.Row
 
         # Look up the ID for this task in the processing chain
-        c.execute("SELECT task_id FROM eas_tasks WHERE name=%s;", (task_name,))
+        c.execute("SELECT task_id FROM eas_tasks WHERE name=?;", (task_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_tasks (name) VALUES (%s);", (task_name,))
-            c.execute("SELECT task_id FROM eas_tasks WHERE name=%s;", (task_name,))
+            c.execute("INSERT INTO eas_tasks (name) VALUES (?);", (task_name,))
+            c.execute("SELECT task_id FROM eas_tasks WHERE name=?;", (task_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
@@ -276,9 +281,11 @@ class RunTimeLogger:
         # Add row to sqlite3 database
         db = sqlite3.connect(self.db_path)
         c = db.cursor()
+        c.row_factory = sqlite3.Row
+
         c.execute("""
 INSERT INTO eas_run_times (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu)
-VALUES (%s, %s, %s, %s, %s, %s, %s);
+VALUES (?, ?, ?, ?, ?, ?, ?);
         """, (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu))
         db.commit()
         db.close()

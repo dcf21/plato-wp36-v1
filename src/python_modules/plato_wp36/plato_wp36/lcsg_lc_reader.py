@@ -62,6 +62,7 @@ def read_lcsg_lightcurve(filename, gzipped=True, cut_off_time=None):
                 continue
 
             # Unpack data
+            words = line.split(',')
             time = float(words[0])
             flux = float(words[1])
             flag = float(words[2])
@@ -72,7 +73,6 @@ def read_lcsg_lightcurve(filename, gzipped=True, cut_off_time=None):
                 continue
 
             # Read three columns of data
-            words = line.split()
             times.append(time)
             fluxes.append(flux)
             flags.append(flag)
