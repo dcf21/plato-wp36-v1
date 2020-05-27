@@ -9,8 +9,9 @@ WORKDIR /plato_eas
 ADD requirements.txt requirements.txt
 
 # We use a virtual environment, because this means it's easy to run code outside of Docker for testing
-RUN virtualenv -p python3 virtualenv
-RUN /plato_eas/virtualenv/bin/pip install -r requirements.txt
+RUN mkdir -p datadir_local
+RUN virtualenv -p python3 datadir_local/virtualenv
+RUN /plato_eas/datadir_local/virtualenv/bin/pip install -r requirements.txt
 
 # Copy PLATO EAS code into Docker container
 WORKDIR /plato_eas
@@ -19,7 +20,7 @@ ADD src src
 
 # Install plato_wp36 module
 WORKDIR /plato_eas/src/python_modules/plato_wp36/
-RUN /plato_eas/virtualenv/bin/python setup.py develop
+RUN /plato_eas/datadir_local/virtualenv/bin/python setup.py develop
 
 # Write list of available TDAs
 RUN echo '[]' > /plato_eas/tda_list.json

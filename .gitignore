@@ -1,6 +1,9 @@
 # Lightcurve data
 datadir
 
+# Local build
+datadir_local
+
 # pycharm
 .idea
 virtualenv/
