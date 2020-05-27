@@ -1,1 +1,4 @@
-["bls_reference", "bls_vanilla", "tls"]
+[
+  "bls_reference",
+  "tls"
+]

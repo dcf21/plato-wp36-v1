@@ -13,11 +13,19 @@ import os
 import argparse
 from plato_wp36 import fetch_tda_list, lcsg_lc_reader, settings, run_time_logger, task_timer
 
+from plato_wp36.tda_wrappers import bls_reference, tls
+
 time_periods = [
     7 * 86400,
+    10 * 86400,
     14 * 86400,
+    21 * 86400,
     28 * 86400,
+    1.5 * 28 * 86400,
+    2 * 28 * 86400,
+    2.5 * 28 * 86400,
     3 * 28 * 86400,
+    4 * 28 * 86400,
     6 * 28 * 86400,
     365.25 * 86400,
     2 * 365.25 * 86400
@@ -32,7 +40,7 @@ lightcurve_list = glob.glob(
 )
 
 # Limit to 4 LCs for now
-lightcurve_list = lightcurve_list[:4]
+lightcurve_list = lightcurve_list[:1]
 
 
 def speed_test(lc_duration, tda_name, lc_filename):
@@ -53,6 +61,15 @@ def speed_test(lc_duration, tda_name, lc_filename):
             gzipped=True,
             cut_off_time=lc_duration / 86400
         )
+
+    # Process lightcurve
+    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='proc', lc_length=lc_duration,
+                              time_logger=time_log):
+        if tda_name == 'tls':
+            tls.process_lightcurve(lc, lc_duration / 86400)
+        else:
+            bls_reference.process_lightcurve(lc, lc_duration / 86400)
+
 
 
 def run_speed_test():

@@ -24,13 +24,13 @@ cd ${cwd}/../src/python_modules/plato_wp36/
 ${venv_dir}/bin/python setup.py develop
 
 # Install bls_reference code
-cd ${cwd}
-rm -Rf ${datadir}/tda_build/bls_reference
-mkdir -p ${datadir}/tda_build/bls_reference
-cd ${datadir}/tda_build/bls_reference
-git clone https://github.com/dfm/bls.py.git
-cd bls.py
-${venv_dir}/bin/python setup.py install
+#cd ${cwd}
+#rm -Rf ${datadir}/tda_build/bls_reference
+#mkdir -p ${datadir}/tda_build/bls_reference
+#cd ${datadir}/tda_build/bls_reference
+#git clone https://github.com/dfm/bls.py.git
+#cd bls.py
+#${venv_dir}/bin/python setup.py install
 
 # Install bls_vanilla code
 cd ${cwd}

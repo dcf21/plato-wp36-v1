@@ -138,11 +138,13 @@ class RunTimeLogger:
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
             c.execute("INSERT INTO eas_servers (hostname) VALUES (?);", (hostname,))
+            db.commit()
             c.execute("SELECT server_id FROM eas_servers WHERE hostname=?;", (hostname,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         server_id = tmp[0]["server_id"]
+        db.close()
         return server_id
 
     def get_code_id(self, code_name):
@@ -168,11 +170,13 @@ class RunTimeLogger:
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
             c.execute("INSERT INTO eas_tda_codes (name) VALUES (?);", (code_name,))
+            db.commit()
             c.execute("SELECT code_id FROM eas_tda_codes WHERE name=?;", (code_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         code_id = tmp[0]["code_id"]
+        db.close()
         return code_id
 
     def get_lightcurve_id(self, lightcurve_name):
@@ -198,11 +202,13 @@ class RunTimeLogger:
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
             c.execute("INSERT INTO eas_targets (name) VALUES (?);", (lightcurve_name,))
+            db.commit()
             c.execute("SELECT target_id FROM eas_targets WHERE name=?;", (lightcurve_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         target_id = tmp[0]["target_id"]
+        db.close()
         return target_id
 
     def get_task_id(self, task_name):
@@ -227,11 +233,13 @@ class RunTimeLogger:
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
             c.execute("INSERT INTO eas_tasks (name) VALUES (?);", (task_name,))
+            db.commit()
             c.execute("SELECT task_id FROM eas_tasks WHERE name=?;", (task_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         code_id = tmp[0]["task_id"]
+        db.close()
         return code_id
 
     def create_log_entry(self, tda_code, target_name, task_name, lc_length, run_time_wall_clock, run_time_cpu):
