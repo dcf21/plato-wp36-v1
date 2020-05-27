@@ -10,5 +10,8 @@ RUN git clone https://github.com/dfm/python-bls.git
 WORKDIR /plato_eas/python-bls
 RUN /plato_eas/virtualenv/bin/python setup.py install
 
+# Write list of available TDAs
+RUN echo '["bls_vanilla"]' > /plato_eas/tda_list.json
+
 # Default working directory
 WORKDIR /plato_eas

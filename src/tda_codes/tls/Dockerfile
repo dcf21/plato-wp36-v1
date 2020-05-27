@@ -7,5 +7,8 @@ RUN git clone https://github.com/hippke/tls.git
 WORKDIR /plato_eas/tls
 RUN /plato_eas/virtualenv/bin/python setup.py install
 
+# Write list of available TDAs
+RUN echo '["tls"]' > /plato_eas/tda_list.json
+
 # Default working directory
 WORKDIR /plato_eas

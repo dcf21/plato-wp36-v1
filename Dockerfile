@@ -21,5 +21,8 @@ ADD src src
 WORKDIR /plato_eas/src/python_modules/plato_wp36/
 RUN /plato_eas/virtualenv/bin/python setup.py develop
 
+# Write list of available TDAs
+RUN echo '[]' > /plato_eas/tda_list.json
+
 # Default working directory
 WORKDIR /plato_eas
