@@ -1,8 +1,12 @@
-# Use Python 3.6 running on Debian Buster
-FROM python:3.6-buster
+# Use a Ubuntu base image
+FROM ubuntu:latest
 
-# Install sqlite3
-RUN apt-get update ; apt-get install -y apt-utils python-virtualenv python-sqlite sqlite3 ; apt-get clean
+# Install mysql client
+RUN apt-get update
+RUN apt-get install -y apt-utils git vim net-tools \
+                       python3 python3-dev python3-virtualenv python3-mysqldb \
+                       mysql-client libmysqlclient-dev gcc gfortran \
+                       ; apt-get clean
 
 # Install Python requirements
 WORKDIR /plato_eas

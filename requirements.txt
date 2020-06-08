@@ -3,5 +3,8 @@ pytest
 cython
 flask
 numpy
-pyyaml
+pyyaml == 3.10
 scipy
+mysqlclient
+pika
+batman
