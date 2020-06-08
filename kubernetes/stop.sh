@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kubectl delete deployment,svc plato
+kubectl delete deployment plato
 kubectl delete pvc datadir-pv-claim
 kubectl delete pv datadir-pv-volume
 
