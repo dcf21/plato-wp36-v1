@@ -3,7 +3,7 @@ pytest
 cython
 flask
 numpy
-pyyaml == 3.10
+pyyaml == 5.1
 scipy
 mysqlclient
 pika
