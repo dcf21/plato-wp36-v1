@@ -6,6 +6,9 @@
 cd "$(dirname "$0")"
 cwd=`pwd`
 
+# Build containers within minikube environment
+eval $(minikube -p minikube docker-env)
+
 # Build top-level Docker container containing python requirements
 cd ${cwd}/..
 docker system prune -f

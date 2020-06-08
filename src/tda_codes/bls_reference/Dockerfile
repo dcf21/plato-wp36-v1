@@ -2,10 +2,8 @@
 FROM plato/eas:v1
 
 # Install DFM's optimised Python implementation of BLS
-WORKDIR /plato_eas
-RUN git clone https://github.com/dfm/bls.py.git
-WORKDIR /plato_eas/bls.py
-RUN /plato_eas/datadir_local/virtualenv/bin/python setup.py install
+# https://github.com/dfm/bls.py
+# This is already integrated into astropy
 
 # Write list of available TDAs
 RUN echo '["bls_reference"]' > /plato_eas/tda_list.json

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plato
+spec:
+  selector:
+    matchLabels:
+      app: plato
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: plato
+    spec:
+      containers:
+      - image: plato/eas_all_tdas:v1
+        name: plato
+        command: ['sleep']
+        args: ['3600']
+        env:
+          # Use secret in real usage
+        - name: dummy
+          value: plato
+        volumeMounts:
+        - name: plato-persistent-storage
+          mountPath: /plato_eas/datadir
+      volumes:
+      - name: plato-persistent-storage
+        persistentVolumeClaim:
+          claimName: datadir-pv-claim

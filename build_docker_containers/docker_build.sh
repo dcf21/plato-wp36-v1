@@ -8,17 +8,23 @@
 cd "$(dirname "$0")"
 cwd=`pwd`
 
+# Build containers within minikube environment
+eval $(minikube -p minikube docker-env)
+
 # Build top-level Docker container containing python requirements
 cd ${cwd}/..
-docker-compose build 2>&1 | tee docker_build.log
+docker build . --tag plato/eas:v1 2>&1 | tee docker_build.log
 
 # Build Docker images for each transit detection code
 cd ${cwd}/../src/tda_codes/bls_vanilla
-docker-compose build 2>&1 | tee docker_build.log
+docker build . --tag plato/eas_bls_vanilla:v1 2>&1 | tee docker_build.log
 
 cd ${cwd}/../src/tda_codes/bls_reference
-docker-compose build 2>&1 | tee docker_build.log
+docker build . --tag plato/eas_bls_reference:v1 2>&1 | tee docker_build.log
 
 cd ${cwd}/../src/tda_codes/tls
-docker-compose build 2>&1 | tee docker_build.log
+docker build . --tag plato/eas_tls:v1 2>&1 | tee docker_build.log
+
+cd ${cwd}/../src/tda_codes/all_tdas
+docker build . --tag plato/eas_all_tdas:v1 2>&1 | tee docker_build.log
 

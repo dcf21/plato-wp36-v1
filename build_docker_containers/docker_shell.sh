@@ -7,6 +7,9 @@
 cd "$(dirname "$0")"
 cwd=`pwd`
 
+# Build containers within minikube environment
+eval $(minikube -p minikube docker-env)
+
 # Launch interactive shell using docker-compose
 cd ${cwd}/..
-docker-compose run plato_eas /bin/bash
+docker run -it plato/eas_all_tdas:v1 /bin/bash
