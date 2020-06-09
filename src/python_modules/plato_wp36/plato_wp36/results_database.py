@@ -2,10 +2,9 @@
 # results_database.py
 
 import socket
-import sqlite3
-import os
-import re
-from .settings import settings
+import logging
+
+from .connect_db import DatabaseConnector
 
 """
 Provides a class used for storing results and time measurements in an SQL database.
@@ -72,26 +71,25 @@ CREATE TABLE eas_run_times (
 
 """
 
-    def __init__(self, refresh=False, create=True):
+    def __init__(self, refresh=False):
         """
-        Open a handle to the SQLite3 database of task run times. Ensure that the SQLite3 database file exists.
+        Open a handle to the SQL database of task run times.
 
         :param refresh:
             If true, delete any existing SQL database and start afresh [danger!].
-        :param create:
-            If true, create an empty SQL database if one doesn't already exist.
         """
 
-        if refresh:
-            if os.path.exists(db_path):
-                os.unlink(db_path)
-                create=True
-
-        if not os.path.exists(db_path):
-            if create:
-                self.check_db_exists()
-            else:
-                raise IOError("Could not open sqlite database <{}>".format(db_path))
+        if refresh or not self.check_db_exists():
+            logging.info("Creating fresh EAS database")
+            connector = DatabaseConnector()
+            db, c = connector.connect_db(database='')
+            c.execute("DROP DATABASE IF EXISTS {db};".format(db=connector.db_database))
+            c.execute("CREATE DATABASE {db};".format(db=connector.db_database))
+            c.execute("USE {db};".format(db=connector.db_database))
+            c.execute(self._schema)
+            c.commit()
+            db.close()
+            logging.info("Finished creating fresh EAS database")
 
     def check_db_exists(self):
         """
@@ -101,19 +99,10 @@ CREATE TABLE eas_run_times (
             None
         """
 
-        if not os.path.exists(self.db_path):
-            # Open connection to new, empty database
-            db = sqlite3.connect(self.db_path)
-            c = db.cursor()
-            c.row_factory = sqlite3.Row
-
-            # SQLite databases work faster if primary keys don't auto increment, so remove keyword from schema
-            schema = re.sub("AUTO_INCREMENT", "", self._schema)
-            c.executescript(schema)
-
-            # Commit empty database
-            db.commit()
-            db.close()
+        connector = DatabaseConnector()
+        database_exists = connector.test_database_exists()
+        logging.info("Test whether database already exists: {}".format(database_exists))
+        return database_exists
 
     # Fetch the ID number associated with a particular data generator string ID
     def fetch_generator_key(self, gen_key):
@@ -127,13 +116,24 @@ CREATE TABLE eas_run_times (
             Numeric data generator identifier.
         """
 
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
+
+        # Look up the ID for this generator
         c.execute("SELECT generatorId FROM plato_generators WHERE name=%s;", (gen_key,))
         tmp = c.fetchall()
+
+        # If it doesn't exist, create a new ID
         if len(tmp) == 0:
             c.execute("INSERT INTO plato_generators VALUES (NULL, %s);", (gen_key,))
             c.execute("SELECT generatorId FROM plato_generators WHERE name=%s;", (gen_key,))
             tmp = c.fetchall()
+
+        # Extract UID from the data returned by the SQL query
         gen_id = tmp[0]["generatorId"]
+        c.commit()
+        db.close()
         return gen_id
 
     def get_server_id(self, hostname=socket.gethostname()):
@@ -147,24 +147,24 @@ CREATE TABLE eas_run_times (
                 Numeric data generator identifier.
             """
 
-        # Open connection to sqlite3 database
-        db = sqlite3.connect(self.db_path)
-        c = db.cursor()
-        c.row_factory = sqlite3.Row
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
 
         # Look up the ID for this server
-        c.execute("SELECT server_id FROM eas_servers WHERE hostname=?;", (hostname,))
+        c.execute("SELECT server_id FROM eas_servers WHERE hostname=%s;", (hostname,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_servers (hostname) VALUES (?);", (hostname,))
+            c.execute("INSERT INTO eas_servers (hostname) VALUES (%s);", (hostname,))
             db.commit()
-            c.execute("SELECT server_id FROM eas_servers WHERE hostname=?;", (hostname,))
+            c.execute("SELECT server_id FROM eas_servers WHERE hostname=%s;", (hostname,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         server_id = tmp[0]["server_id"]
+        c.commit()
         db.close()
         return server_id
 
@@ -179,24 +179,24 @@ CREATE TABLE eas_run_times (
                 Numeric data generator identifier.
             """
 
-        # Open connection to sqlite3 database
-        db = sqlite3.connect(self.db_path)
-        c = db.cursor()
-        c.row_factory = sqlite3.Row
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
 
         # Look up the ID for this TDA code
-        c.execute("SELECT code_id FROM eas_tda_codes WHERE name=?;", (code_name,))
+        c.execute("SELECT code_id FROM eas_tda_codes WHERE name=%s;", (code_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_tda_codes (name) VALUES (?);", (code_name,))
+            c.execute("INSERT INTO eas_tda_codes (name) VALUES (%s);", (code_name,))
             db.commit()
-            c.execute("SELECT code_id FROM eas_tda_codes WHERE name=?;", (code_name,))
+            c.execute("SELECT code_id FROM eas_tda_codes WHERE name=%s;", (code_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         code_id = tmp[0]["code_id"]
+        c.commit()
         db.close()
         return code_id
 
@@ -211,24 +211,24 @@ CREATE TABLE eas_run_times (
                 Numeric data generator identifier.
             """
 
-        # Open connection to sqlite3 database
-        db = sqlite3.connect(self.db_path)
-        c = db.cursor()
-        c.row_factory = sqlite3.Row
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
 
         # Look up the ID for this lightcurve
-        c.execute("SELECT target_id FROM eas_targets WHERE name=?;", (lightcurve_name,))
+        c.execute("SELECT target_id FROM eas_targets WHERE name=%s;", (lightcurve_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_targets (name) VALUES (?);", (lightcurve_name,))
+            c.execute("INSERT INTO eas_targets (name) VALUES (%s);", (lightcurve_name,))
             db.commit()
-            c.execute("SELECT target_id FROM eas_targets WHERE name=?;", (lightcurve_name,))
+            c.execute("SELECT target_id FROM eas_targets WHERE name=%s;", (lightcurve_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         target_id = tmp[0]["target_id"]
+        c.commit()
         db.close()
         return target_id
 
@@ -242,24 +242,24 @@ CREATE TABLE eas_run_times (
                 Numeric data generator identifier.
             """
 
-        # Open connection to sqlite3 database
-        db = sqlite3.connect(self.db_path)
-        c = db.cursor()
-        c.row_factory = sqlite3.Row
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
 
         # Look up the ID for this task in the processing chain
-        c.execute("SELECT task_id FROM eas_tasks WHERE name=?;", (task_name,))
+        c.execute("SELECT task_id FROM eas_tasks WHERE name=%s;", (task_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_tasks (name) VALUES (?);", (task_name,))
+            c.execute("INSERT INTO eas_tasks (name) VALUES (%s);", (task_name,))
             db.commit()
-            c.execute("SELECT task_id FROM eas_tasks WHERE name=?;", (task_name,))
+            c.execute("SELECT task_id FROM eas_tasks WHERE name=%s;", (task_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
         code_id = tmp[0]["task_id"]
+        c.commit()
         db.close()
         return code_id
 
@@ -307,14 +307,13 @@ CREATE TABLE eas_run_times (
         # Look up the uid for this task in the processing chain
         task_id = self.get_task_id(task_name=task_name)
 
-        # Add row to sqlite3 database
-        db = sqlite3.connect(self.db_path)
-        c = db.cursor()
-        c.row_factory = sqlite3.Row
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
 
         c.execute("""
 INSERT INTO eas_run_times (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+VALUES (%s, %s, %s, %s, %s, %s, %s);
         """, (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu))
-        db.commit()
+        c.commit()
         db.close()

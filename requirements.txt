@@ -3,8 +3,8 @@ pytest
 cython
 flask
 numpy
-pyyaml == 3.10
 scipy
+pyyaml
 mysqlclient
 pika
-batman
+batman-package

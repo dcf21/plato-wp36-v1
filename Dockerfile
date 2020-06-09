@@ -15,6 +15,7 @@ ADD requirements.txt requirements.txt
 # We use a virtual environment, because this means it's easy to run code outside of Docker for testing
 RUN mkdir -p datadir_local
 RUN virtualenv -p python3 datadir_local/virtualenv
+RUN /plato_eas/datadir_local/virtualenv/bin/pip install numpy  # Required by batman installer
 RUN /plato_eas/datadir_local/virtualenv/bin/pip install -r requirements.txt
 
 # Copy PLATO EAS code into Docker container

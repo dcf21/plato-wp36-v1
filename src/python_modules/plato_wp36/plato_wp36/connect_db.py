@@ -38,22 +38,27 @@ class DatabaseConnector:
         try:
             db = MySQLdb.connect(host=self.db_host, user=self.db_user, passwd=self.db_password, db=self.db_database)
         except MySQLdb._exceptions.OperationalError as exception:
-            if "Unknown database" not in exception[1]:
+            if "Unknown database" not in str(exception):
                 raise
             return False
 
         db.close()
         return True
 
-    def connect_db(self):
+    def connect_db(self, database=0):
         """
         Return a new MySQLdb connection to the database.
 
+        :param database:
+            The name of the database we should connect to
         :return:
             List of [database handle, connection handle]
         """
 
-        db = MySQLdb.connect(host=self.db_host, user=self.db_user, passwd=self.db_password, db=self.db_database)
+        if database == 0:
+            database = self.db_database
+
+        db = MySQLdb.connect(host=self.db_host, user=self.db_user, passwd=self.db_password, db=database)
         c = db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
         db.set_character_set('utf8mb4')
@@ -62,4 +67,3 @@ class DatabaseConnector:
         c.execute('SET character_set_connection=utf8mb4;')
 
         return db, c
-
