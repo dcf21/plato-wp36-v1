@@ -3,6 +3,7 @@
 
 import socket
 import logging
+import json
 
 from .connect_db import DatabaseConnector
 
@@ -63,6 +64,21 @@ CREATE TABLE eas_run_times (
     lc_length REAL NOT NULL,
     run_time_wall_clock REAL,
     run_time_cpu REAL,
+    FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
+    FOREIGN KEY (server_id) REFERENCES eas_servers (server_id),
+    FOREIGN KEY (target_id) REFERENCES eas_targets (target_id),
+    FOREIGN KEY (task_id) REFERENCES eas_tasks (task_id)
+);
+
+# Table of code output
+CREATE TABLE eas_results (
+    run_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    code_id INTEGER NOT NULL,
+    server_id INTEGER NOT NULL,
+    target_id INTEGER NOT NULL,
+    task_id INTEGER NOT NULL,
+    lc_length REAL NOT NULL,
+    results JSON,
     FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
     FOREIGN KEY (server_id) REFERENCES eas_servers (server_id),
     FOREIGN KEY (target_id) REFERENCES eas_targets (target_id),
@@ -263,7 +279,7 @@ CREATE TABLE eas_run_times (
         db.close()
         return code_id
 
-    def create_log_entry(self, tda_code, target_name, task_name, lc_length, run_time_wall_clock, run_time_cpu):
+    def record_timing(self, tda_code, target_name, task_name, lc_length, run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -315,5 +331,57 @@ CREATE TABLE eas_run_times (
 INSERT INTO eas_run_times (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu)
 VALUES (%s, %s, %s, %s, %s, %s, %s);
         """, (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu))
+        c.commit()
+        db.close()
+
+    def record_result(self, tda_code, target_name, task_name, lc_length, result_structure):
+        """
+        Create a new entry in the database for a new code performance measurement.
+
+        :param tda_code:
+            The name of the Transit Detection Algorithm being used.
+        :type tda_code:
+            str
+        :param target_name:
+            The name of the target / lightcurve being analysed.
+        :type target_name:
+            str
+        :param task_name:
+            The name of the processing step being performed on the lightcurve.
+        :type task_name:
+            str
+        :param lc_length:
+            The length of the lightcurve (seconds)
+        :type lc_length:
+            float
+        :param result_structure:
+            The output from the TDA code, as an arbitrary data structure
+        :return:
+            None
+        """
+
+        # Look up the uid for this server
+        server_id = self.get_server_id()
+
+        # Look up the uid for the TDA code
+        code_id = self.get_code_id(code_name=tda_code)
+
+        # Look up the uid for this lightcurve
+        target_id = self.get_lightcurve_id(lightcurve_name=target_name)
+
+        # Look up the uid for this task in the processing chain
+        task_id = self.get_task_id(task_name=task_name)
+
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
+
+        # Convert results data structure to JSON
+        result_json = json.dumps(result_structure)
+
+        c.execute("""
+INSERT INTO eas_results (code_id, server_id, target_id, task_id, lc_length, results)
+VALUES (%s, %s, %s, %s, %s, %s);
+        """, (code_id, server_id, target_id, task_id, lc_length, result_json))
         c.commit()
         db.close()

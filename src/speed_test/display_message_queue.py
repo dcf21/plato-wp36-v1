@@ -1,23 +1,32 @@
 #!../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# initialisation.py
+# speed_test.py
 
 """
-Initialise the light curve speed test output database
+Display the contents of the RabbitMQ message queues
 """
 
-import os
+import pika
 import argparse
+import os
 import logging
 
-from plato_wp36 import settings, results_database
+from plato_wp36 import settings
 
 
-def initialise_speed_test():
-    logging.info("Initialising speed test database")
+def print_queues(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
+    channel = connection.channel()
 
-    # Make sure that sqlite3 database exists to hold the run times for each transit detection algorithm
-    results_database.ResultsDatabase(refresh=True)
+    channel.queue_declare(queue=queue)
+
+    def callback(ch, method, properties, body):
+        logging.info("--> Received {}".format(body))
+
+    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=False)
+
+    logging.info('Waiting for messages. To exit press CTRL+C')
+    channel.start_consuming()
 
 
 if __name__ == "__main__":
@@ -37,5 +46,5 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.info(__doc__.strip())
 
-    # Do initialisation
-    initialise_speed_test()
+    # Wait for messages
+    print_queues()

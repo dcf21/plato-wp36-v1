@@ -1,46 +1,20 @@
 #!../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# speed_test.py
+# speed_test_worker.py
 
 """
-Run speed tests with all available TDAs, and record results in output database
+Run speed tests as requested through the RabbitMQ message queue
 """
 
-import glob
 import logging
+import pika
 import os
+import json
 
 import argparse
-from plato_wp36 import fetch_tda_list, lcsg_lc_reader, settings, run_time_logger, task_timer
+from plato_wp36 import lcsg_lc_reader, settings, results_logger, run_time_logger, task_timer
 
 from plato_wp36.tda_wrappers import bls_reference, tls
-
-time_periods = [
-    7 * 86400,
-    10 * 86400,
-    14 * 86400,
-    21 * 86400,
-    28 * 86400,
-    1.5 * 28 * 86400,
-    2 * 28 * 86400,
-    2.5 * 28 * 86400,
-    3 * 28 * 86400,
-    4 * 28 * 86400,
-    6 * 28 * 86400,
-    365.25 * 86400,
-    2 * 365.25 * 86400
-]
-
-available_tdas = fetch_tda_list.fetch_tda_list()
-
-lightcurves_path = "lightcurves_v2/csvs/bright/plato_bright*"
-
-lightcurve_list = glob.glob(
-    os.path.join(settings.settings['dataPath'], lightcurves_path)
-)
-
-# Limit to 4 LCs for now
-lightcurve_list = lightcurve_list[:1]
 
 
 def speed_test(lc_duration, tda_name, lc_filename):
@@ -52,6 +26,7 @@ def speed_test(lc_duration, tda_name, lc_filename):
 
     # Make sure that sqlite3 database exists to hold the run times for each transit detection algorithm
     time_log = run_time_logger.RunTimeLogger()
+    result_log = results_logger.ResultsLogger()
 
     # Load lightcurve
     with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load', lc_length=lc_duration,
@@ -67,26 +42,40 @@ def speed_test(lc_duration, tda_name, lc_filename):
                               time_logger=time_log):
         if tda_name == 'tls':
             tls.process_lightcurve(lc, lc_duration / 86400)
+            output = {}
         else:
             bls_reference.process_lightcurve(lc, lc_duration / 86400)
+            output = {}
+
+    # Send result to message queue
+    result_log.record_timing(tda_code=tda_name, target_name=lc_filename, task_name='proc', lc_length=lc_duration,
+                             result=output)
+
+    # Close connection to message queue
+    time_log.close()
+    result_log.close()
 
 
+def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
+    channel = connection.channel()
 
-def run_speed_test():
-    logging.info("Starting speed test of TDAs {}".format(available_tdas))
+    channel.queue_declare(queue=queue)
 
-    # Loop over time period
-    for lc_duration in time_periods:
-        # Loop over TDAs
-        for tda_name in available_tdas:
-            # Loop over lightcurves
-            for lc_filename in lightcurve_list:
-                # Process LC
-                speed_test(
-                    lc_duration=lc_duration,
-                    tda_name=tda_name,
-                    lc_filename=lc_filename
-                )
+    def callback(ch, method, properties, body):
+        logging.info("--> Received {}".format(body))
+
+        job_description = json.loads(body)
+        speed_test(
+            lc_duration=job_description['lc_duration'],
+            tda_name=job_description['tda_name'],
+            lc_filename=job_description['lc_filename']
+        )
+
+    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=False)
+
+    logging.info('Waiting for messages. To exit press CTRL+C')
+    channel.start_consuming()
 
 
 if __name__ == "__main__":
@@ -106,5 +95,5 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.info(__doc__.strip())
 
-    # Run speed test
-    run_speed_test()
+    # Run speed tests
+    run_speed_tests()

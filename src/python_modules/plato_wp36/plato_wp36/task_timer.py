@@ -12,7 +12,7 @@ with TaskTimer( <settings> ):
 
 import time
 
-from .run_time_logger import RunTimeLogger
+from .run_time_logger import RunTimesToRabbitMQ
 
 
 class TaskTimer:
@@ -21,7 +21,7 @@ class TaskTimer:
     and also CPU time.
     """
 
-    def __init__(self, tda_code, target_name, task_name, lc_length, time_logger=RunTimeLogger()):
+    def __init__(self, tda_code, target_name, task_name, lc_length, time_logger=RunTimesToRabbitMQ()):
         """
         Create a new timer.
 
@@ -45,8 +45,8 @@ class TaskTimer:
             The handle to the SQLite3 database we this time measurement is to be recorded.
         """
 
-        # Ensure that time_logger is a genuine <RunTimeLogger> object
-        assert isinstance(time_logger, RunTimeLogger)
+        # Ensure that time_logger is a genuine <RunTimesToRabbitMQ> object
+        assert isinstance(time_logger, RunTimesToRabbitMQ)
 
         # Store the state of this timer
         self.tda_code = tda_code
@@ -102,7 +102,7 @@ class TaskTimer:
             run_times[key] = self.end_time[key] - self.start_time[key]
 
         # Record run time
-        self.time_logger.create_log_entry(
+        self.time_logger.record_timing(
             tda_code=self.tda_code,
             target_name=self.target_name,
             task_name=self.task_name,
