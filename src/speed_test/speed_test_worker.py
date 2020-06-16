@@ -57,7 +57,7 @@ def speed_test(lc_duration, tda_name, lc_filename):
 
 
 def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
+    connection = pika.BlockingConnection(pika.URLParameters(url=broker))
     channel = connection.channel()
 
     channel.queue_declare(queue=queue)

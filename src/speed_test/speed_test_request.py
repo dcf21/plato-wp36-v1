@@ -33,10 +33,10 @@ time_periods = [
 
 available_tdas = fetch_tda_list.fetch_tda_list()
 
-lightcurves_path = "lightcurves_v2/csvs/bright/plato_bright*"
+lightcurves_path = "csvs/bright/plato_bright*"
 
 lightcurve_list = glob.glob(
-    os.path.join(settings.settings['dataPath'], lightcurves_path)
+    os.path.join(settings.settings['lcPath'], lightcurves_path)
 )
 
 # Limit to 4 LCs for now
@@ -44,7 +44,7 @@ lightcurve_list = lightcurve_list[:1]
 
 
 def request_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
+    connection = pika.BlockingConnection(pika.URLParameters(url=broker))
     channel = connection.channel()
 
     channel.queue_declare(queue=queue)
@@ -65,6 +65,7 @@ def request_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue
 
                 json_message = json.dumps(test_description)
 
+                logging.info("Sending message <{}>".format(json_message))
                 channel.basic_publish(exchange='', routing_key=queue, body=json_message)
 
 

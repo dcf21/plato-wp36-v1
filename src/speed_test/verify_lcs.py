@@ -13,10 +13,10 @@ import os
 import argparse
 from plato_wp36 import lcsg_lc_reader, settings
 
-lightcurves_path = "lightcurves_v2/csvs/bright/plato_bright*"
+lightcurves_path = "csvs/bright/plato_bright*"
 
 lightcurve_list = glob.glob(
-    os.path.join(settings.settings['dataPath'], lightcurves_path)
+    os.path.join(settings.settings['lcPath'], lightcurves_path)
 )
 
 # Limit to 4 LCs for now
@@ -33,7 +33,23 @@ def verify_lcs():
             gzipped=True
         )
 
-        lc.check_fixed_step()
+        display_name = os.path.split(lc_filename)[1]
+
+        # Run first code for checking LCs
+        error_count = lc.check_fixed_step(verbose=False)
+
+        if error_count == 0:
+            logging.info("V1: Lightcurve <{}> has fixed step".format(display_name))
+        else:
+            logging.info("V1: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(display_name, error_count))
+
+        # Run second code for checking LCs
+        error_count = lc.check_fixed_step_v2(verbose=False)
+
+        if error_count == 0:
+            logging.info("V2: Lightcurve <{}> has fixed step".format(display_name))
+        else:
+            logging.info("V2: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(display_name, error_count))
 
 
 if __name__ == "__main__":

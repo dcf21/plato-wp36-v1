@@ -48,6 +48,9 @@ for line in open(os.path.join(root_path, "../configuration_local/installation_se
 # data from the pipeline
 data_directory = os.path.join(root_path, "../datadir")
 
+# The path to the <lightcurves> directory which contains input lightcurves
+lc_directory = os.path.join(root_path, "../lightcurves")
+
 # The default settings are below
 settings = {
     'softwareVersion': 1,
@@ -55,8 +58,11 @@ settings = {
     # The path to python scripts in the src directory
     'pythonPath': root_path,
 
-    # The directory where we expect to find images and video files
+    # The directory where we can store persistent data
     'dataPath': data_directory,
+
+    # The directory where we expect to find lightcurves to work on
+    'lcPath': lc_directory,
 
     # Flag specifying whether to produce debugging output from C code
     'debug': installation_info['debug'],

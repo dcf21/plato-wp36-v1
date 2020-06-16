@@ -29,7 +29,7 @@ class RunTimesToRabbitMQ:
         self.broker = broker
         self.queue = queue
 
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.broker))
+        self.connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=queue)
 
@@ -117,7 +117,7 @@ class RunTimesToMySQL:
         broker = broker
         queue = queue
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker))
+        connection = pika.BlockingConnection(pika.URLParameters(url=broker))
         channel = connection.channel()
         channel.queue_declare(queue=queue)
 

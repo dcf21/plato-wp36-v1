@@ -90,15 +90,22 @@ class LightcurveArbitraryRaster:
 
         return float(interquartile_mean)
 
-    def check_fixed_step(self):
+    def check_fixed_step(self, verbose=True):
         """
-        Check that this light curve is sampled at a fixed time interval.
+        Check that this light curve is sampled at a fixed time interval. Return the number of errors.
 
+        :param verbose:
+            Should we output a logging message about every missing time point?
+        :type verbose:
+            bool
         :return:
-            boolean
+            int
         """
 
-        fixed_step = True
+        abs_tol = 1e-4
+        rel_tol = 0
+
+        error_count = 0
         spacing = self.estimate_sampling_interval()
         differences = np.diff(self.times)
 
@@ -108,46 +115,57 @@ class LightcurveArbitraryRaster:
                 continue
 
             # We have found a problem
-            fixed_step = False
+            error_count += 1
 
             # See if we have skipped some time points
             points_missed = step / spacing - 1
-            if math.isclose(points_missed, round(points_missed)):
-                logging.info("{:d} points missing at time {:.5f}".format(points_missed, self.times[index]))
+            if math.isclose(points_missed, round(points_missed), abs_tol=abs_tol, rel_tol=rel_tol):
+                if verbose:
+                    logging.info("{:d} points missing at time {:.5f}".format(points_missed, self.times[index]))
                 continue
 
             # Or is this an entirely unexpected time interval?
-            logging.info("Unexpected time step at time {:.5f}".format(self.times[index]))
+            if verbose:
+                logging.info("Unexpected time step at time {:.5f}".format(self.times[index]))
 
         # Return the verdict on this lightcurve
-        return fixed_step
+        return error_count
 
-    def check_fixed_step_v2(self):
+    def check_fixed_step_v2(self, verbose=True):
         """
-        Check that this light curve is sampled at a fixed time interval.
+        Check that this light curve is sampled at a fixed time interval. Return the number of errors.
 
+        :param verbose:
+            Should we output a logging message about every missing time point?
+        :type verbose:
+            bool
         :return:
-            boolean
+            int
         """
+
+        abs_tol = 1e-4
+        rel_tol = 0
 
         spacing = self.estimate_sampling_interval()
         start_time = self.times[0]
         end_time = self.times[-1]
         times = np.arange(start=start_time, stop=end_time, step=spacing)
-        fixed_step = True
+        error_count = 0
 
         input_position = 0
-        for index, time in times:
-            while (not math.isclose(time, self.times[input_position])) and (time < self.times[input_position]):
+        for index, time in enumerate(times):
+            while ((not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol)) and
+                   (time < self.times[input_position])):
                 input_position += 1
 
             # If this time point has the correct spacing, it is OK
-            if math.isclose(time, self.times[input_position]):
-                logging.info("Point missing at time {:.5f}".format(self.times[index]))
-                fixed_step = False
+            if not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol):
+                if verbose:
+                    logging.info("Point missing at time {:.5f}".format(self.times[index]))
+                error_count += 1
 
         # Return the verdict on this lightcurve
-        return fixed_step
+        return error_count
 
     def to_fixed_step(self):
         """
