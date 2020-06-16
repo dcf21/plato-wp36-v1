@@ -5,6 +5,8 @@
 Classes for representing light curves, either on arbitrary time rasters, or on rasters with fixed step.
 """
 
+import logging
+import math
 import numpy as np
 
 
@@ -68,6 +70,118 @@ class LightcurveArbitraryRaster:
         self.flags = flags
         self.flags_set = True
         self.metadata = metadata
+
+    def estimate_sampling_interval(self):
+        """
+        Estimate the time step on which this light curve is sampled, with robustness against missing points.
+
+        :return:
+            Time step
+        """
+
+        differences = np.diff(self.times)
+        differences_sorted = np.sort(differences)
+
+        interquartile_range_start = int(len(differences) * 0.25)
+        interquartile_range_end = int(len(differences) * 0.75)
+        interquartile_data = differences_sorted[interquartile_range_start:interquartile_range_end]
+
+        interquartile_mean = np.mean(interquartile_data)
+
+        return float(interquartile_mean)
+
+    def check_fixed_step(self):
+        """
+        Check that this light curve is sampled at a fixed time interval.
+
+        :return:
+            boolean
+        """
+
+        fixed_step = True
+        spacing = self.estimate_sampling_interval()
+        differences = np.diff(self.times)
+
+        for index, step in enumerate(differences):
+            # If this time point has the correct spacing, it is OK
+            if math.isclose(step, spacing):
+                continue
+
+            # We have found a problem
+            fixed_step = False
+
+            # See if we have skipped some time points
+            points_missed = step / spacing - 1
+            if math.isclose(points_missed, round(points_missed)):
+                logging.info("{:d} points missing at time {:.5f}".format(points_missed, self.times[index]))
+                continue
+
+            # Or is this an entirely unexpected time interval?
+            logging.info("Unexpected time step at time {:.5f}".format(self.times[index]))
+
+        # Return the verdict on this lightcurve
+        return fixed_step
+
+    def check_fixed_step_v2(self):
+        """
+        Check that this light curve is sampled at a fixed time interval.
+
+        :return:
+            boolean
+        """
+
+        spacing = self.estimate_sampling_interval()
+        start_time = self.times[0]
+        end_time = self.times[-1]
+        times = np.arange(start=start_time, stop=end_time, step=spacing)
+        fixed_step = True
+
+        input_position = 0
+        for index, time in times:
+            while (not math.isclose(time, self.times[input_position])) and (time < self.times[input_position]):
+                input_position += 1
+
+            # If this time point has the correct spacing, it is OK
+            if math.isclose(time, self.times[input_position]):
+                logging.info("Point missing at time {:.5f}".format(self.times[index]))
+                fixed_step = False
+
+        # Return the verdict on this lightcurve
+        return fixed_step
+
+    def to_fixed_step(self):
+        """
+        Convert this lightcurve to a fixed time stride
+
+        :return:
+            [LightcurveFixedStep]
+        """
+
+        spacing = self.estimate_sampling_interval()
+        start_time = self.times[0]
+        end_time = self.times[-1]
+        times = np.arange(start=start_time, stop=end_time, step=spacing)
+        output = np.zeros_like(times)
+
+        input_position = 0
+        for index, time in times:
+            while (not math.isclose(time, self.times[input_position])) and (time < self.times[input_position]):
+                input_position += 1
+
+            # If this time point has the correct spacing, it is OK
+            if math.isclose(time, self.times[input_position]):
+                output[index] = self.fluxes[input_position]
+                continue
+
+            logging.info("No data available at time point {:.5f}", time)
+            output[index] = 1
+
+        # Return lightcurve
+        return LightcurveFixedStep(
+            time_start=start_time,
+            time_step=spacing,
+            fluxes=output
+        )
 
 
 class LightcurveFixedStep:
