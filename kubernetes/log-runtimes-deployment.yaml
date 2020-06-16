@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-runtimes
+spec:
+  selector:
+    matchLabels:
+      app: log-runtimes
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: log-runtimes
+    spec:
+      containers:
+      - image: plato/eas_all_tdas:v1
+        name: plato
+        command: ['/plato_eas/datadir_local/virtualenv/bin/python3']
+        args: ['/plato_eas/src/speed_test/run_times_output_daemon.py']
+        env:
+          # Use secret in real usage
+        - name: dummy
+          value: plato
+        volumeMounts:
+        - name: plato-persistent-storage
+          mountPath: /plato_eas/datadir
+      volumes:
+      - name: plato-persistent-storage
+        persistentVolumeClaim:
+          claimName: datadir-pv-claim

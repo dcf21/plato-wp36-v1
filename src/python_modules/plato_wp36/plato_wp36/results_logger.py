@@ -93,7 +93,7 @@ class ResultsToMySQL:
             The class we use to communicate with the MySQL database
         """
 
-        if results_database:
+        if results_database is None:
             results_database = ResultsDatabase()
 
         self.results_database = results_database

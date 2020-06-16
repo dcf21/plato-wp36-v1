@@ -68,7 +68,7 @@ class TaskTimer:
             'wall_clock': time.time(),
 
             # CPU core seconds
-            'cpu': time.clock()
+            'cpu': time.process_time()
         }
 
     def __enter__(self):
