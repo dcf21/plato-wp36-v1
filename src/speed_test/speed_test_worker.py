@@ -24,9 +24,9 @@ def speed_test(lc_duration, tda_name, lc_filename):
         lc_days=lc_duration / 86400)
     )
 
-    # Make sure that sqlite3 database exists to hold the run times for each transit detection algorithm
-    time_log = run_time_logger.RunTimeLogger()
-    result_log = results_logger.ResultsLogger()
+    # Open connections to transit results and run times to RabbitMQ message queues
+    time_log = run_time_logger.RunTimesToRabbitMQ()
+    result_log = results_logger.ResultsToRabbitMQ()
 
     # Load lightcurve
     with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load', lc_length=lc_duration,

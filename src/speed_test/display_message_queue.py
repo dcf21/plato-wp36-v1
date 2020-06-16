@@ -18,15 +18,15 @@ def print_queues(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks
     connection = pika.BlockingConnection(pika.URLParameters(url=broker))
     channel = connection.channel()
 
-    queue = channel.queue_declare(queue=queue)
+    queue_object = channel.queue_declare(queue=queue)
 
-    queue_len = queue.method.message_count
+    queue_len = queue_object.method.message_count
     logging.info("{:d} messages waiting".format(queue_len))
 
     def callback(ch, method, properties, body):
         logging.info("--> Received {}".format(body))
 
-    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=False)
 
     logging.info('Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()

@@ -80,7 +80,7 @@ class ResultsToRabbitMQ:
         self.channel.close()
 
 
-class RunTimesToMySQL:
+class ResultsToMySQL:
     """
     Provides a class passing the results of various tasks to a MySQL database.
     """
