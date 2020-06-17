@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # results_database.py
 
+import os
 import socket
 import logging
 import json
 
 from .connect_db import DatabaseConnector
+from .settings import settings
 
 """
 Provides a class used for storing results and time measurements in an SQL database.
@@ -24,7 +26,7 @@ class ResultsDatabase:
     _schema = """
     
 # Create generator database
-CREATE TABLE inthesky_generators
+CREATE TABLE eas_generators
 (
     generatorId SMALLINT PRIMARY KEY AUTO_INCREMENT,
     name        TEXT
@@ -62,6 +64,7 @@ CREATE TABLE eas_run_times (
     target_id INTEGER NOT NULL,
     task_id INTEGER NOT NULL,
     lc_length REAL NOT NULL,
+    timestamp REAL NOT NULL,
     run_time_wall_clock REAL,
     run_time_cpu REAL,
     FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
@@ -78,6 +81,7 @@ CREATE TABLE eas_results (
     target_id INTEGER NOT NULL,
     task_id INTEGER NOT NULL,
     lc_length REAL NOT NULL,
+    timestamp REAL NOT NULL,
     results JSON,
     FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
     FOREIGN KEY (server_id) REFERENCES eas_servers (server_id),
@@ -103,7 +107,8 @@ CREATE TABLE eas_results (
             c.execute("CREATE DATABASE {db};".format(db=connector.db_database))
             c.execute("USE {db};".format(db=connector.db_database))
             c.execute(self._schema)
-            c.commit()
+            c.close()
+            db.commit()
             db.close()
             logging.info("Finished creating fresh EAS database")
 
@@ -148,7 +153,7 @@ CREATE TABLE eas_results (
 
         # Extract UID from the data returned by the SQL query
         gen_id = tmp[0]["generatorId"]
-        c.commit()
+        db.commit()
         db.close()
         return gen_id
 
@@ -180,7 +185,7 @@ CREATE TABLE eas_results (
 
         # Extract UID from the data returned by the SQL query
         server_id = tmp[0]["server_id"]
-        c.commit()
+        db.commit()
         db.close()
         return server_id
 
@@ -212,7 +217,7 @@ CREATE TABLE eas_results (
 
         # Extract UID from the data returned by the SQL query
         code_id = tmp[0]["code_id"]
-        c.commit()
+        db.commit()
         db.close()
         return code_id
 
@@ -244,7 +249,7 @@ CREATE TABLE eas_results (
 
         # Extract UID from the data returned by the SQL query
         target_id = tmp[0]["target_id"]
-        c.commit()
+        db.commit()
         db.close()
         return target_id
 
@@ -275,11 +280,12 @@ CREATE TABLE eas_results (
 
         # Extract UID from the data returned by the SQL query
         code_id = tmp[0]["task_id"]
-        c.commit()
+        db.commit()
         db.close()
         return code_id
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, run_time_wall_clock, run_time_cpu):
+    def record_timing(self, tda_code, target_name, task_name, lc_length, timestamp,
+                      run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -298,6 +304,10 @@ CREATE TABLE eas_results (
         :param lc_length:
             The length of the lightcurve (seconds)
         :type lc_length:
+            float
+        :param timestamp:
+            The unix time stamp when this test was performed.
+        :type timestamp:
             float
         :param run_time_wall_clock:
             The run time of the step in wall clock time (seconds)
@@ -328,13 +338,15 @@ CREATE TABLE eas_results (
         db, c = connector.connect_db()
 
         c.execute("""
-INSERT INTO eas_run_times (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu)
-VALUES (%s, %s, %s, %s, %s, %s, %s);
-        """, (code_id, server_id, target_id, task_id, lc_length, run_time_wall_clock, run_time_cpu))
-        c.commit()
+INSERT INTO eas_run_times
+(code_id, server_id, target_id, task_id, lc_length, timestamp, run_time_wall_clock, run_time_cpu)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+        """, (code_id, server_id, target_id, task_id, lc_length, timestamp,
+              run_time_wall_clock, run_time_cpu))
+        db.commit()
         db.close()
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, result_structure):
+    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result_structure):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -353,6 +365,10 @@ VALUES (%s, %s, %s, %s, %s, %s, %s);
         :param lc_length:
             The length of the lightcurve (seconds)
         :type lc_length:
+            float
+        :param timestamp:
+            The unix time stamp when this test was performed.
+        :type timestamp:
             float
         :param result_structure:
             The output from the TDA code, as an arbitrary data structure
@@ -379,9 +395,16 @@ VALUES (%s, %s, %s, %s, %s, %s, %s);
         # Convert results data structure to JSON
         result_json = json.dumps(result_structure)
 
+        # Store a copy of this JSON output
+        json_filename = "{}_{}_{}_{:.1f}.json".format(task_name, tda_code, target_name, lc_length)
+        json_out_path = os.path.join(settings['dataPath'], "json_out", json_filename)
+        with open(json_out_path, "w") as f:
+            f.write(result_json)
+
+        # Commit results to MySQL
         c.execute("""
-INSERT INTO eas_results (code_id, server_id, target_id, task_id, lc_length, results)
-VALUES (%s, %s, %s, %s, %s, %s);
-        """, (code_id, server_id, target_id, task_id, lc_length, result_json))
-        c.commit()
+INSERT INTO eas_results (code_id, server_id, target_id, task_id, lc_length, timestamp, results)
+VALUES (%s, %s, %s, %s, %s, %s, %s);
+        """, (code_id, server_id, target_id, task_id, lc_length, timestamp, result_json))
+        db.commit()
         db.close()

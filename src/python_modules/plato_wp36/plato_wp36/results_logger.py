@@ -33,7 +33,7 @@ class ResultsToRabbitMQ:
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=queue)
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, result):
+    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result):
         """
         Create a new entry in the message queue for transit detection results.
 
@@ -53,6 +53,10 @@ class ResultsToRabbitMQ:
             The length of the lightcurve (seconds)
         :type lc_length:
             float
+        :param timestamp:
+            The unix time stamp when this test was performed.
+        :type timestamp:
+            float
         :param result:
             Data structure containing the output from the TDA code
         :return:
@@ -64,6 +68,7 @@ class ResultsToRabbitMQ:
             'target_name': target_name,
             'task_name': task_name,
             'lc_length': lc_length,
+            'timestamp': timestamp,
             'result': result
         })
 
@@ -119,19 +124,19 @@ class ResultsToMySQL:
 
             message = json.loads(body)
 
-            self.record_timing(tda_code=message['tda_code'],
+            self.record_result(tda_code=message['tda_code'],
                                target_name=message['target_name'],
                                task_name=message['task_name'],
                                lc_length=message['lc_length'],
-                               run_time_wall_clock=message['run_time_wall_clock'],
-                               run_time_cpu=message['run_time_cpu']
+                               timestamp=message['timestamp'],
+                               result=message['result']
                                )
 
         logging.info("Waiting for messages")
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, result):
+    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result):
         """
         Create a new entry in the database for a transit detection result.
 
@@ -151,6 +156,10 @@ class ResultsToMySQL:
             The length of the lightcurve (seconds)
         :type lc_length:
             float
+        :param timestamp:
+            The unix time stamp when this test was performed.
+        :type timestamp:
+            float
         :param result:
             Data structure containing the output from the TDA code
         :return:
@@ -162,5 +171,6 @@ class ResultsToMySQL:
             target_name=target_name,
             task_name=task_name,
             lc_length=lc_length,
+            timestamp=timestamp,
             result_structure=result
         )

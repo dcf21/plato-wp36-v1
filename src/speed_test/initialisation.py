@@ -16,7 +16,7 @@ from plato_wp36 import settings, results_database
 def initialise_speed_test():
     logging.info("Initialising speed test database")
 
-    # Make sure that sqlite3 database exists to hold the run times for each transit detection algorithm
+    # Make sure that SQL database exists to hold the run times for each transit detection algorithm
     results_database.ResultsDatabase(refresh=True)
 
 

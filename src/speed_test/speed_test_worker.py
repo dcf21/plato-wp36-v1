@@ -10,6 +10,7 @@ import logging
 import pika
 import os
 import json
+import time
 
 import argparse
 from plato_wp36 import lcsg_lc_reader, settings, results_logger, run_time_logger, task_timer
@@ -24,13 +25,16 @@ def speed_test(lc_duration, tda_name, lc_filename):
         lc_days=lc_duration / 86400)
     )
 
+    # Record start time
+    start_time = time.time()
+
     # Open connections to transit results and run times to RabbitMQ message queues
     time_log = run_time_logger.RunTimesToRabbitMQ()
     result_log = results_logger.ResultsToRabbitMQ()
 
     # Load lightcurve
-    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load', lc_length=lc_duration,
-                              time_logger=time_log):
+    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load_lc',
+                              lc_length=lc_duration, time_logger=time_log):
         lc = lcsg_lc_reader.read_lcsg_lightcurve(
             filename=lc_filename,
             gzipped=True,
@@ -38,17 +42,20 @@ def speed_test(lc_duration, tda_name, lc_filename):
         )
 
     # Process lightcurve
-    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='proc', lc_length=lc_duration,
-                              time_logger=time_log):
+    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
+                              lc_length=lc_duration, time_logger=time_log):
         if tda_name == 'tls':
-            tls.process_lightcurve(lc, lc_duration / 86400)
-            output = {}
+            output = tls.process_lightcurve(lc, lc_duration / 86400)
+        elif tda_name == 'bls_reference':
+            output = bls_reference.process_lightcurve(lc, lc_duration / 86400)
+            if lc_duration > 15*86400:
+                output = {}
         else:
-            bls_reference.process_lightcurve(lc, lc_duration / 86400)
             output = {}
 
     # Send result to message queue
-    result_log.record_timing(tda_code=tda_name, target_name=lc_filename, task_name='proc', lc_length=lc_duration,
+    result_log.record_result(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
+                             lc_length=lc_duration, timestamp=start_time,
                              result=output)
 
     # Close connection to message queue
@@ -72,7 +79,7 @@ def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="ta
             lc_filename=job_description['lc_filename']
         )
 
-    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=False)
+    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
 
     logging.info('Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()

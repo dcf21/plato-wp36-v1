@@ -8,6 +8,10 @@
 cd "$(dirname "$0")"
 cwd=`pwd`
 
+# First build a copy of the base container in local Docker environment
+cd ${cwd}/..
+docker build . --tag plato/eas:v1 2>&1 | tee docker_build.log
+
 # Build containers within minikube environment
 eval $(minikube -p minikube docker-env)
 
@@ -16,15 +20,14 @@ cd ${cwd}/..
 docker build . --tag plato/eas:v1 2>&1 | tee docker_build.log
 
 # Build Docker images for each transit detection code
-cd ${cwd}/../src/tda_codes/bls_vanilla
-docker build . --tag plato/eas_bls_vanilla:v1 2>&1 | tee docker_build.log
+# cd ${cwd}/../src/tda_codes/bls_vanilla
+# docker build . --tag plato/eas_bls_vanilla:v1 2>&1 | tee docker_build.log
 
-cd ${cwd}/../src/tda_codes/bls_reference
-docker build . --tag plato/eas_bls_reference:v1 2>&1 | tee docker_build.log
+# cd ${cwd}/../src/tda_codes/bls_reference
+# docker build . --tag plato/eas_bls_reference:v1 2>&1 | tee docker_build.log
 
-cd ${cwd}/../src/tda_codes/tls
-docker build . --tag plato/eas_tls:v1 2>&1 | tee docker_build.log
+# cd ${cwd}/../src/tda_codes/tls
+# docker build . --tag plato/eas_tls:v1 2>&1 | tee docker_build.log
 
 cd ${cwd}/../src/tda_codes/all_tdas
 docker build . --tag plato/eas_all_tdas:v1 2>&1 | tee docker_build.log
-

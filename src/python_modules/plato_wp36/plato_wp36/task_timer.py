@@ -42,7 +42,7 @@ class TaskTimer:
         :type lc_length:
             float
         :param time_logger:
-            The handle to the SQLite3 database we this time measurement is to be recorded.
+            The handle to the message queue where this time measurement is to be recorded.
         """
 
         # Ensure that time_logger is a genuine <RunTimesToRabbitMQ> object
@@ -107,6 +107,7 @@ class TaskTimer:
             target_name=self.target_name,
             task_name=self.task_name,
             lc_length=self.lc_length,
+            timestamp=self.start_time['wall_clock'],
             run_time_wall_clock=run_times['wall_clock'],
             run_time_cpu=run_times['cpu']
         )

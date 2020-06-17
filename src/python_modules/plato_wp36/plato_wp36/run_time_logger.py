@@ -33,7 +33,8 @@ class RunTimesToRabbitMQ:
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=queue)
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, run_time_wall_clock, run_time_cpu):
+    def record_timing(self, tda_code, target_name, task_name, lc_length, timestamp,
+                      run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the message queue for a new code performance measurement.
 
@@ -53,6 +54,10 @@ class RunTimesToRabbitMQ:
             The length of the lightcurve (seconds)
         :type lc_length:
             float
+        :param timestamp:
+            The unix time stamp when this test was performed.
+        :type timestamp:
+            float
         :param run_time_wall_clock:
             The run time of the step in wall clock time (seconds)
         :type run_time_wall_clock:
@@ -70,6 +75,7 @@ class RunTimesToRabbitMQ:
             'target_name': target_name,
             'task_name': task_name,
             'lc_length': lc_length,
+            'timestamp': timestamp,
             'run_time_wall_clock': run_time_wall_clock,
             'run_time_cpu': run_time_cpu
         })
@@ -130,6 +136,7 @@ class RunTimesToMySQL:
                                target_name=message['target_name'],
                                task_name=message['task_name'],
                                lc_length=message['lc_length'],
+                               timestamp=message['timestamp'],
                                run_time_wall_clock=message['run_time_wall_clock'],
                                run_time_cpu=message['run_time_cpu']
                                )
@@ -138,7 +145,8 @@ class RunTimesToMySQL:
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, run_time_wall_clock, run_time_cpu):
+    def record_timing(self, tda_code, target_name, task_name, lc_length, timestamp,
+                      run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -158,6 +166,10 @@ class RunTimesToMySQL:
             The length of the lightcurve (seconds)
         :type lc_length:
             float
+        :param timestamp:
+            The unix time stamp when this test was performed.
+        :type timestamp:
+            float
         :param run_time_wall_clock:
             The run time of the step in wall clock time (seconds)
         :type run_time_wall_clock:
@@ -175,6 +187,7 @@ class RunTimesToMySQL:
             target_name=target_name,
             task_name=task_name,
             lc_length=lc_length,
+            timestamp=timestamp,
             run_time_wall_clock=run_time_wall_clock,
             run_time_cpu=run_time_cpu
         )

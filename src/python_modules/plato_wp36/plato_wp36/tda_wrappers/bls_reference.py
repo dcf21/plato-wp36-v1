@@ -2,15 +2,15 @@
 # bls_reference.py
 
 import numpy as np
-
 from astropy import units as u
-
 from astropy.timeseries import BoxLeastSquares
+
 
 def process_lightcurve(lc, lc_duration):
     t = lc.times * u.day
     y_filt = lc.fluxes
 
+    # Run this lightcurve through the astropy implementation of BLS
     durations = np.linspace(0.05, 0.2, 10) * u.day
     model = BoxLeastSquares(t, y_filt)
     results = model.autopower(durations,
@@ -19,4 +19,23 @@ def process_lightcurve(lc, lc_duration):
                               minimum_n_transit=2,
                               frequency_factor=1.0)
 
+    # Clean up results: Astropy Quantity objects are not serialisable
+    results = dict(results)
+
+    for keyword in results:
+        if isinstance(results[keyword], u.Quantity):
+            value_quantity = results[keyword]
+            value_numeric = value_quantity.value
+            value_unit = str(value_quantity.unit)
+
+            if isinstance(value_numeric, np.ndarray):
+                value_numeric = list(value_numeric)
+
+            results[keyword] = [value_numeric, value_unit]
+
+        elif isinstance(results[keyword], np.ndarray):
+            value_numeric = list(results[keyword])
+            results[keyword] = value_numeric
+
+    # Return results
     return results

@@ -21,10 +21,10 @@ time_periods = [
     14 * 86400,
     21 * 86400,
     28 * 86400,
-    #    1.5 * 28 * 86400,
-    #    2 * 28 * 86400,
-    #    2.5 * 28 * 86400,
-    #    3 * 28 * 86400,
+    1.5 * 28 * 86400,
+    2 * 28 * 86400,
+    2.5 * 28 * 86400,
+    3 * 28 * 86400,
     #    4 * 28 * 86400,
     #    6 * 28 * 86400,
     #    365.25 * 86400,
@@ -39,8 +39,8 @@ lightcurve_list = glob.glob(
     os.path.join(settings.settings['lcPath'], lightcurves_path)
 )
 
-# Limit to 4 LCs for now
-lightcurve_list = lightcurve_list[:1]
+# Limit to 5 LCs for now
+lightcurve_list = lightcurve_list[:5]
 
 
 def request_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
