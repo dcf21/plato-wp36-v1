@@ -29,10 +29,6 @@ class ResultsToRabbitMQ:
         self.broker = broker
         self.queue = queue
 
-        self.connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
-        self.channel = self.connection.channel()
-        self.channel.queue_declare(queue=queue)
-
     def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result):
         """
         Create a new entry in the message queue for transit detection results.
@@ -72,7 +68,13 @@ class ResultsToRabbitMQ:
             'result': result
         })
 
-        self.channel.basic_publish(exchange='', routing_key=self.queue, body=json_message)
+        connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
+        channel = connection.channel()
+        channel.queue_declare(queue=self.queue)
+
+        channel.basic_publish(exchange='', routing_key=self.queue, body=json_message)
+
+        channel.close()
 
     def close(self):
         """
@@ -82,7 +84,7 @@ class ResultsToRabbitMQ:
             None
         """
 
-        self.channel.close()
+        pass
 
 
 class ResultsToMySQL:
