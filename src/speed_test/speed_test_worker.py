@@ -48,8 +48,6 @@ def speed_test(lc_duration, tda_name, lc_filename):
             output = tls.process_lightcurve(lc, lc_duration / 86400)
         elif tda_name == 'bls_reference':
             output = bls_reference.process_lightcurve(lc, lc_duration / 86400)
-            if lc_duration > 15*86400:
-                output = {}
         else:
             output = {}
 

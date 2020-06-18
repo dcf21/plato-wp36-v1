@@ -142,13 +142,13 @@ CREATE TABLE eas_results (
         db, c = connector.connect_db()
 
         # Look up the ID for this generator
-        c.execute("SELECT generatorId FROM plato_generators WHERE name=%s;", (gen_key,))
+        c.execute("SELECT generatorId FROM eas_generators WHERE name=%s;", (gen_key,))
         tmp = c.fetchall()
 
-        # If it doesn't exist, create a new ID
+        # If it doesn't exist, create a new ID (with protection against race conditions)
         if len(tmp) == 0:
-            c.execute("INSERT INTO plato_generators VALUES (NULL, %s);", (gen_key,))
-            c.execute("SELECT generatorId FROM plato_generators WHERE name=%s;", (gen_key,))
+            c.execute("INSERT IGNORE INTO eas_generators (name) VALUES (%s);", (gen_key,))
+            c.execute("SELECT generatorId FROM eas_generators WHERE name=%s;", (gen_key,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
@@ -176,9 +176,9 @@ CREATE TABLE eas_results (
         c.execute("SELECT server_id FROM eas_servers WHERE hostname=%s;", (hostname,))
         tmp = c.fetchall()
 
-        # If it doesn't exist, create a new ID
+        # If it doesn't exist, create a new ID (with protection against race conditions)
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_servers (hostname) VALUES (%s);", (hostname,))
+            c.execute("INSERT IGNORE INTO eas_servers (hostname) VALUES (%s);", (hostname,))
             db.commit()
             c.execute("SELECT server_id FROM eas_servers WHERE hostname=%s;", (hostname,))
             tmp = c.fetchall()
@@ -204,13 +204,13 @@ CREATE TABLE eas_results (
         connector = DatabaseConnector()
         db, c = connector.connect_db()
 
-        # Look up the ID for this TDA code
+        # Look up the ID for this TDA code (with protection against race conditions)
         c.execute("SELECT code_id FROM eas_tda_codes WHERE name=%s;", (code_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_tda_codes (name) VALUES (%s);", (code_name,))
+            c.execute("INSERT IGNORE INTO eas_tda_codes (name) VALUES (%s);", (code_name,))
             db.commit()
             c.execute("SELECT code_id FROM eas_tda_codes WHERE name=%s;", (code_name,))
             tmp = c.fetchall()
@@ -236,13 +236,16 @@ CREATE TABLE eas_results (
         connector = DatabaseConnector()
         db, c = connector.connect_db()
 
+        # Make sure that lightcurve name does not include full path
+        lightcurve_name = os.path.split(lightcurve_name)[1]
+
         # Look up the ID for this lightcurve
         c.execute("SELECT target_id FROM eas_targets WHERE name=%s;", (lightcurve_name,))
         tmp = c.fetchall()
 
-        # If it doesn't exist, create a new ID
+        # If it doesn't exist, create a new ID (with protection against race conditions)
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_targets (name) VALUES (%s);", (lightcurve_name,))
+            c.execute("INSERT IGNORE INTO eas_targets (name) VALUES (%s);", (lightcurve_name,))
             db.commit()
             c.execute("SELECT target_id FROM eas_targets WHERE name=%s;", (lightcurve_name,))
             tmp = c.fetchall()
@@ -271,9 +274,9 @@ CREATE TABLE eas_results (
         c.execute("SELECT task_id FROM eas_tasks WHERE name=%s;", (task_name,))
         tmp = c.fetchall()
 
-        # If it doesn't exist, create a new ID
+        # If it doesn't exist, create a new ID (with protection against race conditions)
         if len(tmp) == 0:
-            c.execute("INSERT INTO eas_tasks (name) VALUES (%s);", (task_name,))
+            c.execute("INSERT IGNORE INTO eas_tasks (name) VALUES (%s);", (task_name,))
             db.commit()
             c.execute("SELECT task_id FROM eas_tasks WHERE name=%s;", (task_name,))
             tmp = c.fetchall()
@@ -396,15 +399,29 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         result_json = json.dumps(result_structure)
 
         # Store a copy of this JSON output
-        json_filename = "{}_{}_{}_{:.1f}.json".format(task_name, tda_code, target_name, lc_length)
+        json_filename = "{}_{}_{}_{:.1f}.json".format(task_name,
+                                                      tda_code,
+                                                      os.path.split(target_name)[1],
+                                                      lc_length)
         json_out_path = os.path.join(settings['dataPath'], "json_out", json_filename)
         with open(json_out_path, "w") as f:
             f.write(result_json)
 
         # Commit results to MySQL
         c.execute("""
-INSERT INTO eas_results (code_id, server_id, target_id, task_id, lc_length, timestamp, results)
-VALUES (%s, %s, %s, %s, %s, %s, %s);
-        """, (code_id, server_id, target_id, task_id, lc_length, timestamp, result_json))
+INSERT INTO eas_results (code_id, server_id, target_id, task_id, lc_length, timestamp)
+VALUES (%s, %s, %s, %s, %s, %s);
+""", (code_id, server_id, target_id, task_id, lc_length, timestamp))
+
+        # Fetch UID of the record we just created
+        uid = db.insert_id()
+
+        # Attempt to store results in database
+        if len(result_json) < 1e6:
+            c.execute("""
+UPDATE IGNORE eas_results SET results=%s WHERE run_id=%s;
+""", (uid, result_json))
+
+        # Commit this record
         db.commit()
         db.close()

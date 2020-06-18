@@ -88,9 +88,12 @@ class LightcurveArbitraryRaster:
 
         interquartile_mean = np.mean(interquartile_data)
 
+        # Round time interval to nearest number of integer seconds
+        interquartile_mean = round(interquartile_mean * 86400) / 86400
+
         return float(interquartile_mean)
 
-    def check_fixed_step(self, verbose=True):
+    def check_fixed_step(self, verbose=True, max_errors=None):
         """
         Check that this light curve is sampled at a fixed time interval. Return the number of errors.
 
@@ -98,6 +101,10 @@ class LightcurveArbitraryRaster:
             Should we output a logging message about every missing time point?
         :type verbose:
             bool
+        :param max_errors:
+            The maximum number of errors we should show
+        :type max_errors:
+            int
         :return:
             int
         """
@@ -107,11 +114,15 @@ class LightcurveArbitraryRaster:
 
         error_count = 0
         spacing = self.estimate_sampling_interval()
+
+        if verbose:
+            logging.info("Time step is {:.15f}".format(spacing))
+
         differences = np.diff(self.times)
 
         for index, step in enumerate(differences):
             # If this time point has the correct spacing, it is OK
-            if math.isclose(step, spacing):
+            if math.isclose(step, spacing, abs_tol=abs_tol, rel_tol=rel_tol):
                 continue
 
             # We have found a problem
@@ -120,18 +131,22 @@ class LightcurveArbitraryRaster:
             # See if we have skipped some time points
             points_missed = step / spacing - 1
             if math.isclose(points_missed, round(points_missed), abs_tol=abs_tol, rel_tol=rel_tol):
-                if verbose:
-                    logging.info("{:d} points missing at time {:.5f}".format(points_missed, self.times[index]))
+                if verbose and (max_errors is None or error_count <= max_errors):
+                    logging.info("index {:5d} - {:d} points missing at time {:.5f}".format(index,
+                                                                                           int(points_missed),
+                                                                                           self.times[index]))
                 continue
 
             # Or is this an entirely unexpected time interval?
-            if verbose:
-                logging.info("Unexpected time step at time {:.5f}".format(self.times[index]))
+            if verbose and (max_errors is None or error_count <= max_errors):
+                logging.info("index {:5d} - Unexpected time step {:.15f} at time {:.5f}".format(index,
+                                                                                               step,
+                                                                                               self.times[index]))
 
         # Return the verdict on this lightcurve
         return error_count
 
-    def check_fixed_step_v2(self, verbose=True):
+    def check_fixed_step_v2(self, verbose=True, max_errors=None):
         """
         Check that this light curve is sampled at a fixed time interval. Return the number of errors.
 
@@ -139,6 +154,10 @@ class LightcurveArbitraryRaster:
             Should we output a logging message about every missing time point?
         :type verbose:
             bool
+        :param max_errors:
+            The maximum number of errors we should show
+        :type max_errors:
+            int
         :return:
             int
         """
@@ -147,6 +166,10 @@ class LightcurveArbitraryRaster:
         rel_tol = 0
 
         spacing = self.estimate_sampling_interval()
+
+        if verbose:
+            logging.info("Time step is {:.15f}".format(spacing))
+
         start_time = self.times[0]
         end_time = self.times[-1]
         times = np.arange(start=start_time, stop=end_time, step=spacing)
@@ -155,13 +178,14 @@ class LightcurveArbitraryRaster:
         input_position = 0
         for index, time in enumerate(times):
             while ((not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol)) and
-                   (time < self.times[input_position])):
+                   (self.times[input_position] < time)):
                 input_position += 1
 
             # If this time point has the correct spacing, it is OK
             if not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol):
-                if verbose:
-                    logging.info("Point missing at time {:.5f}".format(self.times[index]))
+                if verbose and (max_errors is None or error_count <= max_errors):
+                    logging.info("index {:5d} - Point missing at time {:.15f}".format(index,
+                                                                                     self.times[index]))
                 error_count += 1
 
         # Return the verdict on this lightcurve

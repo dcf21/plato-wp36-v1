@@ -36,7 +36,7 @@ def verify_lcs():
         display_name = os.path.split(lc_filename)[1]
 
         # Run first code for checking LCs
-        error_count = lc.check_fixed_step(verbose=False)
+        error_count = lc.check_fixed_step(verbose=True, max_errors=10)
 
         if error_count == 0:
             logging.info("V1: Lightcurve <{}> has fixed step".format(display_name))
@@ -44,7 +44,7 @@ def verify_lcs():
             logging.info("V1: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(display_name, error_count))
 
         # Run second code for checking LCs
-        error_count = lc.check_fixed_step_v2(verbose=False)
+        error_count = lc.check_fixed_step_v2(verbose=True, max_errors=10)
 
         if error_count == 0:
             logging.info("V2: Lightcurve <{}> has fixed step".format(display_name))
