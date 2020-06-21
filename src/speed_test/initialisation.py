@@ -19,6 +19,9 @@ def initialise_speed_test():
     # Make sure that SQL database exists to hold the run times for each transit detection algorithm
     results_database.ResultsDatabase(refresh=True)
 
+    # Wipe JSON files
+    os.system("rm -Rf {}/*".format(os.path.join(settings.settings['dataPath'], "json_out")))
+
 
 if __name__ == "__main__":
     # Read commandline arguments

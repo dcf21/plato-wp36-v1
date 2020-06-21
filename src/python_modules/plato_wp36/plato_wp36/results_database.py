@@ -344,7 +344,7 @@ CREATE TABLE eas_results (
 INSERT INTO eas_run_times
 (code_id, server_id, target_id, task_id, lc_length, timestamp, run_time_wall_clock, run_time_cpu)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
-        """, (code_id, server_id, target_id, task_id, lc_length, timestamp,
+        """, (code_id, server_id, target_id, task_id, lc_length / 86400, timestamp,
               run_time_wall_clock, run_time_cpu))
         db.commit()
         db.close()
@@ -399,10 +399,10 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         result_json = json.dumps(result_structure)
 
         # Store a copy of this JSON output
-        json_filename = "{}_{}_{}_{:.1f}.json".format(task_name,
-                                                      tda_code,
-                                                      os.path.split(target_name)[1],
-                                                      lc_length)
+        json_filename = "{}_{}_{}_{:08.1f}.json".format(task_name,
+                                                        tda_code,
+                                                        os.path.split(target_name)[1],
+                                                        lc_length / 86400)
         json_out_path = os.path.join(settings['dataPath'], "json_out", json_filename)
         with open(json_out_path, "w") as f:
             f.write(result_json)
@@ -411,7 +411,7 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         c.execute("""
 INSERT INTO eas_results (code_id, server_id, target_id, task_id, lc_length, timestamp)
 VALUES (%s, %s, %s, %s, %s, %s);
-""", (code_id, server_id, target_id, task_id, lc_length, timestamp))
+""", (code_id, server_id, target_id, task_id, lc_length / 86400, timestamp))
 
         # Fetch UID of the record we just created
         uid = db.insert_id()
