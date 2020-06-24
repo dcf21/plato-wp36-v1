@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 # results_logger.py
 
+import os
+import gzip
 import json
 import pika
 import logging
 
 from .results_database import ResultsDatabase
+from .settings import settings
 
 """
 Provides a class used for compiling a database of the output from TDA codes.
@@ -59,13 +62,25 @@ class ResultsToRabbitMQ:
             None
         """
 
+        # Convert results data structure to JSON
+        result_json = json.dumps(result)
+
+        # Store a copy of this gzipped JSON output
+        json_filename = "{}_{}_{}_{:08.1f}.json.gz".format(task_name,
+                                                        tda_code,
+                                                        os.path.split(target_name)[1],
+                                                        lc_length / 86400)
+        json_out_path = os.path.join(settings['dataPath'], "scratch", json_filename)
+        with gzip.open(json_out_path, "wt") as f:
+            f.write(result_json)
+
         json_message = json.dumps({
             'tda_code': tda_code,
             'target_name': target_name,
             'task_name': task_name,
             'lc_length': lc_length,
             'timestamp': timestamp,
-            'result': result
+            'result_filename': json_filename
         })
 
         connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
@@ -131,14 +146,14 @@ class ResultsToMySQL:
                                task_name=message['task_name'],
                                lc_length=message['lc_length'],
                                timestamp=message['timestamp'],
-                               result=message['result']
+                               result_filename=message['result_filename']
                                )
 
         logging.info("Waiting for messages")
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result):
+    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result_filename):
         """
         Create a new entry in the database for a transit detection result.
 
@@ -162,8 +177,10 @@ class ResultsToMySQL:
             The unix time stamp when this test was performed.
         :type timestamp:
             float
-        :param result:
-            Data structure containing the output from the TDA code
+        :param result_filename:
+            The filename of the data structure containing the output from the TDA code, in the <scratch> directory
+        :type result_filename:
+            str
         :return:
             None
         """
@@ -174,5 +191,5 @@ class ResultsToMySQL:
             task_name=task_name,
             lc_length=lc_length,
             timestamp=timestamp,
-            result_structure=result
+            result_filename=result_filename
         )

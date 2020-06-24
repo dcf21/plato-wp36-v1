@@ -22,6 +22,9 @@ def initialise_speed_test():
     # Wipe JSON files
     os.system("rm -Rf {}/*".format(os.path.join(settings.settings['dataPath'], "json_out")))
 
+    # Wipe scratch space
+    os.system("rm -Rf {}/*".format(os.path.join(settings.settings['dataPath'], "scratch")))
+
 
 if __name__ == "__main__":
     # Read commandline arguments

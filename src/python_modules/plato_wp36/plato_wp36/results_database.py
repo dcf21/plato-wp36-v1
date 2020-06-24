@@ -4,7 +4,7 @@
 import os
 import socket
 import logging
-import json
+import shutil
 
 from .connect_db import DatabaseConnector
 from .settings import settings
@@ -349,7 +349,7 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         db.commit()
         db.close()
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result_structure):
+    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result_filename):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -373,8 +373,10 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
             The unix time stamp when this test was performed.
         :type timestamp:
             float
-        :param result_structure:
-            The output from the TDA code, as an arbitrary data structure
+        :param result_filename:
+            The filename of the data structure containing the output from the TDA code, in the <scratch> directory
+        :type result_filename:
+            str
         :return:
             None
         """
@@ -395,17 +397,12 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         connector = DatabaseConnector()
         db, c = connector.connect_db()
 
-        # Convert results data structure to JSON
-        result_json = json.dumps(result_structure)
+        # Look up JSON data structure containing the result of this run
+        json_input_path = os.path.join(settings['dataPath'], "scratch", result_filename)
+        json_output_path = os.path.join(settings['dataPath'], "json_out", result_filename)
 
-        # Store a copy of this JSON output
-        json_filename = "{}_{}_{}_{:08.1f}.json".format(task_name,
-                                                        tda_code,
-                                                        os.path.split(target_name)[1],
-                                                        lc_length / 86400)
-        json_out_path = os.path.join(settings['dataPath'], "json_out", json_filename)
-        with open(json_out_path, "w") as f:
-            f.write(result_json)
+        # Move into target location
+        shutil.move(json_input_path, json_output_path)
 
         # Commit results to MySQL
         c.execute("""
@@ -413,14 +410,14 @@ INSERT INTO eas_results (code_id, server_id, target_id, task_id, lc_length, time
 VALUES (%s, %s, %s, %s, %s, %s);
 """, (code_id, server_id, target_id, task_id, lc_length / 86400, timestamp))
 
-        # Fetch UID of the record we just created
-        uid = db.insert_id()
+#         # Fetch UID of the record we just created
+#         uid = db.insert_id()
 
-        # Attempt to store results in database
-        if len(result_json) < 1e6:
-            c.execute("""
-UPDATE IGNORE eas_results SET results=%s WHERE run_id=%s;
-""", (uid, result_json))
+#         # Attempt to store results in database
+#         if len(result_json) < 1e6:
+#             c.execute("""
+# UPDATE IGNORE eas_results SET results=%s WHERE run_id=%s;
+# """, (uid, result_json))
 
         # Commit this record
         db.commit()
