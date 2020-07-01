@@ -4,13 +4,19 @@
 
 """
 Run speed tests as requested through the RabbitMQ message queue
+
+See:
+https://stackoverflow.com/questions/14572020/handling-long-running-tasks-in-pika-rabbitmq/52951933#52951933
+https://github.com/pika/pika/blob/0.12.0/examples/basic_consumer_threaded.py
 """
 
 import logging
 import pika
 import os
+import functools
 import json
 import time
+import threading
 
 import argparse
 from plato_wp36 import lcsg_lc_reader, settings, results_logger, run_time_logger, task_timer
@@ -61,23 +67,43 @@ def speed_test(lc_duration, tda_name, lc_filename):
     result_log.close()
 
 
+def acknowledge_message(channel, delivery_tag):
+    channel.basic_ack(delivery_tag=delivery_tag)
+
+
+def do_work(connection, channel, delivery_tag, body):
+    # Process lightcurve
+    job_description = json.loads(body)
+    speed_test(
+        lc_duration=job_description['lc_duration'],
+        tda_name=job_description['tda_name'],
+        lc_filename=job_description['lc_filename']
+    )
+
+    # Acknowledge the message we've just processed
+    cb = functools.partial(acknowledge_message, channel, delivery_tag)
+    connection.add_callback_threadsafe(cb)
+
+def message_callback(channel, method_frame, properties, body, args):
+    (connection, threads) = args
+
+    logging.info("--> Received {}".format(body))
+
+    delivery_tag = method_frame.delivery_tag
+
+    t = threading.Thread(target=do_work, args=(connection, channel, delivery_tag, body))
+    t.start()
+    threads.append(t)
+
 def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
     connection = pika.BlockingConnection(pika.URLParameters(url=broker))
     channel = connection.channel()
-
+    channel.basic_qos(prefetch_count=1)
     channel.queue_declare(queue=queue)
 
-    def callback(ch, method, properties, body):
-        logging.info("--> Received {}".format(body))
-
-        job_description = json.loads(body)
-        speed_test(
-            lc_duration=job_description['lc_duration'],
-            tda_name=job_description['tda_name'],
-            lc_filename=job_description['lc_filename']
-        )
-
-    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+    threads = []
+    on_message_callback = functools.partial(message_callback, args=(connection, threads))
+    channel.basic_consume(queue=queue, on_message_callback=on_message_callback)
 
     logging.info('Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
