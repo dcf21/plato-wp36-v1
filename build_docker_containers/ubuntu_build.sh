@@ -17,6 +17,7 @@ rm -Rf ${venv_dir}
 virtualenv -p python3 ${venv_dir}
 
 # Install required python libraries
+${venv_dir}/bin/pip install numpy
 ${venv_dir}/bin/pip install -r ${cwd}/../requirements.txt
 
 # Install plato_wp36 package
