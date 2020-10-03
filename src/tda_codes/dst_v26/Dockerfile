@@ -21,7 +21,13 @@ COPY Makefile.asalto26.5.patch Makefile.patch
 RUN cp Makefile Makefile.original
 RUN patch Makefile < Makefile.patch
 
+WORKDIR /plato_eas/proprietary/asalto27
+COPY Makefile.asalto27.patch Makefile.patch
+RUN cp Makefile Makefile.original
+RUN patch Makefile < Makefile.patch
+
 # Build Juan's code: libjuan
+WORKDIR /plato_eas/proprietary/juan
 RUN make
 
 # Write list of available TDAs

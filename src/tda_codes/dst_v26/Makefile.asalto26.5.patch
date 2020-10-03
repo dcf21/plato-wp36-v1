@@ -1,5 +1,5 @@
---- Makefile.orig	2020-10-03 03:44:35.863450000 +0000
-+++ Makefile	2020-10-03 03:41:31.741088000 +0000
+--- Makefile.orig	2020-10-03 04:35:19.917157000 +0000
++++ Makefile	2020-10-03 04:39:20.710279000 +0000
 @@ -1,6 +1,3 @@
 -# ordena
 -#-----------------------------
@@ -364,7 +364,51 @@
  ONYVAIMAGC9B_SLS = $(ONYVAIMAGC9B_SRC) $(ONYVAIMAGC9B_HDR) $(BT2_HDR)
  ONYVAIMAGC9B_OLS = $(ONYVAIMAGC9B_OBJ)
  ONYVAIMAGC9B_LLS = $(BT2_LLS)
-@@ -462,8 +299,8 @@
+@@ -422,313 +259,115 @@
+ 
+ # libk2vanderburg_fits
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070210dl.intra.dlr.de)
+-  K2VFTS_PATH = /scr2/cabr_ju/ross/blind/asalto27
+-  K2VFTS_LIB_PATH = $(K2VFTS_PATH)/lib/$(ORDENA)
+-  K2VFTS_INC_PATH = $(K2VFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),OTS44)
+-  K2VFTS_PATH = /data/COROT/qmon/asalto27
+-  K2VFTS_LIB_PATH = $(K2VFTS_PATH)/lib/$(ORDENA)
+-  K2VFTS_INC_PATH = $(K2VFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),canijo)
+-  K2VFTS_PATH = /datos/blind/asalto27
+-  K2VFTS_LIB_PATH = $(K2VFTS_PATH)/lib/$(ORDENA)
+-  K2VFTS_INC_PATH = $(K2VFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),stahl)
+-  K2VFTS_PATH = /home/juano/blind/asalto27
+-  K2VFTS_LIB_PATH = $(K2VFTS_PATH)/lib/$(ORDENA)
+-  K2VFTS_INC_PATH = $(K2VFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg01)
+-  K2VFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2VFTS_LIB_PATH = $(K2VFTS_PATH)/lib/$(ORDENA)
+-  K2VFTS_INC_PATH = $(K2VFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg02)
+-  K2VFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2VFTS_LIB_PATH = $(K2VFTS_PATH)/lib/$(ORDENA)
+-  K2VFTS_INC_PATH = $(K2VFTS_PATH)/src
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
++K2VFTS_PATH = ../asalto27
++K2VFTS_LIB_PATH = $(K2VFTS_PATH)/lib
++K2VFTS_INC_PATH = $(K2VFTS_PATH)/src
++
  K2VFTS_CLAU = k2vanderburg_fits
  K2VFTS_HDR = $(K2VFTS_PATH)/src/$(K2VFTS_CLAU).h
  K2VFTS_SRC = $(K2VFTS_PATH)/src/$(K2VFTS_CLAU).c
@@ -375,7 +419,55 @@
  K2VFTS_SLS = $(K2VFTS_SRC) $(K2VFTS_HDR) $(JUANFITS_HDR)
  K2VFTS_OLS = $(K2VFTS_OBJ)
  K2VFTS_LLS = $(K2VFTS_LIB) $(JUANFITS_LLS)
-@@ -514,8 +351,8 @@
+ K2VFTS_INC = -I$(K2VFTS_PATH)/src $(JUANFITS_INC) 
+-K2VFTS_LNK = -L$(K2VFTS_PATH)/lib/$(ORDENA) -l$(K2VFTS_CLAU) $(JUANFITS_LNK) 
++K2VFTS_LNK = -L$(K2VFTS_PATH)/lib -l$(K2VFTS_CLAU) $(JUANFITS_LNK) 
+ 
+ 
+ 
+ # libeverest_fits
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070210dl.intra.dlr.de)
+-  K2EFTS_PATH = /scr2/cabr_ju/ross/blind/asalto27
+-  K2EFTS_LIB_PATH = $(K2EFTS_PATH)/lib/$(ORDENA)
+-  K2EFTS_INC_PATH = $(K2EFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),OTS44)
+-  K2EFTS_PATH = /data/COROT/qmon/asalto27
+-  K2EFTS_LIB_PATH = $(K2EFTS_PATH)/lib/$(ORDENA)
+-  K2EFTS_INC_PATH = $(K2EFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),canijo)
+-  K2EFTS_PATH = /datos/blind/asalto27
+-  K2EFTS_LIB_PATH = $(K2EFTS_PATH)/lib/$(ORDENA)
+-  K2EFTS_INC_PATH = $(K2EFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),stahl)
+-  K2EFTS_PATH = /home/juano/blind/asalto27
+-  K2EFTS_LIB_PATH = $(K2EFTS_PATH)/lib/$(ORDENA)
+-  K2EFTS_INC_PATH = $(K2EFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg01)
+-  K2EFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2EFTS_LIB_PATH = $(K2EFTS_PATH)/lib/$(ORDENA)
+-  K2EFTS_INC_PATH = $(K2EFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg02)
+-  K2EFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2EFTS_LIB_PATH = $(K2EFTS_PATH)/lib/$(ORDENA)
+-  K2EFTS_INC_PATH = $(K2EFTS_PATH)/src
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
++K2EFTS_PATH = ../asalto27
++K2EFTS_LIB_PATH = $(K2EFTS_PATH)/lib
++K2EFTS_INC_PATH = $(K2EFTS_PATH)/src
++
  K2EFTS_CLAU = everest_fits
  K2EFTS_HDR = $(K2EFTS_PATH)/src/$(K2EFTS_CLAU).h
  K2EFTS_SRC = $(K2EFTS_PATH)/src/$(K2EFTS_CLAU).c
@@ -386,7 +478,55 @@
  K2EFTS_SLS = $(K2EFTS_SRC) $(K2EFTS_HDR) $(JUANFITS_HDR)
  K2EFTS_OLS = $(K2EFTS_OBJ)
  K2EFTS_LLS = $(K2EFTS_LIB) $(JUANFITS_LLS)
-@@ -566,8 +403,8 @@
+ K2EFTS_INC = -I$(K2EFTS_PATH)/src $(JUANFITS_INC) 
+-K2EFTS_LNK = -L$(K2EFTS_PATH)/lib/$(ORDENA) -l$(K2EFTS_CLAU) $(JUANFITS_LNK) 
++K2EFTS_LNK = -L$(K2EFTS_PATH)/lib -l$(K2EFTS_CLAU) $(JUANFITS_LNK) 
+ 
+ 
+ 
+ # libk2sc_fits
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070210dl.intra.dlr.de)
+-  K2SCFTS_PATH = /scr2/cabr_ju/ross/blind/asalto27
+-  K2SCFTS_LIB_PATH = $(K2SCFTS_PATH)/lib/$(ORDENA)
+-  K2SCFTS_INC_PATH = $(K2SCFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),OTS44)
+-  K2SCFTS_PATH = /data/COROT/qmon/asalto27
+-  K2SCFTS_LIB_PATH = $(K2SCFTS_PATH)/lib/$(ORDENA)
+-  K2SCFTS_INC_PATH = $(K2SCFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),canijo)
+-  K2SCFTS_PATH = /datos/blind/asalto27
+-  K2SCFTS_LIB_PATH = $(K2SCFTS_PATH)/lib/$(ORDENA)
+-  K2SCFTS_INC_PATH = $(K2SCFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),stahl)
+-  K2SCFTS_PATH = /home/juano/blind/asalto27
+-  K2SCFTS_LIB_PATH = $(K2SCFTS_PATH)/lib/$(ORDENA)
+-  K2SCFTS_INC_PATH = $(K2SCFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg01)
+-  K2SCFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2SCFTS_LIB_PATH = $(K2SCFTS_PATH)/lib/$(ORDENA)
+-  K2SCFTS_INC_PATH = $(K2SCFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg02)
+-  K2SCFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2SCFTS_LIB_PATH = $(K2SCFTS_PATH)/lib/$(ORDENA)
+-  K2SCFTS_INC_PATH = $(K2SCFTS_PATH)/src
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
++K2SCFTS_PATH = ../asalto27
++K2SCFTS_LIB_PATH = $(K2SCFTS_PATH)/lib
++K2SCFTS_INC_PATH = $(K2SCFTS_PATH)/src
++
  K2SCFTS_CLAU = k2sc_fits
  K2SCFTS_HDR = $(K2SCFTS_PATH)/src/$(K2SCFTS_CLAU).h
  K2SCFTS_SRC = $(K2SCFTS_PATH)/src/$(K2SCFTS_CLAU).c
@@ -397,7 +537,55 @@
  K2SCFTS_SLS = $(K2SCFTS_SRC) $(K2SCFTS_HDR) $(JUANFITS_HDR)
  K2SCFTS_OLS = $(K2SCFTS_OBJ)
  K2SCFTS_LLS = $(K2SCFTS_LIB) $(JUANFITS_LLS)
-@@ -618,8 +455,8 @@
+ K2SCFTS_INC = -I$(K2SCFTS_PATH)/src $(JUANFITS_INC) 
+-K2SCFTS_LNK = -L$(K2SCFTS_PATH)/lib/$(ORDENA) -l$(K2SCFTS_CLAU) $(JUANFITS_LNK) 
++K2SCFTS_LNK = -L$(K2SCFTS_PATH)/lib -l$(K2SCFTS_CLAU) $(JUANFITS_LNK) 
+ 
+ 
+ 
+ # libpolar_fits
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070210dl.intra.dlr.de)
+-  K2PFTS_PATH = /scr2/cabr_ju/ross/blind/asalto27
+-  K2PFTS_LIB_PATH = $(K2PFTS_PATH)/lib/$(ORDENA)
+-  K2PFTS_INC_PATH = $(K2PFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),OTS44)
+-  K2PFTS_PATH = /data/COROT/qmon/asalto27
+-  K2PFTS_LIB_PATH = $(K2PFTS_PATH)/lib/$(ORDENA)
+-  K2PFTS_INC_PATH = $(K2PFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),canijo)
+-  K2PFTS_PATH = /datos/blind/asalto27
+-  K2PFTS_LIB_PATH = $(K2PFTS_PATH)/lib/$(ORDENA)
+-  K2PFTS_INC_PATH = $(K2PFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),stahl)
+-  K2PFTS_PATH = /home/juano/blind/asalto27
+-  K2PFTS_LIB_PATH = $(K2PFTS_PATH)/lib/$(ORDENA)
+-  K2PFTS_INC_PATH = $(K2PFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg01)
+-  K2PFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2PFTS_LIB_PATH = $(K2PFTS_PATH)/lib/$(ORDENA)
+-  K2PFTS_INC_PATH = $(K2PFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg02)
+-  K2PFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  K2PFTS_LIB_PATH = $(K2PFTS_PATH)/lib/$(ORDENA)
+-  K2PFTS_INC_PATH = $(K2PFTS_PATH)/src
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
++K2PFTS_PATH = ../asalto27
++K2PFTS_LIB_PATH = $(K2PFTS_PATH)/lib
++K2PFTS_INC_PATH = $(K2PFTS_PATH)/src
++
  K2PFTS_CLAU = polar_fits
  K2PFTS_HDR = $(K2PFTS_PATH)/src/$(K2PFTS_CLAU).h
  K2PFTS_SRC = $(K2PFTS_PATH)/src/$(K2PFTS_CLAU).c
@@ -408,7 +596,55 @@
  K2PFTS_SLS = $(K2PFTS_SRC) $(K2PFTS_HDR) $(JUANFITS_HDR)
  K2PFTS_OLS = $(K2PFTS_OBJ)
  K2PFTS_LLS = $(K2PFTS_LIB) $(JUANFITS_LLS)
-@@ -670,8 +507,8 @@
+ K2PFTS_INC = -I$(K2PFTS_PATH)/src $(JUANFITS_INC) 
+-K2PFTS_LNK = -L$(K2PFTS_PATH)/lib/$(ORDENA) -l$(K2PFTS_CLAU) $(JUANFITS_LNK) 
++K2PFTS_LNK = -L$(K2PFTS_PATH)/lib -l$(K2PFTS_CLAU) $(JUANFITS_LNK) 
+ 
+ 
+ 
+ # libkepler_fits
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070210dl.intra.dlr.de)
+-  KFTS_PATH = /scr2/cabr_ju/ross/blind/asalto27
+-  KFTS_LIB_PATH = $(KFTS_PATH)/lib/$(ORDENA)
+-  KFTS_INC_PATH = $(KFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),OTS44)
+-  KFTS_PATH = /data/COROT/qmon/asalto27
+-  KFTS_LIB_PATH = $(KFTS_PATH)/lib/$(ORDENA)
+-  KFTS_INC_PATH = $(KFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),canijo)
+-  KFTS_PATH = /datos/blind/asalto27
+-  KFTS_LIB_PATH = $(KFTS_PATH)/lib/$(ORDENA)
+-  KFTS_INC_PATH = $(KFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),stahl)
+-  KFTS_PATH = /home/juano/blind/asalto27
+-  KFTS_LIB_PATH = $(KFTS_PATH)/lib/$(ORDENA)
+-  KFTS_INC_PATH = $(KFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg01)
+-  KFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  KFTS_LIB_PATH = $(KFTS_PATH)/lib/$(ORDENA)
+-  KFTS_INC_PATH = $(KFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg02)
+-  KFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  KFTS_LIB_PATH = $(KFTS_PATH)/lib/$(ORDENA)
+-  KFTS_INC_PATH = $(KFTS_PATH)/src
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
++KFTS_PATH = ../asalto27
++KFTS_LIB_PATH = $(KFTS_PATH)/lib
++KFTS_INC_PATH = $(KFTS_PATH)/src
++
  KFTS_CLAU = kepler_fits
  KFTS_HDR = $(KFTS_PATH)/src/$(KFTS_CLAU).h
  KFTS_SRC = $(KFTS_PATH)/src/$(KFTS_CLAU).c
@@ -419,7 +655,55 @@
  KFTS_SLS = $(KFTS_SRC) $(KFTS_HDR) $(JUANFITS_HDR)
  KFTS_OLS = $(KFTS_OBJ)
  KFTS_LLS = $(KFTS_LIB) $(JUANFITS_LLS)
-@@ -722,8 +559,8 @@
+ KFTS_INC = -I$(KFTS_PATH)/src $(JUANFITS_INC) 
+-KFTS_LNK = -L$(KFTS_PATH)/lib/$(ORDENA) -l$(KFTS_CLAU) $(JUANFITS_LNK) 
++KFTS_LNK = -L$(KFTS_PATH)/lib -l$(KFTS_CLAU) $(JUANFITS_LNK) 
+ 
+ 
+ 
+ # libtess_fits
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070210dl.intra.dlr.de)
+-  TFTS_PATH = /scr2/cabr_ju/ross/blind/asalto27
+-  TFTS_LIB_PATH = $(TFTS_PATH)/lib/$(ORDENA)
+-  TFTS_INC_PATH = $(TFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),OTS44)
+-  TFTS_PATH = /data/COROT/qmon/asalto27
+-  TFTS_LIB_PATH = $(TFTS_PATH)/lib/$(ORDENA)
+-  TFTS_INC_PATH = $(TFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),canijo)
+-  TFTS_PATH = /datos/blind/asalto27
+-  TFTS_LIB_PATH = $(TFTS_PATH)/lib/$(ORDENA)
+-  TFTS_INC_PATH = $(TFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),stahl)
+-  TFTS_PATH = /home/juano/blind/asalto27
+-  TFTS_LIB_PATH = $(TFTS_PATH)/lib/$(ORDENA)
+-  TFTS_INC_PATH = $(TFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg01)
+-  TFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  TFTS_LIB_PATH = $(TFTS_PATH)/lib/$(ORDENA)
+-  TFTS_INC_PATH = $(TFTS_PATH)/src
+-else
+-ifeq ($(ORDENA),warg02)
+-  TFTS_PATH = /home/warg01/cabrera/blind/asalto27
+-  TFTS_LIB_PATH = $(TFTS_PATH)/lib/$(ORDENA)
+-  TFTS_INC_PATH = $(TFTS_PATH)/src
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
+-endif
++TFTS_PATH = ../asalto27
++TFTS_LIB_PATH = $(TFTS_PATH)/lib
++TFTS_INC_PATH = $(TFTS_PATH)/src
++
  TFTS_CLAU = tess_fits
  TFTS_HDR = $(TFTS_PATH)/src/$(TFTS_CLAU).h
  TFTS_SRC = $(TFTS_PATH)/src/$(TFTS_CLAU).c
@@ -430,7 +714,13 @@
  TFTS_SLS = $(TFTS_SRC) $(TFTS_HDR) $(JUANFITS_HDR)
  TFTS_OLS = $(TFTS_OBJ)
  TFTS_LLS = $(TFTS_LIB) $(JUANFITS_LLS)
-@@ -736,8 +573,8 @@
+ TFTS_INC = -I$(TFTS_PATH)/src $(JUANFITS_INC) 
+-TFTS_LNK = -L$(TFTS_PATH)/lib/$(ORDENA) -l$(TFTS_CLAU) $(JUANFITS_LNK) 
++TFTS_LNK = -L$(TFTS_PATH)/lib -l$(TFTS_CLAU) $(JUANFITS_LNK) 
+ 
+ 
+ 
+@@ -736,8 +375,8 @@
  #-----------------------------
  ONYVAKEPLER_CLAU = onyva_kepler
  ONYVAKEPLER_SRC = $(MAIN_PATH)/src/$(ONYVAKEPLER_CLAU).c
@@ -441,7 +731,7 @@
  ONYVAKEPLER_SLS = $(ONYVAKEPLER_SRC) $(ONYVAKEPLER_HDR)
  ONYVAKEPLER_OLS = $(ONYVAKEPLER_OBJ)
  ONYVAKEPLER_LLS = $(BT2_LLS) $(KFTS_LLS)
-@@ -763,8 +600,8 @@
+@@ -763,8 +402,8 @@
  #-----------------------------
  ONYVAKEPLEREDUARDO_CLAU = onyva_kepler_eduardo
  ONYVAKEPLEREDUARDO_SRC = $(MAIN_PATH)/src/$(ONYVAKEPLEREDUARDO_CLAU).c
@@ -452,7 +742,7 @@
  ONYVAKEPLEREDUARDO_SLS = $(ONYVAKEPLEREDUARDO_SRC) $(ONYVAKEPLEREDUARDO_HDR)
  ONYVAKEPLEREDUARDO_OLS = $(ONYVAKEPLEREDUARDO_OBJ)
  ONYVAKEPLEREDUARDO_LLS = $(BT2_LLS) $(KFTS_LLS)
-@@ -790,8 +627,8 @@
+@@ -790,8 +429,8 @@
  #-----------------------------
  ONYVAK2VANDERBURG_CLAU = onyva_k2vanderburg
  ONYVAK2VANDERBURG_SRC = $(MAIN_PATH)/src/$(ONYVAK2VANDERBURG_CLAU).c
@@ -463,7 +753,7 @@
  ONYVAK2VANDERBURG_SLS = $(ONYVAK2VANDERBURG_SRC) $(ONYVAK2VANDERBURG_HDR) $(K2VFTS_HDR)
  ONYVAK2VANDERBURG_OLS = $(ONYVAK2VANDERBURG_OBJ)
  ONYVAK2VANDERBURG_LLS = $(BT2_LLS) $(K2VFTS_LLS)
-@@ -817,8 +654,8 @@
+@@ -817,8 +456,8 @@
  #-----------------------------
  ONYVAEVEREST_CLAU = onyva_everest
  ONYVAEVEREST_SRC = $(MAIN_PATH)/src/$(ONYVAEVEREST_CLAU).c
@@ -474,7 +764,7 @@
  ONYVAEVEREST_SLS = $(ONYVAEVEREST_SRC) $(ONYVAEVEREST_HDR) $(K2EFTS_HDR)
  ONYVAEVEREST_OLS = $(ONYVAEVEREST_OBJ)
  ONYVAEVEREST_LLS = $(BT2_LLS) $(K2EFTS_LLS)
-@@ -844,8 +681,8 @@
+@@ -844,8 +483,8 @@
  #-----------------------------
  ONYVAK2SC_CLAU = onyva_k2sc
  ONYVAK2SC_SRC = $(MAIN_PATH)/src/$(ONYVAK2SC_CLAU).c
@@ -485,7 +775,7 @@
  ONYVAK2SC_SLS = $(ONYVAK2SC_SRC) $(ONYVAK2SC_HDR) $(K2SCFTS_HDR)
  ONYVAK2SC_OLS = $(ONYVAK2SC_OBJ)
  ONYVAK2SC_LLS = $(BT2_LLS) $(K2SCFTS_LLS)
-@@ -871,8 +708,8 @@
+@@ -871,8 +510,8 @@
  #-----------------------------
  ONYVAPOLAR_CLAU = onyva_polar
  ONYVAPOLAR_SRC = $(MAIN_PATH)/src/$(ONYVAPOLAR_CLAU).c
@@ -496,7 +786,7 @@
  ONYVAPOLAR_SLS = $(ONYVAPOLAR_SRC) $(ONYVAPOLAR_HDR) $(K2PFTS_HDR)
  ONYVAPOLAR_OLS = $(ONYVAPOLAR_OBJ)
  ONYVAPOLAR_LLS = $(BT2_LLS) $(K2PFTS_LLS)
-@@ -898,8 +735,8 @@
+@@ -898,8 +537,8 @@
  #-----------------------------
  ONYVATESS_CLAU = onyva_tess
  ONYVATESS_SRC = $(MAIN_PATH)/src/$(ONYVATESS_CLAU).c
@@ -507,7 +797,7 @@
  ONYVATESS_SLS = $(ONYVATESS_SRC) $(ONYVATESS_HDR)
  ONYVATESS_OLS = $(ONYVATESS_OBJ)
  ONYVATESS_LLS = $(BT2_LLS) $(TFTS_LLS)
-@@ -925,8 +762,8 @@
+@@ -925,8 +564,8 @@
  #-----------------------------
  ONYVACHEOPS_CLAU = onyva_cheops
  ONYVACHEOPS_SRC = $(MAIN_PATH)/src/$(ONYVACHEOPS_CLAU).c
@@ -518,7 +808,7 @@
  ONYVACHEOPS_SLS = $(ONYVACHEOPS_SRC) $(ONYVACHEOPS_HDR)
  ONYVACHEOPS_OLS = $(ONYVACHEOPS_OBJ)
  ONYVACHEOPS_LLS = $(BT2_LLS) $(TFTS_LLS)
-@@ -952,8 +789,8 @@
+@@ -952,8 +591,8 @@
  #-----------------------------
  ONYVATASOC_CLAU = onyva_tasoc
  ONYVATASOC_SRC = $(MAIN_PATH)/src/$(ONYVATASOC_CLAU).c
@@ -529,7 +819,7 @@
  ONYVATASOC_SLS = $(ONYVATASOC_SRC) $(ONYVATASOC_HDR)
  ONYVATASOC_OLS = $(ONYVATASOC_OBJ)
  ONYVATASOC_LLS = $(BT2_LLS) $(TFTS_LLS)
-@@ -979,8 +816,8 @@
+@@ -979,8 +618,8 @@
  #-----------------------------
  ONYVACLNSET_CLAU = onyva_clnset
  ONYVACLNSET_SRC = $(MAIN_PATH)/src/$(ONYVACLNSET_CLAU).c
@@ -540,7 +830,7 @@
  ONYVACLNSET_SLS = $(ONYVACLNSET_SRC) $(BT2_HDR)
  ONYVACLNSET_OLS = $(ONYVACLNSET_OBJ) 
  ONYVACLNSET_LLS = $(BT2_LLS) 
-@@ -1006,8 +843,8 @@
+@@ -1006,8 +645,8 @@
  #-----------------------------
  TSEVI_CLAU = tsevi
  TSEVI_SRC = $(MAIN_PATH)/src/$(TSEVI_CLAU).c
@@ -551,7 +841,7 @@
  TSEVI_SLS = $(TSEVI_SRC) $(BT2_HDR)
  TSEVI_OLS = $(TSEVI_OBJ) 
  TSEVI_LLS = $(BT2_LLS) 
-@@ -1033,8 +870,8 @@
+@@ -1033,8 +672,8 @@
  #-----------------------------
  AN2ONYVA_CLAU = AN2_onyva
  AN2ONYVA_SRC = $(MAIN_PATH)/src/$(AN2ONYVA_CLAU).c
@@ -562,7 +852,7 @@
  AN2ONYVA_SLS = $(AN2ONYVA_SRC) $(BT2_HDR)
  AN2ONYVA_OLS = $(AN2ONYVA_OBJ) 
  AN2ONYVA_LLS = $(BT2_LLS) 
-@@ -1060,8 +897,8 @@
+@@ -1060,8 +699,8 @@
  #-----------------------------
  WINID_CLAU = winid
  WINID_SRC = $(MAIN_PATH)/src/$(WINID_CLAU).c
@@ -573,7 +863,7 @@
  WINID_SLS = $(WINID_SRC) $(BT2_HDR)
  WINID_OLS = $(WINID_OBJ) 
  WINID_LLS = $(BT2_LLS) 
-@@ -1087,8 +924,8 @@
+@@ -1087,8 +726,8 @@
  #-----------------------------
  HEADER_CLAU = header
  HEADER_SRC = $(MAIN_PATH)/src/$(HEADER_CLAU).c
@@ -584,7 +874,7 @@
  HEADER_SLS = $(HEADER_SRC) $(BT2_HDR)
  HEADER_OLS = $(HEADER_OBJ) 
  HEADER_LLS = $(BT2_LLS) 
-@@ -1114,8 +951,8 @@
+@@ -1114,8 +753,8 @@
  #-----------------------------
  LECTORIA_CLAU = lector_ia
  LECTORIA_SRC = $(MAIN_PATH)/src/$(LECTORIA_CLAU).c
@@ -595,7 +885,7 @@
  LECTORIA_SLS = $(LECTORIA_SRC) $(BT2_HDR)
  LECTORIA_OLS = $(LECTORIA_OBJ) 
  LECTORIA_LLS = $(BT2_LLS) 
-@@ -1141,8 +978,8 @@
+@@ -1141,8 +780,8 @@
  #-----------------------------
  BINARIAS_CLAU = binarias
  BINARIAS_SRC = $(MAIN_PATH)/src/$(BINARIAS_CLAU).c
@@ -606,7 +896,7 @@
  BINARIAS_SLS = $(BINARIAS_SRC) $(BIN_HDR)
  BINARIAS_OLS = $(BINARIAS_OBJ) 
  BINARIAS_LLS = $(BIN_LLS) 
-@@ -1168,8 +1005,8 @@
+@@ -1168,8 +807,8 @@
  #-----------------------------
  BINARIASFAKE_CLAU = binarias_fake
  BINARIASFAKE_SRC = $(MAIN_PATH)/src/$(BINARIASFAKE_CLAU).c
@@ -617,7 +907,7 @@
  BINARIASFAKE_SLS = $(BINARIASFAKE_SRC) $(BIN_HDR)
  BINARIASFAKE_OLS = $(BINARIASFAKE_OBJ) 
  BINARIASFAKE_LLS = $(BIN_LLS) 
-@@ -1196,8 +1033,8 @@
+@@ -1196,8 +835,8 @@
  #-----------------------------
  TIMING_CLAU = timing
  TIMING_SRC = $(MAIN_PATH)/src/$(TIMING_CLAU).c
@@ -628,7 +918,7 @@
  TIMING_SLS = $(TIMING_SRC) $(TMG_HDR)
  TIMING_OLS = $(TIMING_OBJ) 
  TIMING_LLS = $(TMG_LLS)
-@@ -1223,8 +1060,8 @@
+@@ -1223,8 +862,8 @@
  #-----------------------------
  TIMINGAJTLIN_CLAU = timing_ajtlin
  TIMINGAJTLIN_SRC = $(MAIN_PATH)/src/$(TIMINGAJTLIN_CLAU).c
@@ -639,7 +929,7 @@
  TIMINGAJTLIN_SLS = $(TIMINGAJTLIN_SRC) $(TMG_HDR)
  TIMINGAJTLIN_OLS = $(TIMINGAJTLIN_OBJ) 
  TIMINGAJTLIN_LLS = $(TMG_LLS)
-@@ -1250,8 +1087,8 @@
+@@ -1250,8 +889,8 @@
  #-----------------------------
  TIMINGIRWIN_CLAU = timing_irwin
  TIMINGIRWIN_SRC = $(MAIN_PATH)/src/$(TIMINGIRWIN_CLAU).c
@@ -650,7 +940,7 @@
  TIMINGIRWIN_SLS = $(TIMINGIRWIN_SRC) $(TMG_HDR)
  TIMINGIRWIN_OLS = $(TIMINGIRWIN_OBJ) 
  TIMINGIRWIN_LLS = $(TMG_LLS)
-@@ -1277,8 +1114,8 @@
+@@ -1277,8 +916,8 @@
  #-----------------------------
  AN2TIMING_CLAU = AN2_timing
  AN2TIMING_SRC = $(MAIN_PATH)/src/$(AN2TIMING_CLAU).c
@@ -661,7 +951,7 @@
  AN2TIMING_SLS = $(AN2TIMING_SRC) $(TMG_HDR)
  AN2TIMING_OLS = $(AN2TIMING_OBJ) 
  AN2TIMING_LLS = $(TMG_LLS)
-@@ -1304,8 +1141,8 @@
+@@ -1304,8 +943,8 @@
  #-----------------------------
  FITMODPL_CLAU = fitmodpl
  FITMODPL_SRC = $(MAIN_PATH)/src/$(FITMODPL_CLAU).c
@@ -672,7 +962,7 @@
  FITMODPL_SLS = $(FITMODPL_SRC) $(MPL_HDR)
  FITMODPL_OLS = $(FITMODPL_OBJ) 
  FITMODPL_LLS = $(MPL_LLS) 
-@@ -1331,8 +1168,8 @@
+@@ -1331,8 +970,8 @@
  #-----------------------------
  DATEJD_CLAU = datejd
  DATEJD_SRC = $(MAIN_PATH)/src/$(DATEJD_CLAU).c
@@ -683,7 +973,7 @@
  DATEJD_SLS = $(DATEJD_SRC) $(JUANFITS_HDR)
  DATEJD_OLS = $(DATEJD_OBJ) 
  DATEJD_LLS = $(JUANFITS_LLS) 
-@@ -1359,8 +1196,8 @@
+@@ -1359,8 +998,8 @@
  #-----------------------------
  TENDENCIA_CLAU = tendencia
  TENDENCIA_SRC = $(MAIN_PATH)/src/$(TENDENCIA_CLAU).c
@@ -694,7 +984,7 @@
  TENDENCIA_SLS = $(TENDENCIA_SRC) $(BT2_HDR)
  TENDENCIA_OLS = $(TENDENCIA_OBJ) 
  TENDENCIA_LLS = $(BT2_LLS) 
-@@ -1386,8 +1223,8 @@
+@@ -1386,8 +1025,8 @@
  #-----------------------------
  FOLD_CLAU = fold
  FOLD_SRC = $(MAIN_PATH)/src/$(FOLD_CLAU).c
@@ -705,7 +995,7 @@
  FOLD_SLS = $(FOLD_SRC) $(BT2_HDR)
  FOLD_OLS = $(FOLD_OBJ) 
  FOLD_LLS = $(BT2_LLS) 
-@@ -1413,8 +1250,8 @@
+@@ -1413,8 +1052,8 @@
  #-----------------------------
  TRADUCE_CLAU = traduce
  TRADUCE_SRC = $(MAIN_PATH)/src/$(TRADUCE_CLAU).c
@@ -716,7 +1006,7 @@
  TRADUCE_SLS = $(TRADUCE_SRC) 
  TRADUCE_OLS = $(TRADUCE_OBJ) 
  TRADUCE_LLS = 
-@@ -1440,8 +1277,8 @@
+@@ -1440,8 +1079,8 @@
  #-----------------------------
  HORRIBLESOSPECHA_CLAU = horriblesospecha
  HORRIBLESOSPECHA_SRC = $(MAIN_PATH)/src/$(HORRIBLESOSPECHA_CLAU).c
@@ -727,7 +1017,7 @@
  HORRIBLESOSPECHA_SLS = $(HORRIBLESOSPECHA_SRC) $(BT2_HDR)
  HORRIBLESOSPECHA_OLS = $(HORRIBLESOSPECHA_OBJ) 
  HORRIBLESOSPECHA_LLS = $(BT2_LLS) 
-@@ -1467,8 +1304,8 @@
+@@ -1467,8 +1106,8 @@
  #-----------------------------
  REDNOISE_CLAU = rednoise
  REDNOISE_SRC = $(MAIN_PATH)/src/$(REDNOISE_CLAU).c
@@ -738,7 +1028,7 @@
  REDNOISE_SLS = $(REDNOISE_SRC) $(BT2_HDR)
  REDNOISE_OLS = $(REDNOISE_OBJ) 
  REDNOISE_LLS = $(BT2_LLS) 
-@@ -1494,8 +1331,8 @@
+@@ -1494,8 +1133,8 @@
  #-----------------------------
  WDSCDB_CLAU = wdscdb
  WDSCDB_SRC = $(MAIN_PATH)/src/$(WDSCDB_CLAU).c
@@ -749,7 +1039,7 @@
  WDSCDB_SLS = $(WDSCDB_SRC) $(JUAN_HDR) $(JUANFITS_HDR)
  WDSCDB_OLS = $(WDSCDB_OBJ) 
  WDSCDB_LLS = $(JUAN_LLS) $(JUANFITS_LLS) 
-@@ -1521,8 +1358,8 @@
+@@ -1521,8 +1160,8 @@
  #-----------------------------
  READCLNSET_CLAU = readclnset
  READCLNSET_SRC = $(MAIN_PATH)/src/$(READCLNSET_CLAU).c
@@ -760,7 +1050,7 @@
  READCLNSET_SLS = $(READCLNSET_SRC) $(JUAN_HDR) $(JUANFITS_HDR)
  READCLNSET_OLS = $(READCLNSET_OBJ) 
  READCLNSET_LLS = $(JUAN_LLS) $(JUANFITS_LLS) 
-@@ -1548,8 +1385,8 @@
+@@ -1548,8 +1187,8 @@
  #-----------------------------
  HSA_CLAU = hsa
  HSA_SRC = $(MAIN_PATH)/src/$(HSA_CLAU).c
@@ -771,4 +1061,3 @@
  HSA_SLS = $(HSA_SRC)
  HSA_OLS = $(HSA_OBJ) 
  HSA_LLS = 
-
