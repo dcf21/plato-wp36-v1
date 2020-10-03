@@ -4,6 +4,15 @@ datadir
 # Local build
 datadir_local
 
+# Plotting
+plotting/
+
+# Specific proprietary codes
+proprietary/asalto26.5.tar.gz
+proprietary/asalto27.tar.gz
+proprietary/asalto29.tgz
+proprietary/juan.tar.gz
+
 # pycharm
 .idea
 virtualenv/

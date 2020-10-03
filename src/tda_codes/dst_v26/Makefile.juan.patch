@@ -1,0 +1,294 @@
+--- Makefile.orig	2020-10-03 02:49:34.139655000 +0000
++++ Makefile	2020-10-03 03:04:54.639925000 +0000
+@@ -1,18 +1,8 @@
+-# ordena
+-#-----------------------------
+-ORDENA := $(shell hostname)
+-
+-
+ 
+ # compilador
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070456dl.intra.dlr.de)
+-  COMPILADOR = /vicsys/utils_rh7/gcc/bin/gcc
+-  COMPILADORCPP = /vicsys/utils_rh7/gcc/bin/g++
+-else
+-  COMPILADOR = gcc
+-  COMPILADORCPP = g++
+-endif
++COMPILADOR = gcc
++COMPILADORCPP = g++
+ 
+ 
+ 
+@@ -25,37 +15,10 @@
+ 
+ # cfitsio
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070456dl.intra.dlr.de)
+-  CFITSIO_PATH = /vicsys/utils_rh7/fits
+-  CFITSIO_LIB_PATH = $(CFITSIO_PATH)/lib
+-  CFITSIO_INC_PATH = $(CFITSIO_PATH)/include
+-else
+-ifeq ($(ORDENA),canijo)
+-  CFITSIO_PATH = /usr
+-  CFITSIO_LIB_PATH = $(CFITSIO_PATH)/lib/x86_64-linux-gnu
+-  CFITSIO_INC_PATH = $(CFITSIO_PATH)/include
+-else
+-ifeq ($(ORDENA),gmork)
+-  CFITSIO_PATH = /usr
+-  CFITSIO_LIB_PATH = $(CFITSIO_PATH)/lib/x86_64-linux-gnu
+-  CFITSIO_INC_PATH = $(CFITSIO_PATH)/include
+-else
+-ifeq ($(ORDENA),warg01)
+-  CFITSIO_PATH = /usr
+-  CFITSIO_LIB_PATH = $(CFITSIO_PATH)/lib
+-  CFITSIO_INC_PATH = $(CFITSIO_PATH)/include
+-else
+-ifeq ($(ORDENA),warg02)
+-  CFITSIO_PATH = /usr
+-  CFITSIO_LIB_PATH = $(CFITSIO_PATH)/lib
+-  CFITSIO_INC_PATH = $(CFITSIO_PATH)/include
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
++CFITSIO_PATH = .
++CFITSIO_LIB_PATH = .
++CFITSIO_INC_PATH = .
++
+ #--
+ CFITSIO_INC = -I $(CFITSIO_INC_PATH)
+ CFITSIO_LNK = -L$(CFITSIO_LIB_PATH) -lcfitsio -lm
+@@ -64,37 +27,10 @@
+ 
+ # GSL
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070456dl.intra.dlr.de)
+-  GSL_PATH=/vicsys/utils_rh7/gsl
+-  GSL_LIB_PATH=$(GSL_PATH)/lib
+-  GSL_INC_PATH=$(GSL_PATH)/include
+-else
+-ifeq ($(ORDENA),canijo)
+-  GSL_PATH=/usr
+-  GSL_LIB_PATH=$(GSL_PATH)/lib
+-  GSL_INC_PATH=$(GSL_PATH)/include/gsl
+-else
+-ifeq ($(ORDENA),gmork)
+-  GSL_PATH=/usr
+-  GSL_LIB_PATH=$(GSL_PATH)/lib
+-  GSL_INC_PATH=$(GSL_PATH)/include/gsl
+-else
+-ifeq ($(ORDENA),warg01)
+-  GSL_PATH=/usr
+-  GSL_LIB_PATH=$(GSL_PATH)/lib
+-  GSL_INC_PATH=$(GSL_PATH)/include/gsl
+-else
+-ifeq ($(ORDENA),warg02)
+-  GSL_PATH=/usr
+-  GSL_LIB_PATH=$(GSL_PATH)/lib
+-  GSL_INC_PATH=$(GSL_PATH)/include/gsl
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
++GSL_PATH=.
++GSL_LIB_PATH=.
++GSL_INC_PATH=.
++
+ #--
+ GSL_INC = -I $(GSL_INC_PATH)
+ GSL_LNK = -L$(GSL_LIB_PATH) -lgsl -lgslcblas -lm
+@@ -103,42 +39,15 @@
+ 
+ # libjuan
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070456dl.intra.dlr.de)
+-  JUAN_PATH=/scr/cabr_ju/libC
+-  JUAN_LIB_PATH=$(JUAN_PATH)/lib/$(ORDENA)
+-  JUAN_INC_PATH=$(JUAN_PATH)
+-else
+-ifeq ($(ORDENA),canijo)
+-  JUAN_PATH=/datos/blind/libC
+-  JUAN_LIB_PATH=$(JUAN_PATH)/lib/$(ORDENA)
+-  JUAN_INC_PATH=$(JUAN_PATH)
+-else
+-ifeq ($(ORDENA),gmork)
+-  JUAN_PATH=/home/juano/blind/libC
+-  JUAN_LIB_PATH=$(JUAN_PATH)/lib/$(ORDENA)
+-  JUAN_INC_PATH=$(JUAN_PATH)
+-else
+-ifeq ($(ORDENA),warg01)
+-  JUAN_PATH=/home/warg01/cabrera/libC
+-  JUAN_LIB_PATH=$(JUAN_PATH)/lib/$(ORDENA)
+-  JUAN_INC_PATH=$(JUAN_PATH)
+-else
+-ifeq ($(ORDENA),warg02)
+-  JUAN_PATH=/home/warg01/cabrera/libC
+-  JUAN_LIB_PATH=$(JUAN_PATH)/lib/$(ORDENA)
+-  JUAN_INC_PATH=$(JUAN_PATH)
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
++JUAN_PATH=.
++JUAN_LIB_PATH=.
++JUAN_INC_PATH=.
++
+ #--
+ JUAN_CLAU = juan
+ JUAN_HDR = $(JUAN_PATH)/$(JUAN_CLAU).h
+ JUAN_SRC = $(JUAN_PATH)/$(JUAN_CLAU).c
+-JUAN_OBJ = $(JUAN_PATH)/obj/$(ORDENA)/$(JUAN_CLAU).o
++JUAN_OBJ = $(JUAN_PATH)/obj/$(JUAN_CLAU).o
+ JUAN_LIB = $(JUAN_LIB_PATH)/lib$(JUAN_CLAU).a
+ JUAN_SLS = $(JUAN_SRC) $(JUAN_HDR)
+ JUAN_OLS = $(JUAN_OBJ)
+@@ -150,42 +59,15 @@
+ 
+ # libjuan_fits
+ #-----------------------------
+-ifeq ($(ORDENA),pf-070456dl.intra.dlr.de)
+-  JUANFITS_PATH=/scr/cabr_ju/libC
+-  JUANFITS_LIB_PATH=$(JUANFITS_PATH)/lib/$(ORDENA)
+-  JUANFITS_INC_PATH=$(JUANFITS_PATH)
+-else
+-ifeq ($(ORDENA),canijo)
+-  JUANFITS_PATH=/datos/blind/libC
+-  JUANFITS_LIB_PATH=$(JUANFITS_PATH)/lib/$(ORDENA)
+-  JUANFITS_INC_PATH=$(JUANFITS_PATH)
+-else
+-ifeq ($(ORDENA),gmork)
+-  JUANFITS_PATH=/home/juano/blind/libC
+-  JUANFITS_LIB_PATH=$(JUANFITS_PATH)/lib/$(ORDENA)
+-  JUANFITS_INC_PATH=$(JUANFITS_PATH)
+-else
+-ifeq ($(ORDENA),warg01)
+-  JUANFITS_PATH=/home/warg01/cabrera/libC
+-  JUANFITS_LIB_PATH=$(JUANFITS_PATH)/lib/$(ORDENA)
+-  JUANFITS_INC_PATH=$(JUANFITS_PATH)
+-else
+-ifeq ($(ORDENA),warg02)
+-  JUANFITS_PATH=/home/warg01/cabrera/libC
+-  JUANFITS_LIB_PATH=$(JUANFITS_PATH)/lib/$(ORDENA)
+-  JUANFITS_INC_PATH=$(JUANFITS_PATH)
+-else
+-  $(error error, computer $(ORDENA) not recognized)
+-endif
+-endif
+-endif
+-endif
+-endif
++JUANFITS_PATH=.
++JUANFITS_LIB_PATH=.
++JUANFITS_INC_PATH=.
++
+ #--
+ JUANFITS_CLAU = juan_fits
+ JUANFITS_HDR = $(JUANFITS_PATH)/$(JUANFITS_CLAU).h
+ JUANFITS_SRC = $(JUANFITS_PATH)/$(JUANFITS_CLAU).c
+-JUANFITS_OBJ = $(JUANFITS_PATH)/obj/$(ORDENA)/$(JUANFITS_CLAU).o
++JUANFITS_OBJ = $(JUANFITS_PATH)/obj/$(JUANFITS_CLAU).o
+ JUANFITS_LIB = $(JUANFITS_LIB_PATH)/lib$(JUANFITS_CLAU).a
+ JUANFITS_SLS = $(JUANFITS_SRC) $(JUANFITS_HDR)
+ JUANFITS_OLS = $(JUANFITS_OBJ)
+@@ -202,12 +84,14 @@
+ #-----------------------------
+ $(JUAN_LIB) : $(JUAN_OBJ)
+ 	@echo "***** creating library $(JUAN_CLAU) *****"
++	mkdir -p obj bin
+ 	ar -rc $@ $(JUAN_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+ $(JUAN_OBJ) : $(JUAN_SLS)
+ 	@echo "***** compiling $(JUAN_CLAU) *****"
++	mkdir -p obj bin
+ 	$(COMPILADOR) -o $@ -c $(JUAN_SRC) $(JUAN_INC)
+ 	@echo "## library compiled successfully"
+ 
+@@ -220,12 +104,14 @@
+ #-----------------------------
+ $(JUANFITS_LIB) : $(JUANFITS_OBJ)
+ 	@echo "***** creating library $(JUANFITS_CLAU) *****"
++	mkdir -p obj bin
+ 	ar -rc $@ $(JUANFITS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+ $(JUANFITS_OBJ) : $(JUANFITS_SLS) 
+ 	@echo "***** compiling $(JUANFITS_CLAU) *****"
++	mkdir -p obj bin
+ 	$(COMPILADOR) -o $@ -c $(JUANFITS_SRC) $(JUANFITS_INC)
+ 	@echo "## library compiled successfully"
+ 
+@@ -238,8 +124,8 @@
+ #-----------------------------
+ PROBA_CLAU = proba
+ PROBA_SRC = $(PROBA_CLAU).c
+-PROBA_OBJ = ./obj/$(ORDENA)/$(PROBA_CLAU).o
+-PROBA_EXE = ./bin/$(ORDENA)/$(PROBA_CLAU).exe
++PROBA_OBJ = ./obj/$(PROBA_CLAU).o
++PROBA_EXE = ./bin/$(PROBA_CLAU).exe
+ PROBA_SLS = $(PROBA_SRC)
+ PROBA_OLS = $(PROBA_OBJ)
+ PROBA_LLS = $(JUAN_LLS)
+@@ -250,8 +136,8 @@
+ #-----------------------------
+ PROBA_CFITSIO_CLAU = proba_cfitsio
+ PROBA_CFITSIO_SRC  = $(PROBA_CFITSIO_CLAU).cpp
+-PROBA_CFITSIO_OBJ  = ./obj/$(ORDENA)/$(PROBA_CFITSIO_CLAU).o
+-PROBA_CFITSIO_EXE  = ./bin/$(ORDENA)/$(PROBA_CFITSIO_CLAU).exe
++PROBA_CFITSIO_OBJ  = ./obj/$(PROBA_CFITSIO_CLAU).o
++PROBA_CFITSIO_EXE  = ./bin/$(PROBA_CFITSIO_CLAU).exe
+ PROBA_CFITSIO_SLS  = $(PROBA_CFITSIO_SRC)
+ PROBA_CFITSIO_OLS  = $(PROBA_CFITSIO_OBJ)
+ #PROBA_CFITSIO_LLS  = 
+@@ -261,7 +147,6 @@
+ .PHONY : clean proba proba_cfitsio test
+ 
+ test :
+-	@echo "                ordena=$(ORDENA)"
+ 	@echo "juan path:      jno_pth=$(JUAN_PATH)"
+ 	@echo "juan fits path: j_f_pth=$(JUANFITS_PATH)"
+ 	@echo "cfitsio path:   cft_pth=$(CFITSIO_PATH)"
+@@ -273,12 +158,14 @@
+ 
+ $(PROBA_EXE) : $(PROBA_OLS) $(PROBA_LLS) 
+ 	@echo "****** linking $(PROBA_CLAU) *****"
++	mkdir -p bin
+ 	$(COMPILADOR) $(FLAGS) $(PROBA_OLS) -o $@ $(PROBA_LNK)
+ 	@echo "## $(PROBA_CLAU) linked successfully"
+ 	$@
+ 
+ $(PROBA_OBJ) : $(PROBA_SlS)
+ 	@echo "***** compiling proba *****"
++	mkdir -p obj
+ 	$(COMPILADOR) $(FLAGS) -c $(PROBA_SRC) $(PROBA_INC) -o $@
+ 	@echo "## $(PROBA_CLAU) compiled successfully"
+ 
+@@ -291,12 +178,14 @@
+ 
+ $(PROBA_CFITSIO_EXE) : $(PROBA_CFITSIO_OLS) $(PROBA_CFITSIO_LLS) 
+ 	@echo "****** linking $(PROBA_CFITSIO_CLAU) *****"
++	mkdir -p bin
+ 	$(COMPILADORCPP) $(FLAGS) $(PROBA_CFITSIO_OLS) -o $@ $(PROBA_CFITSIO_LNK)
+ 	@echo "## $(PROBA_CFITSIO_CLAU) linked successfully"
+ 	$@
+ 
+ $(PROBA_CFITSIO_OBJ) : $(PROBA_CFITSIO_SlS)
+ 	@echo "***** compiling proba_cfitsio *****"
++	mkdir -p obj
+ 	$(COMPILADORCPP) $(FLAGS) -c $(PROBA_CFITSIO_SRC) $(PROBA_CFITSIO_INC) -o $@
+ 	@echo "## $(PROBA_CFITSIO_CLAU) compiled successfully"
+ 
+

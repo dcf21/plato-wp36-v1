@@ -1,11 +1,12 @@
 # Use a Ubuntu base image
 FROM ubuntu:latest
 
-# Install mysql client
+# Install various useful Ubuntu packages
 RUN apt-get update
-RUN apt-get install -y apt-utils git vim net-tools \
+RUN apt-get install -y apt-utils dialog git vim net-tools wget rsync \
                        python3 python3-dev python3-virtualenv python3-mysqldb \
-                       mysql-client libmysqlclient-dev gcc gfortran \
+                       mysql-client libmysqlclient-dev make gcc g++ gfortran \
+                       libcfitsio-dev libgsl-dev \
                        ; apt-get clean
 
 # Install Python requirements
@@ -22,6 +23,9 @@ RUN /plato_eas/datadir_local/virtualenv/bin/pip install -r requirements.txt
 WORKDIR /plato_eas
 ADD configuration_local configuration_local
 ADD src src
+
+# Copy non open-source transit-detection codes into this Docker container
+ADD proprietary proprietary
 
 # Install plato_wp36 module
 WORKDIR /plato_eas/src/python_modules/plato_wp36/
