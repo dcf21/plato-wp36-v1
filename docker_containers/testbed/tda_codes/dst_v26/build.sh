@@ -33,5 +33,9 @@ patch Makefile < Makefile.patch
 cd /plato_eas/private_code/juan
 make
 
+# Build Juan's code: asalto27
+cd /plato_eas/private_code/asalto27
+make
+
 # Write list of available TDAs
 echo '["dst_v26"]' > /plato_eas/tda_list.json

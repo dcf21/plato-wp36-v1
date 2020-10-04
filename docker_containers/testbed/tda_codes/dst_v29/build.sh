@@ -10,5 +10,8 @@ cd /plato_eas/private_code/asalto29
 cp Makefile Makefile.original
 patch Makefile < Makefile.patch
 
+# Make asalto29
+make
+
 # Write list of available TDAs
 echo '["dst_v29"]' > /plato_eas/tda_list.json
