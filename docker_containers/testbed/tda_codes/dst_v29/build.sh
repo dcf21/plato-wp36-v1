@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Install DST version 29
-cd /plato_eas/proprietary
+cd /plato_eas/private_codes
 mkdir -p asalto29
 cd asalto29 ; tar xvfz ../asalto29.tgz
 
 # Patch Juan's Makefiles into a working state
-cd /plato_eas/proprietary/asalto29
+cd /plato_eas/private_codes/asalto29
 cp Makefile Makefile.original
 patch Makefile < Makefile.patch
 

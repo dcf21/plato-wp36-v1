@@ -22,10 +22,10 @@ RUN /plato_eas/datadir_local/virtualenv/bin/pip install -r requirements.txt
 # Copy PLATO EAS code into Docker container
 WORKDIR /plato_eas
 ADD configuration_local configuration_local
-ADD src src
+ADD testbed src
 
 # Copy non open-source transit-detection codes into this Docker container
-ADD proprietary proprietary
+ADD private_code private_code
 
 # Install plato_wp36 module
 WORKDIR /plato_eas/src/python_modules/plato_wp36/
