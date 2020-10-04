@@ -21,7 +21,7 @@ import threading
 import argparse
 from plato_wp36 import lcsg_lc_reader, settings, results_logger, run_time_logger, task_timer
 
-from plato_wp36.tda_wrappers import bls_reference, tls
+from plato_wp36.tda_wrappers import bls_reference, bls_vanilla, dst_v26, dst_v29, exotrans, qats, tls
 
 
 def speed_test(lc_duration, tda_name, lc_filename):
@@ -50,12 +50,22 @@ def speed_test(lc_duration, tda_name, lc_filename):
     # Process lightcurve
     with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
                               lc_length=lc_duration, time_logger=time_log):
-        if tda_name == 'tls':
-            output = tls.process_lightcurve(lc, lc_duration / 86400)
-        elif tda_name == 'bls_reference':
+        if tda_name == 'bls_reference':
             output = bls_reference.process_lightcurve(lc, lc_duration / 86400)
+        elif tda_name == 'bls_vanilla':
+            output = bls_vanilla.process_lightcurve(lc, lc_duration / 86400)
+        elif tda_name == 'dst_v26':
+            output = dst_v26.process_lightcurve(lc, lc_duration / 86400)
+        elif tda_name == 'dst_v29':
+            output = dst_v29.process_lightcurve(lc, lc_duration / 86400)
+        elif tda_name == 'exotrans':
+            output = exotrans.process_lightcurve(lc, lc_duration / 86400)
+        elif tda_name == 'qats':
+            output = qats.process_lightcurve(lc, lc_duration / 86400)
+        elif tda_name == 'tls':
+            output = tls.process_lightcurve(lc, lc_duration / 86400)
         else:
-            output = {}
+            assert False, "Unknown transit detection code <{}>".format(tda_name)
 
     # Send result to message queue
     result_log.record_result(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',

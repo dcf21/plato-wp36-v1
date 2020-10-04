@@ -12,4 +12,4 @@ eval $(minikube -p minikube docker-env)
 
 # Launch interactive shell using docker-compose
 cd ${cwd}/..
-docker run -it plato/eas_dst_v26:v1 /bin/bash
+docker run -it plato/eas_all_tdas:v1 /bin/bash

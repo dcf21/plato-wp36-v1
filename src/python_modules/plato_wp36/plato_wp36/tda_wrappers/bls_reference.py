@@ -14,10 +14,10 @@ def process_lightcurve(lc, lc_duration):
     durations = np.linspace(0.05, 0.2, 10) * u.day
     model = BoxLeastSquares(t, y_filt)
     results = model.autopower(durations,
-                              minimum_period=0.25 * u.day,
+                              minimum_period=0.5 * u.day,
                               maximum_period=lc_duration / 2 * u.day,
                               minimum_n_transit=2,
-                              frequency_factor=1.0)
+                              frequency_factor=2.0)
 
     # Clean up results: Astropy Quantity objects are not serialisable
     results = dict(results)

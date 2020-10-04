@@ -1,7 +1,7 @@
 # Use standardised Python environment with EAS pipeline code
 FROM plato/eas:v1
 
-# Install DST version 26
+# Install DST version 29
 WORKDIR /plato_eas/proprietary
 RUN mkdir -p asalto29
 RUN cd asalto29 ; tar xvfz ../asalto29.tgz
