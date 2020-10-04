@@ -5,4 +5,4 @@
 # Code not yet available
 
 # Write list of available TDAs
-RUN echo '["exotrans"]' > /plato_eas/tda_list.json
+echo '["exotrans"]' > /plato_eas/tda_list.json

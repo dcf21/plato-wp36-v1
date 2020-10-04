@@ -23,8 +23,8 @@ docker build . --tag plato/eas:v1 2>&1 | tee docker_build.log
 # cd ${cwd}/../src/tda_codes/bls_reference
 # docker build . --tag plato/eas_bls_reference:v1 2>&1 | tee docker_build.log
 
-# cd ${cwd}/../src/tda_codes/bls_vanilla
-# docker build . --tag plato/eas_bls_vanilla:v1 2>&1 | tee docker_build.log
+# cd ${cwd}/../src/tda_codes/bls_kovacs
+# docker build . --tag plato/eas_bls_kovacs:v1 2>&1 | tee docker_build.log
 
 # cd ${cwd}/../src/tda_codes/dst_v26
 # docker build . --tag plato/eas_dst_v26:v1 2>&1 | tee docker_build.log
@@ -39,5 +39,5 @@ docker build . --tag plato/eas:v1 2>&1 | tee docker_build.log
 # docker build . --tag plato/eas_tls:v1 2>&1 | tee docker_build.log
 
 # Build a master Docker image containing all transit detection codes
-cd ${cwd}/../src/tda_codes/all_tdas
+cd ${cwd}/../src/tda_codes
 docker build . --tag plato/eas_all_tdas:v1 2>&1 | tee docker_build.log

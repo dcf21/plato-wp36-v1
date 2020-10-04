@@ -33,11 +33,11 @@ ${venv_dir}/bin/python setup.py develop
 #cd bls.py
 #${venv_dir}/bin/python setup.py install
 
-# Install bls_vanilla code
+# Install bls_kovacs code
 cd ${cwd}
-rm -Rf ${datadir}/tda_build/bls_vanilla
-mkdir -p ${datadir}/tda_build/bls_vanilla
-cd ${datadir}/tda_build/bls_vanilla
+rm -Rf ${datadir}/tda_build/bls_kovacs
+mkdir -p ${datadir}/tda_build/bls_kovacs
+cd ${datadir}/tda_build/bls_kovacs
 git clone https://github.com/dfm/python-bls.git
 cd python-bls
 ${venv_dir}/bin/python setup.py install

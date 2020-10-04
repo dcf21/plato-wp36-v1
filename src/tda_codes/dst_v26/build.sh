@@ -3,11 +3,18 @@
 # Install DST version 26
 cd /plato_eas/proprietary
 mkdir -p asalto26.5
-cd asalto26.5 ; tar xvfz ../asalto26.5.tar.gz
+cd asalto26.5
+tar xvfz ../asalto26.5.tar.gz
+
+cd /plato_eas/proprietary
 mkdir -p asalto27
-cd asalto27 ; tar xvfz ../asalto27.tar.gz
+cd asalto27
+tar xvfz ../asalto27.tar.gz
+
+cd /plato_eas/proprietary
 mkdir -p juan
-cd juan ; tar xvfz ../juan.tar.gz
+cd juan
+tar xvfz ../juan.tar.gz
 
 # Patch Juan's Makefiles into a working state
 cd /plato_eas/proprietary/juan

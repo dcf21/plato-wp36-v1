@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# bls_vanilla.py
+# bls_kovacs.py
 
 import numpy as np
 

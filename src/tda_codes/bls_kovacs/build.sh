@@ -10,4 +10,4 @@ cd /plato_eas/python-bls
 /plato_eas/datadir_local/virtualenv/bin/python setup.py install
 
 # Write list of available TDAs
-echo '["bls_vanilla"]' > /plato_eas/tda_list.json
+echo '["bls_kovacs"]' > /plato_eas/tda_list.json
