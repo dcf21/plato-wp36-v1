@@ -199,6 +199,9 @@ class LightcurveArbitraryRaster:
             [LightcurveFixedStep]
         """
 
+        abs_tol = 1e-4
+        rel_tol = 0
+
         spacing = self.estimate_sampling_interval()
         start_time = self.times[0]
         end_time = self.times[-1]
@@ -206,8 +209,9 @@ class LightcurveArbitraryRaster:
         output = np.zeros_like(times)
 
         input_position = 0
-        for index, time in times:
-            while (not math.isclose(time, self.times[input_position])) and (time < self.times[input_position]):
+        for index, time in enumerate(times):
+            while ((not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol))
+                   and (time < self.times[input_position])):
                 input_position += 1
 
             # If this time point has the correct spacing, it is OK
@@ -215,7 +219,7 @@ class LightcurveArbitraryRaster:
                 output[index] = self.fluxes[input_position]
                 continue
 
-            logging.info("No data available at time point {:.5f}", time)
+            logging.info("No data available at time point {:.5f}".format(time))
             output[index] = 1
 
         # Return lightcurve
