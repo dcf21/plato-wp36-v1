@@ -55,7 +55,7 @@ def process_lightcurve(lc, lc_duration):
             sigma_max = sigma_min * (1 + f/2)
 
             # Run QATS
-            p = Popen(['/plato_eas/qats/qats/',
+            p = Popen(['/plato_eas/qats/qats/call_qats',
                        lc_file, str(sigma_min), str(sigma_max), str(transit_length)],
                       stdin=None, stdout=PIPE, stderr=PIPE)
             output, err = p.communicate()
