@@ -1,5 +1,8 @@
 # Lightcurve data
-datadir
+datadir_input
+
+# Generated output data
+datadir_output
 
 # Local build
 datadir_local
@@ -8,10 +11,10 @@ datadir_local
 plotting/
 
 # Specific proprietary codes
-proprietary/asalto26.5.tar.gz
-proprietary/asalto27.tar.gz
-proprietary/asalto29.tgz
-proprietary/juan.tar.gz
+private_code/asalto26.5.tar.gz
+private_code/asalto27.tar.gz
+private_code/asalto29.tgz
+private_code/juan.tar.gz
 
 # pycharm
 .idea

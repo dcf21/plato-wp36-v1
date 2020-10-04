@@ -17,7 +17,7 @@ spec:
       - image: plato/eas_all_tdas:v1
         name: plato
         command: ['sleep']
-        args: ['360000']
+        args: ['3600000']
         env:
           # Use secret in real usage
         - name: dummy

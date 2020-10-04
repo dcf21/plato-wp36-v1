@@ -39,8 +39,8 @@ lightcurve_list = glob.glob(
     os.path.join(settings.settings['lcPath'], lightcurves_path)
 )
 
-# Limit to 8 LCs for now
-lightcurve_list = lightcurve_list[:8]
+# Limit to 2 LCs for now
+lightcurve_list = lightcurve_list[:2]
 
 
 def request_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
