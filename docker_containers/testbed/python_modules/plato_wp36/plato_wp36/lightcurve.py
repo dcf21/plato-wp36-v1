@@ -93,7 +93,7 @@ class LightcurveArbitraryRaster:
 
         return float(interquartile_mean)
 
-    def check_fixed_step(self, verbose=True, max_errors=None):
+    def check_fixed_step(self, verbose=True, max_errors=6):
         """
         Check that this light curve is sampled at a fixed time interval. Return the number of errors.
 
@@ -143,10 +143,15 @@ class LightcurveArbitraryRaster:
                                                                                                 step,
                                                                                                 self.times[index]))
 
+
+        # Return total error count
+        if verbose and error_count > 0:
+            logging.info("Lightcurve had gaps at {}/{} time points.".format(error_count, len(times)))
+
         # Return the verdict on this lightcurve
         return error_count
 
-    def check_fixed_step_v2(self, verbose=True, max_errors=None):
+    def check_fixed_step_v2(self, verbose=True, max_errors=6):
         """
         Check that this light curve is sampled at a fixed time interval. Return the number of errors.
 
@@ -177,21 +182,30 @@ class LightcurveArbitraryRaster:
 
         input_position = 0
         for index, time in enumerate(times):
+            closest_time_point = self.times[input_position]
             while ((not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol)) and
                    (self.times[input_position] < time)):
+                if abs(self.times[input_position] - time) < abs(closest_time_point - time):
+                    closest_time_point = self.times[input_position]
                 input_position += 1
 
             # If this time point has the correct spacing, it is OK
             if not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol):
+                if abs(self.times[input_position] - time) < abs(closest_time_point - time):
+                    closest_time_point = self.times[input_position]
                 if verbose and (max_errors is None or error_count <= max_errors):
-                    logging.info("index {:5d} - Point missing at time {:.15f}".format(index,
-                                                                                      self.times[index]))
+                    logging.info("index {:5d} - Point missing at time {:.15f}. Closest time was {:.15f}.".
+                                 format(index, self.times[index], closest_time_point))
                 error_count += 1
+
+        # Return total error count
+        if verbose and error_count > 0:
+            logging.info("Lightcurve had gaps at {}/{} time points.".format(error_count, len(times)))
 
         # Return the verdict on this lightcurve
         return error_count
 
-    def to_fixed_step(self, verbose=True, max_errors=None):
+    def to_fixed_step(self, verbose=True, max_errors=6):
         """
         Convert this lightcurve to a fixed time stride.
 
@@ -221,21 +235,34 @@ class LightcurveArbitraryRaster:
         output = np.zeros_like(times)
         error_count = 0
 
+        # Iterate over each time point in the fixed-step output lightcurve
         input_position = 0
         for index, time in enumerate(times):
+            # Find the time point in the input lightcurve which is closest to this time
+            closest_time_point = [self.times[input_position], self.fluxes[input_position]]
             while ((not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol))
                    and (time < self.times[input_position])):
+                if abs(self.times[input_position] - time) < abs(closest_time_point[0] - time):
+                    closest_time_point = [self.times[input_position], self.fluxes[input_position]]
                 input_position += 1
+
+            if abs(self.times[input_position] - time) < abs(closest_time_point - time):
+                closest_time_point = self.times[input_position]
 
             # If this time point has the correct spacing, it is OK
             if math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol):
-                output[index] = self.fluxes[input_position]
+                output[index] = closest_time_point[1]
                 continue
-
+                
             if verbose and (max_errors is None or error_count <= max_errors):
-                logging.info("No data available at time point {:.5f}".format(time))
-                error_count += 1
+                logging.info("index {:5d} - Point missing at time {:.15f}. Closest time was {:.15f}.".
+                             format(index, self.times[index], closest_time_point))
+            error_count += 1
             output[index] = 1
+
+        # Return total error count
+        if verbose and error_count > 0:
+            logging.info("Lightcurve had gaps at {}/{} time points.".format(error_count, len(times)))
 
         # Return lightcurve
         return LightcurveFixedStep(
