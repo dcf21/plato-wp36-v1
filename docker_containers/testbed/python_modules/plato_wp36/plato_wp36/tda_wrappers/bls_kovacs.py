@@ -11,8 +11,8 @@ def process_lightcurve(lc, lc_duration):
     flux = lc.fluxes
 
     # Run this light curve through original FORTRAN implementation of BLS
-    u = np.zeros_like(time)
-    v = np.zeros_like(time)
+    u = np.zeros(len(time))
+    v = np.zeros(len(time))
 
     # Minimum transit length
     qmi = 0.05
@@ -24,7 +24,7 @@ def process_lightcurve(lc, lc_duration):
     minimum_period = 0.5
     fmax = 1 / minimum_period
 
-    # Maximum transit period, days
+    # Maximum transit period, seconds
     # Arithmetic here based on <https://docs.astropy.org/en/stable/api/astropy.timeseries.BoxLeastSquares.html#astropy.timeseries.BoxLeastSquares.autoperiod>
     minimum_n_transits = 2
     maximum_period = lc_duration / minimum_n_transits
@@ -36,9 +36,10 @@ def process_lightcurve(lc, lc_duration):
     nf = (fmax - fmin) / df
 
     # Number of bins (maximum 2000)
-    nb = 2000
+    nb = 1200
 
-    results = bls.eebls(time, flux, u, v, nf, fmin, df, nb, qmi, qma)
+    results = {}
+    # results = bls.eebls(time, flux, u, v, nf, fmin, df, nb, qmi, qma)
 
     # Return results
     return results
