@@ -1,5 +1,5 @@
---- Makefile.orig	2020-10-03 04:10:11.586878000 +0000
-+++ Makefile	2020-10-03 04:15:14.675465000 +0000
+--- Makefile.original	2020-10-04 22:17:49.000000000 +0000
++++ Makefile	2020-10-04 22:42:30.795824000 +0000
 @@ -1,18 +1,10 @@
 -# ordena
 -#-----------------------------
@@ -425,7 +425,15 @@
  	@echo $(CFITSIO_PATH)
  	@echo $(CFITSIO_LNK)
  	@echo $(GSL_PATH)
-@@ -417,8 +286,8 @@
+@@ -411,14 +280,15 @@
+ .PHONY : clean tar test \
+          rednoise rednoise2016
+ 
+-
++make_directories:
++	mkdir -p ../juan/obj ../juan/lib ../asalto26.5/obj ../asalto26.5/bin ../asalto26.5/lib ../asalto27/obj ../asalto27/bin ../asalto27/lib
+ 
+ # onyva
  #-----------------------------
  ONYVA_CLAU = onyva
  ONYVA_SRC = $(MAIN_PATH)/src/$(ONYVA_CLAU).c
@@ -436,7 +444,22 @@
  ONYVA_SLS = $(ONYVA_SRC) $(BT2_HDR) $(CEN2FTS_HDR)
  ONYVA_OLS = $(ONYVA_OBJ) 
  ONYVA_LLS = $(BT2_LLS) $(CEN2FTS_LLS)
-@@ -446,8 +315,8 @@
+@@ -428,12 +298,12 @@
+ $(ONYVA_CLAU) : $(ONYVA_EXE)
+ 	@echo " clau: $(ONYVA_CLAU)"
+ 
+-$(ONYVA_EXE) : $(ONYVA_OLS) $(ONYVA_LLS)
++$(ONYVA_EXE) : $(ONYVA_OLS) $(ONYVA_LLS) make_directories
+ 	@echo "****** linking $(ONYVA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVA_OLS) -o $@ $(ONYVA_LNK) 
+ 	@echo "## $(ONYVA_CLAU) linked successfully"
+ 
+-$(ONYVA_OBJ) : $(ONYVA_SLS)
++$(ONYVA_OBJ) : $(ONYVA_SLS) make_directories
+ 	@echo "****** compiling $(ONYVA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVA_SRC) -o $@ $(ONYVA_INC)  
+ 	@echo "## $(ONYVA_CLAU) compiled successfully"
+@@ -446,8 +316,8 @@
  FILTRAR_CLAU = filtrar
  FILTRAR_HDR = $(MAIN_PATH)/src/$(FILTRAR_CLAU).h
  FILTRAR_SRC = $(MAIN_PATH)/src/$(FILTRAR_CLAU).c
@@ -447,7 +470,22 @@
  FILTRAR_SLS = $(FILTRAR_SRC) $(FILTRAR_HRC) $(IO_HDR)
  FILTRAR_OLS = $(FILTRAR_OBJ) 
  FILTRAR_LLS = $(IO_LLS)
-@@ -473,8 +342,8 @@
+@@ -457,12 +327,12 @@
+ $(FILTRAR_CLAU) : $(FILTRAR_EXE)
+ 	@echo " clau: $(FILTRAR_CLAU)"
+ 
+-$(FILTRAR_EXE) : $(FILTRAR_OLS) $(FILTRAR_LLS)
++$(FILTRAR_EXE) : $(FILTRAR_OLS) $(FILTRAR_LLS) make_directories
+ 	@echo "****** linking $(FILTRAR_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(FILTRAR_OLS) -o $@ $(FILTRAR_LNK) 
+ 	@echo "## $(FILTRAR_CLAU) linked successfully"
+ 
+-$(FILTRAR_OBJ) : $(FILTRAR_SLS)
++$(FILTRAR_OBJ) : $(FILTRAR_SLS) make_directories
+ 	@echo "****** compiling $(FILTRAR_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(FILTRAR_SRC) $(FILTRAR_INC) -o $@ 
+ 	@echo "## $(FILTRAR_CLAU) compiled successfully"
+@@ -473,8 +343,8 @@
  #-----------------------------
  CEN2LREADER_CLAU = corot_en2lc_reader
  CEN2LREADER_SRC = $(MAIN_PATH)/src/$(CEN2LREADER_CLAU).c
@@ -458,7 +496,22 @@
  CEN2LREADER_SLS = $(CEN2LREADER_SRC) $(CEN2FTS_HDR)
  CEN2LREADER_OLS = $(CEN2LREADER_OBJ) 
  CEN2LREADER_LLS = $(CEN2FTS_LLS)
-@@ -501,8 +370,8 @@
+@@ -484,12 +354,12 @@
+ $(CEN2LREADER_CLAU) : $(CEN2LREADER_EXE)
+ 	@echo " clau: $(CEN2LREADER_CLAU)"
+ 
+-$(CEN2LREADER_EXE) : $(CEN2LREADER_OLS) $(CEN2LREADER_LLS)
++$(CEN2LREADER_EXE) : $(CEN2LREADER_OLS) $(CEN2LREADER_LLS) make_directories
+ 	@echo "****** linking $(CEN2LREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(CEN2LREADER_OLS) -o $@ $(CEN2LREADER_LNK) 
+ 	@echo "## $(CEN2LREADER_CLAU) linked successfully"
+ 
+-$(CEN2LREADER_OBJ) : $(CEN2LREADER_SLS)
++$(CEN2LREADER_OBJ) : $(CEN2LREADER_SLS) make_directories
+ 	@echo "****** compiling $(CEN2LREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(CEN2LREADER_SRC) $(CEN2LREADER_INC) -o $@ 
+ 	@echo "## $(CEN2LREADER_CLAU) compiled successfully"
+@@ -501,8 +371,8 @@
  #-----------------------------
  CAN2LREADER_CLAU = corot_an2lc_reader
  CAN2LREADER_SRC = $(MAIN_PATH)/src/$(CAN2LREADER_CLAU).c
@@ -469,7 +522,22 @@
  CAN2LREADER_SLS = $(CAN2LREADER_SRC) $(CAN2FTS_HDR)
  CAN2LREADER_OLS = $(CAN2LREADER_OBJ) 
  CAN2LREADER_LLS = $(CAN2FTS_LLS)
-@@ -529,8 +398,8 @@
+@@ -512,12 +382,12 @@
+ $(CAN2LREADER_CLAU) : $(CAN2LREADER_EXE)
+ 	@echo " clau: $(CAN2LREADER_CLAU)"
+ 
+-$(CAN2LREADER_EXE) : $(CAN2LREADER_OLS) $(CAN2LREADER_LLS)
++$(CAN2LREADER_EXE) : $(CAN2LREADER_OLS) $(CAN2LREADER_LLS) make_directories
+ 	@echo "****** linking $(CAN2LREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(CAN2LREADER_OLS) -o $@ $(CAN2LREADER_LNK) 
+ 	@echo "## $(CAN2LREADER_CLAU) linked successfully"
+ 
+-$(CAN2LREADER_OBJ) : $(CAN2LREADER_SLS)
++$(CAN2LREADER_OBJ) : $(CAN2LREADER_SLS) make_directories
+ 	@echo "****** compiling $(CAN2LREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(CAN2LREADER_SRC) $(CAN2LREADER_INC) -o $@ 
+ 	@echo "## $(CAN2LREADER_CLAU) compiled successfully"
+@@ -529,8 +399,8 @@
  #-----------------------------
  CEN1IREADER_CLAU = corot_en1imag_reader
  CEN1IREADER_SRC = $(MAIN_PATH)/src/$(CEN1IREADER_CLAU).c
@@ -480,7 +548,22 @@
  CEN1IREADER_SLS = $(CEN1IREADER_SRC) $(CEN1FTS_HDR)
  CEN1IREADER_OLS = $(CEN1IREADER_OBJ) 
  CEN1IREADER_LLS = $(CEN1FTS_LLS)
-@@ -557,8 +426,8 @@
+@@ -540,12 +410,12 @@
+ $(CEN1IREADER_CLAU) : $(CEN1IREADER_EXE)
+ 	@echo " clau: $(CEN1IREADER_CLAU)"
+ 
+-$(CEN1IREADER_EXE) : $(CEN1IREADER_OLS) $(CEN1IREADER_LLS)
++$(CEN1IREADER_EXE) : $(CEN1IREADER_OLS) $(CEN1IREADER_LLS) make_directories
+ 	@echo "****** linking $(CEN1IREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(CEN1IREADER_OLS) -o $@ $(CEN1IREADER_LNK) 
+ 	@echo "## $(CEN1IREADER_CLAU) linked successfully"
+ 
+-$(CEN1IREADER_OBJ) : $(CEN1IREADER_SLS)
++$(CEN1IREADER_OBJ) : $(CEN1IREADER_SLS) make_directories
+ 	@echo "****** compiling $(CEN1IREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(CEN1IREADER_SRC) $(CEN1IREADER_INC) -o $@ 
+ 	@echo "## $(CEN1IREADER_CLAU) compiled successfully"
+@@ -557,8 +427,8 @@
  #-----------------------------
  CEN2IREADER_CLAU = corot_en2imag_reader
  CEN2IREADER_SRC = $(MAIN_PATH)/src/$(CEN2IREADER_CLAU).c
@@ -491,7 +574,22 @@
  CEN2IREADER_SLS = $(CEN2IREADER_SRC) $(CEN2FTS_HDR)
  CEN2IREADER_OLS = $(CEN2IREADER_OBJ) 
  CEN2IREADER_LLS = $(CEN2FTS_LLS)
-@@ -584,8 +453,8 @@
+@@ -568,12 +438,12 @@
+ $(CEN2IREADER_CLAU) : $(CEN2IREADER_EXE)
+ 	@echo " clau: $(CEN2IREADER_CLAU)"
+ 
+-$(CEN2IREADER_EXE) : $(CEN2IREADER_OLS) $(CEN2IREADER_LLS)
++$(CEN2IREADER_EXE) : $(CEN2IREADER_OLS) $(CEN2IREADER_LLS) make_directories
+ 	@echo "****** linking $(CEN2IREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(CEN2IREADER_OLS) -o $@ $(CEN2IREADER_LNK) 
+ 	@echo "## $(CEN2IREADER_CLAU) linked successfully"
+ 
+-$(CEN2IREADER_OBJ) : $(CEN2IREADER_SLS)
++$(CEN2IREADER_OBJ) : $(CEN2IREADER_SLS) make_directories
+ 	@echo "****** compiling $(CEN2IREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(CEN2IREADER_SRC) $(CEN2IREADER_INC) -o $@ 
+ 	@echo "## $(CEN2IREADER_CLAU) compiled successfully"
+@@ -584,8 +454,8 @@
  #-----------------------------
  KREADER_CLAU = kepler_reader
  KREADER_SRC = $(MAIN_PATH)/src/$(KREADER_CLAU).c
@@ -502,7 +600,22 @@
  KREADER_SLS = $(KREADER_SRC) $(KFTS_HDR)
  KREADER_OLS = $(KREADER_OBJ) 
  KREADER_LLS = $(KFTS_LLS)
-@@ -612,8 +481,8 @@
+@@ -595,12 +465,12 @@
+ $(KREADER_CLAU) : $(KREADER_EXE)
+ 	@echo " clau: $(KREADER_CLAU)"
+ 
+-$(KREADER_EXE) : $(KREADER_OLS) $(KREADER_LLS)
++$(KREADER_EXE) : $(KREADER_OLS) $(KREADER_LLS) make_directories
+ 	@echo "****** linking $(KREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(KREADER_OLS) -o $@ $(KREADER_LNK) 
+ 	@echo "## $(KREADER_CLAU) linked successfully"
+ 
+-$(KREADER_OBJ) : $(KREADER_SLS)
++$(KREADER_OBJ) : $(KREADER_SLS) make_directories
+ 	@echo "****** compiling $(KREADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(KREADER_SRC) $(KREADER_INC) -o $@ 
+ 	@echo "## $(KREADER_CLAU) compiled successfully"
+@@ -612,8 +482,8 @@
  #-----------------------------
  KCENTROID_CLAU = kepler_centroid
  KCENTROID_SRC = $(MAIN_PATH)/src/$(KCENTROID_CLAU).c
@@ -513,7 +626,22 @@
  KCENTROID_SLS = $(KCENTROID_SRC) $(BT2_HDR) $(KFTS_HDR)
  KCENTROID_OLS = $(KCENTROID_OBJ) 
  KCENTROID_LLS = $(BT2_LLS) $(KFTS_LLS)
-@@ -640,8 +509,8 @@
+@@ -623,12 +493,12 @@
+ $(KCENTROID_CLAU) : $(KCENTROID_EXE)
+ 	@echo " clau: $(KCENTROID_CLAU)"
+ 
+-$(KCENTROID_EXE) : $(KCENTROID_OLS) $(KCENTROID_LLS)
++$(KCENTROID_EXE) : $(KCENTROID_OLS) $(KCENTROID_LLS) make_directories
+ 	@echo "****** linking $(KCENTROID_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(KCENTROID_OLS) -o $@ $(KCENTROID_LNK) 
+ 	@echo "## $(KCENTROID_CLAU) linked successfully"
+ 
+-$(KCENTROID_OBJ) : $(KCENTROID_SLS)
++$(KCENTROID_OBJ) : $(KCENTROID_SLS) make_directories
+ 	@echo "****** compiling $(KCENTROID_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(KCENTROID_SRC) $(KCENTROID_INC) -o $@ 
+ 	@echo "## $(KCENTROID_CLAU) compiled successfully"
+@@ -640,8 +510,8 @@
  #-----------------------------
  WDSCDB_CLAU = wdscdb
  WDSCDB_SRC = $(MAIN_PATH)/src/$(WDSCDB_CLAU).c
@@ -524,7 +652,22 @@
  WDSCDB_SLS = $(WDSCDB_SRC) $(CEN2FTS_HDR)
  WDSCDB_OLS = $(WDSCDB_OBJ) 
  WDSCDB_LLS = $(CEN2FTS_LLS)
-@@ -668,8 +537,8 @@
+@@ -651,12 +521,12 @@
+ $(WDSCDB_CLAU) : $(WDSCDB_EXE)
+ 	@echo " clau: $(WDSCDB_CLAU)"
+ 
+-$(WDSCDB_EXE) : $(WDSCDB_OLS) $(WDSCDB_LLS)
++$(WDSCDB_EXE) : $(WDSCDB_OLS) $(WDSCDB_LLS) make_directories
+ 	@echo "****** linking $(WDSCDB_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(WDSCDB_OLS) -o $@ $(WDSCDB_LNK) 
+ 	@echo "## $(WDSCDB_CLAU) linked successfully"
+ 
+-$(WDSCDB_OBJ) : $(WDSCDB_SLS)
++$(WDSCDB_OBJ) : $(WDSCDB_SLS) make_directories
+ 	@echo "****** compiling $(WDSCDB_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(WDSCDB_SRC) $(WDSCDB_INC) -o $@ 
+ 	@echo "## $(WDSCDB_CLAU) compiled successfully"
+@@ -668,8 +538,8 @@
  #-----------------------------
  WDSCDBI_CLAU = wdscdb_imag
  WDSCDBI_SRC = $(MAIN_PATH)/src/$(WDSCDBI_CLAU).c
@@ -535,7 +678,22 @@
  WDSCDBI_SLS = $(WDSCDBI_SRC) $(CEN2FTS_HDR)
  WDSCDBI_OLS = $(WDSCDBI_OBJ) 
  WDSCDBI_LLS = $(CEN2FTS_LLS)
-@@ -696,8 +565,8 @@
+@@ -679,12 +549,12 @@
+ $(WDSCDBI_CLAU) : $(WDSCDBI_EXE)
+ 	@echo " clau: $(WDSCDBI_CLAU)"
+ 
+-$(WDSCDBI_EXE) : $(WDSCDBI_OLS) $(WDSCDBI_LLS)
++$(WDSCDBI_EXE) : $(WDSCDBI_OLS) $(WDSCDBI_LLS) make_directories
+ 	@echo "****** linking $(WDSCDBI_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(WDSCDBI_OLS) -o $@ $(WDSCDBI_LNK) 
+ 	@echo "## $(WDSCDBI_CLAU) linked successfully"
+ 
+-$(WDSCDBI_OBJ) : $(WDSCDBI_SLS)
++$(WDSCDBI_OBJ) : $(WDSCDBI_SLS) make_directories
+ 	@echo "****** compiling $(WDSCDBI_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(WDSCDBI_SRC) $(WDSCDBI_INC) -o $@ 
+ 	@echo "## $(WDSCDBI_CLAU) compiled successfully"
+@@ -696,8 +566,8 @@
  #-----------------------------
  WDSCDBK_CLAU = wdscdb_kepler
  WDSCDBK_SRC = $(MAIN_PATH)/src/$(WDSCDBK_CLAU).c
@@ -546,7 +704,22 @@
  WDSCDBK_SLS = $(WDSCDBK_SRC) $(KFTS_HDR)
  WDSCDBK_OLS = $(WDSCDBK_OBJ) 
  WDSCDBK_LLS = $(KFTS_LLS)
-@@ -724,8 +593,8 @@
+@@ -707,12 +577,12 @@
+ $(WDSCDBK_CLAU) : $(WDSCDBK_EXE)
+ 	@echo " clau: $(WDSCDBK_CLAU)"
+ 
+-$(WDSCDBK_EXE) : $(WDSCDBK_OLS) $(WDSCDBK_LLS)
++$(WDSCDBK_EXE) : $(WDSCDBK_OLS) $(WDSCDBK_LLS) make_directories
+ 	@echo "****** linking $(WDSCDBK_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(WDSCDBK_OLS) -o $@ $(WDSCDBK_LNK) 
+ 	@echo "## $(WDSCDBK_CLAU) linked successfully"
+ 
+-$(WDSCDBK_OBJ) : $(WDSCDBK_SLS)
++$(WDSCDBK_OBJ) : $(WDSCDBK_SLS) make_directories
+ 	@echo "****** compiling $(WDSCDBK_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(WDSCDBK_SRC) $(WDSCDBK_INC) -o $@ 
+ 	@echo "## $(WDSCDBK_CLAU) compiled successfully"
+@@ -724,8 +594,8 @@
  #-----------------------------
  KTARGETPIXEL_CLAU = keplerTargetPixel
  KTARGETPIXEL_SRC = $(MAIN_PATH)/src/$(KTARGETPIXEL_CLAU).cpp
@@ -557,7 +730,22 @@
  KTARGETPIXEL_SLS = $(KTARGETPIXEL_SRC) $(KFTS_HDR)
  KTARGETPIXEL_OLS = $(KTARGETPIXEL_OBJ) 
  KTARGETPIXEL_LLS = $(KFTS_LLS)
-@@ -752,8 +621,8 @@
+@@ -735,12 +605,12 @@
+ $(KTARGETPIXEL_CLAU) : $(KTARGETPIXEL_EXE)
+ 	@echo " clau: $(KTARGETPIXEL_CLAU)"
+ 
+-$(KTARGETPIXEL_EXE) : $(KTARGETPIXEL_OLS) $(KTARGETPIXEL_LLS)
++$(KTARGETPIXEL_EXE) : $(KTARGETPIXEL_OLS) $(KTARGETPIXEL_LLS) make_directories
+ 	@echo "****** linking $(KTARGETPIXEL_CLAU) *****"
+ 	$(COMPILADORCPP) $(FLAGS) $(KTARGETPIXEL_OLS) -o $@ $(KTARGETPIXEL_LNK) 
+ 	@echo "## $(KTARGETPIXEL_CLAU) linked successfully"
+ 
+-$(KTARGETPIXEL_OBJ) : $(KTARGETPIXEL_SLS)
++$(KTARGETPIXEL_OBJ) : $(KTARGETPIXEL_SLS) make_directories
+ 	@echo "****** compiling $(KTARGETPIXEL_CLAU) *****"
+ 	$(COMPILADORCPP) $(FLAGS) -c $(KTARGETPIXEL_SRC) $(KTARGETPIXEL_INC) -o $@ 
+ 	@echo "## $(KTARGETPIXEL_CLAU) compiled successfully"
+@@ -752,8 +622,8 @@
  #-----------------------------
  HTPXFINDER_CLAU = hotPixelFinder
  HTPXFINDER_SRC = $(MAIN_PATH)/src/$(HTPXFINDER_CLAU).c
@@ -568,7 +756,22 @@
  HTPXFINDER_SLS = $(HTPXFINDER_SRC) $(CEN2FTS_HDR)
  HTPXFINDER_OLS = $(HTPXFINDER_OBJ) 
  HTPXFINDER_LLS = $(CEN2FTS_LLS)
-@@ -780,8 +649,8 @@
+@@ -763,12 +633,12 @@
+ $(HTPXFINDER_CLAU) : $(HTPXFINDER_EXE)
+ 	@echo " clau: $(HTPXFINDER_CLAU)"
+ 
+-$(HTPXFINDER_EXE) : $(HTPXFINDER_OLS) $(HTPXFINDER_LLS)
++$(HTPXFINDER_EXE) : $(HTPXFINDER_OLS) $(HTPXFINDER_LLS) make_directories
+ 	@echo "****** linking $(HTPXFINDER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(HTPXFINDER_OLS) -o $@ $(HTPXFINDER_LNK) 
+ 	@echo "## $(HTPXFINDER_CLAU) linked successfully"
+ 
+-$(HTPXFINDER_OBJ) : $(HTPXFINDER_SLS)
++$(HTPXFINDER_OBJ) : $(HTPXFINDER_SLS) make_directories
+ 	@echo "****** compiling $(HTPXFINDER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(HTPXFINDER_SRC) $(HTPXFINDER_INC) -o $@ 
+ 	@echo "## $(HTPXFINDER_CLAU) compiled successfully"
+@@ -780,8 +650,8 @@
  #-----------------------------
  REDNOISE_CLAU = rednoise
  REDNOISE_SRC = $(MAIN_PATH)/src/$(REDNOISE_CLAU).c
@@ -579,7 +782,22 @@
  REDNOISE_SLS = $(REDNOISE_SRC) $(BT2_HDR)
  REDNOISE_OLS = $(REDNOISE_OBJ) 
  REDNOISE_LLS = $(BT2_LLS)
-@@ -808,8 +677,8 @@
+@@ -791,12 +661,12 @@
+ $(REDNOISE_CLAU) : $(REDNOISE_EXE)
+ 	@echo " clau: $(REDNOISE_CLAU)"
+ 
+-$(REDNOISE_EXE) : $(REDNOISE_OLS) $(REDNOISE_LLS)
++$(REDNOISE_EXE) : $(REDNOISE_OLS) $(REDNOISE_LLS) make_directories
+ 	@echo "****** linking $(REDNOISE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(REDNOISE_OLS) -o $@ $(REDNOISE_LNK) 
+ 	@echo "## $(REDNOISE_CLAU) linked successfully"
+ 
+-$(REDNOISE_OBJ) : $(REDNOISE_SLS)
++$(REDNOISE_OBJ) : $(REDNOISE_SLS) make_directories
+ 	@echo "****** compiling $(REDNOISE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(REDNOISE_SRC) $(REDNOISE_INC) -o $@ 
+ 	@echo "## $(REDNOISE_CLAU) compiled successfully"
+@@ -808,8 +678,8 @@
  #-----------------------------
  REDNOISE2016_CLAU = rednoise2016
  REDNOISE2016_SRC = $(MAIN_PATH)/src/$(REDNOISE2016_CLAU).c
@@ -590,7 +808,22 @@
  REDNOISE2016_SLS = $(REDNOISE2016_SRC) $(BT2_HDR)
  REDNOISE2016_OLS = $(REDNOISE2016_OBJ) 
  REDNOISE2016_LLS = $(BT2_LLS)
-@@ -836,8 +705,8 @@
+@@ -819,12 +689,12 @@
+ $(REDNOISE2016_CLAU) : $(REDNOISE2016_EXE)
+ 	@echo " clau: $(REDNOISE2016_CLAU)"
+ 
+-$(REDNOISE2016_EXE) : $(REDNOISE2016_OLS) $(REDNOISE2016_LLS)
++$(REDNOISE2016_EXE) : $(REDNOISE2016_OLS) $(REDNOISE2016_LLS) make_directories
+ 	@echo "****** linking $(REDNOISE2016_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(REDNOISE2016_OLS) -o $@ $(REDNOISE2016_LNK) 
+ 	@echo "## $(REDNOISE2016_CLAU) linked successfully"
+ 
+-$(REDNOISE2016_OBJ) : $(REDNOISE2016_SLS)
++$(REDNOISE2016_OBJ) : $(REDNOISE2016_SLS) make_directories
+ 	@echo "****** compiling $(REDNOISE2016_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(REDNOISE2016_SRC) $(REDNOISE2016_INC) -o $@ 
+ 	@echo "## $(REDNOISE2016_CLAU) compiled successfully"
+@@ -836,8 +706,8 @@
  #-----------------------------
  CEN1IMAG_CLAU = CoRoTEN1Imagette
  CEN1IMAG_SRC = $(MAIN_PATH)/src/$(CEN1IMAG_CLAU).cpp
@@ -601,4 +834,226 @@
  CEN1IMAG_SLS = $(CEN1IMAG_SRC) $(JUAN_HDR) 
  CEN1IMAG_OLS = $(CEN1IMAG_OBJ) 
  CEN1IMAG_LLS = $(JUAN_LLS)
-
+@@ -847,12 +717,12 @@
+ $(CEN1IMAG_CLAU) : $(CEN1IMAG_EXE)
+ 	@echo " clau: $(CEN1IMAG_CLAU)"
+ 
+-$(CEN1IMAG_EXE) : $(CEN1IMAG_OLS) $(CEN1IMAG_LLS)
++$(CEN1IMAG_EXE) : $(CEN1IMAG_OLS) $(CEN1IMAG_LLS) make_directories
+ 	@echo "****** linking $(CEN1IMAG_CLAU) *****"
+ 	$(COMPILADORCPP) $(FLAGS) $(CEN1IMAG_OLS) -o $@ $(CEN1IMAG_LNK) 
+ 	@echo "## $(CEN1IMAG_CLAU) linked successfully"
+ 
+-$(CEN1IMAG_OBJ) : $(CEN1IMAG_SLS)
++$(CEN1IMAG_OBJ) : $(CEN1IMAG_SLS) make_directories
+ 	@echo "****** compiling $(CEN1IMAG_CLAU) *****"
+ 	$(COMPILADORCPP) $(FLAGS) -c $(CEN1IMAG_SRC) $(CEN1IMAG_INC) -o $@ 
+ 	@echo "## $(CEN1IMAG_CLAU) compiled successfully"
+@@ -862,13 +732,13 @@
+ 
+ # library juan
+ #-----------------------------
+-$(JUAN_LIB) : $(JUAN_OBJ)
++$(JUAN_LIB) : $(JUAN_OBJ) make_directories
+ 	@echo "***** creating library $(JUAN_CLAU) *****"
+ 	ar -rc $@ $(JUAN_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(JUAN_OBJ) : $(JUAN_SRC) $(JUAN_HDR)
++$(JUAN_OBJ) : $(JUAN_SRC) $(JUAN_HDR) make_directories
+ 	@echo "***** compiling $(JUAN_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(JUAN_SRC) $(JUAN_INC)
+ 	@echo "## library compiled successfully"
+@@ -882,13 +752,13 @@
+ 
+ # library juan_fits
+ #-----------------------------
+-$(JUANFITS_LIB) : $(JUANFITS_OBJ)
++$(JUANFITS_LIB) : $(JUANFITS_OBJ) make_directories
+ 	@echo "***** creating library $(JUANFITS_CLAU) *****"
+ 	ar -rc $@ $(JUANFITS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(JUANFITS_OBJ) : $(JUANFITS_SRC) $(JUANFITS_HDR)
++$(JUANFITS_OBJ) : $(JUANFITS_SRC) $(JUANFITS_HDR) make_directories
+ 	@echo "***** compiling $(JUANFITS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(JUANFITS_SRC) $(JUANFITS_INC)
+ 	@echo "## library compiled successfully"
+@@ -900,13 +770,13 @@
+ 
+ # library libcorot_en1fits
+ #-----------------------------
+-$(CEN1FTS_LIB) : $(CEN1FTS_OBJ)
++$(CEN1FTS_LIB) : $(CEN1FTS_OBJ) make_directories
+ 	@echo "***** creating library $(CEN1FTS_CLAU) *****"
+ 	ar -rc $@ $(CEN1FTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(CEN1FTS_OBJ) : $(CEN1FTS_SRC) $(CEN1FTS_HDR_LIST) 
++$(CEN1FTS_OBJ) : $(CEN1FTS_SRC) $(CEN1FTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(CEN1FTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(CEN1FTS_SRC) $(CEN1FTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -918,13 +788,13 @@
+ 
+ # library libcorot_en2fits
+ #-----------------------------
+-$(CEN2FTS_LIB) : $(CEN2FTS_OBJ)
++$(CEN2FTS_LIB) : $(CEN2FTS_OBJ) make_directories
+ 	@echo "***** creating library $(CEN2FTS_CLAU) *****"
+ 	ar -rc $@ $(CEN2FTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(CEN2FTS_OBJ) : $(CEN2FTS_SRC) $(CEN2FTS_HDR_LIST) 
++$(CEN2FTS_OBJ) : $(CEN2FTS_SRC) $(CEN2FTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(CEN2FTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(CEN2FTS_SRC) $(CEN2FTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -936,13 +806,13 @@
+ 
+ # library libcorot_an2fits
+ #-----------------------------
+-$(CAN2FTS_LIB) : $(CAN2FTS_OBJ)
++$(CAN2FTS_LIB) : $(CAN2FTS_OBJ) make_directories
+ 	@echo "***** creating library $(CAN2FTS_CLAU) *****"
+ 	ar -rc $@ $(CAN2FTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(CAN2FTS_OBJ) : $(CAN2FTS_SRC) $(CAN2FTS_HDR_LIST) 
++$(CAN2FTS_OBJ) : $(CAN2FTS_SRC) $(CAN2FTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(CAN2FTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(CAN2FTS_SRC) $(CAN2FTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -954,13 +824,13 @@
+ 
+ # library libkepler_fits
+ #-----------------------------
+-$(KFTS_LIB) : $(KFTS_OBJ)
++$(KFTS_LIB) : $(KFTS_OBJ) make_directories
+ 	@echo "***** creating library $(KFTS_CLAU) *****"
+ 	ar -rc $@ $(KFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(KFTS_OBJ) : $(KFTS_SRC) $(KFTS_HDR_LIST) 
++$(KFTS_OBJ) : $(KFTS_SRC) $(KFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(KFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(KFTS_SRC) $(KFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -972,13 +842,13 @@
+ 
+ # library libk2vanderburg_fits
+ #-----------------------------
+-$(K2VFTS_LIB) : $(K2VFTS_OBJ)
++$(K2VFTS_LIB) : $(K2VFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2VFTS_CLAU) *****"
+ 	ar -rc $@ $(K2VFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2VFTS_OBJ) : $(K2VFTS_SRC) $(K2VFTS_HDR_LIST) 
++$(K2VFTS_OBJ) : $(K2VFTS_SRC) $(K2VFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2VFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2VFTS_SRC) $(K2VFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -990,13 +860,13 @@
+ 
+ # library libeverest_fits
+ #-----------------------------
+-$(K2EFTS_LIB) : $(K2EFTS_OBJ)
++$(K2EFTS_LIB) : $(K2EFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2EFTS_CLAU) *****"
+ 	ar -rc $@ $(K2EFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2EFTS_OBJ) : $(K2EFTS_SRC) $(K2EFTS_HDR_LIST) 
++$(K2EFTS_OBJ) : $(K2EFTS_SRC) $(K2EFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2EFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2EFTS_SRC) $(K2EFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1008,13 +878,13 @@
+ 
+ # library libk2sc_fits
+ #-----------------------------
+-$(K2SCFTS_LIB) : $(K2SCFTS_OBJ)
++$(K2SCFTS_LIB) : $(K2SCFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2SCFTS_CLAU) *****"
+ 	ar -rc $@ $(K2SCFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2SCFTS_OBJ) : $(K2SCFTS_SRC) $(K2SCFTS_HDR_LIST) 
++$(K2SCFTS_OBJ) : $(K2SCFTS_SRC) $(K2SCFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2SCFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2SCFTS_SRC) $(K2SCFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1026,13 +896,13 @@
+ 
+ # library libpolar_fits
+ #-----------------------------
+-$(K2PFTS_LIB) : $(K2PFTS_OBJ)
++$(K2PFTS_LIB) : $(K2PFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2PFTS_CLAU) *****"
+ 	ar -rc $@ $(K2PFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2PFTS_OBJ) : $(K2PFTS_SRC) $(K2PFTS_HDR_LIST) 
++$(K2PFTS_OBJ) : $(K2PFTS_SRC) $(K2PFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2PFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2PFTS_SRC) $(K2PFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1045,13 +915,13 @@
+ 
+ # library libtess_fits
+ #-----------------------------
+-$(TFTS_LIB) : $(TFTS_OBJ)
++$(TFTS_LIB) : $(TFTS_OBJ) make_directories
+ 	@echo "***** creating library $(TFTS_CLAU) *****"
+ 	ar -rc $@ $(TFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(TFTS_OBJ) : $(TFTS_SRC) $(TFTS_HDR_LIST) 
++$(TFTS_OBJ) : $(TFTS_SRC) $(TFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(TFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(TFTS_SRC) $(TFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1064,13 +934,13 @@
+ 
+ # library libio
+ #-----------------------------
+-$(IO_LIB) : $(IO_OBJ)
++$(IO_LIB) : $(IO_OBJ) make_directories
+ 	@echo "***** creating library $(IO_CLAU) *****"
+ 	ar -rc $@ $(IO_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(IO_OBJ) : $(IO_SRC) $(IO_HDR_LIST) 
++$(IO_OBJ) : $(IO_SRC) $(IO_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(IO_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(IO_SRC) $(IO_INC)
+ 	@echo "## library compiled successfully"
+@@ -1081,13 +951,13 @@
+ 
+ # library bt2
+ #-----------------------------
+-$(BT2_LIB) : $(BT2_OBJ)
++$(BT2_LIB) : $(BT2_OBJ) make_directories
+ 	@echo "***** creating library $(BT2_CLAU) *****"
+ 	ar -rc $@ $(BT2_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(BT2_OBJ) : $(BT2_SRC) $(BT2_HDR)
++$(BT2_OBJ) : $(BT2_SRC) $(BT2_HDR) make_directories
+ 	@echo "***** compiling $(BT2_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(BT2_SRC) $(BT2_INC)
+ 	@echo "## library compiled successfully"

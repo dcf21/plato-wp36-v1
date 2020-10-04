@@ -140,8 +140,8 @@ class LightcurveArbitraryRaster:
             # Or is this an entirely unexpected time interval?
             if verbose and (max_errors is None or error_count <= max_errors):
                 logging.info("index {:5d} - Unexpected time step {:.15f} at time {:.5f}".format(index,
-                                                                                               step,
-                                                                                               self.times[index]))
+                                                                                                step,
+                                                                                                self.times[index]))
 
         # Return the verdict on this lightcurve
         return error_count
@@ -185,16 +185,24 @@ class LightcurveArbitraryRaster:
             if not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol):
                 if verbose and (max_errors is None or error_count <= max_errors):
                     logging.info("index {:5d} - Point missing at time {:.15f}".format(index,
-                                                                                     self.times[index]))
+                                                                                      self.times[index]))
                 error_count += 1
 
         # Return the verdict on this lightcurve
         return error_count
 
-    def to_fixed_step(self):
+    def to_fixed_step(self, verbose=True, max_errors=None):
         """
-        Convert this lightcurve to a fixed time stride
+        Convert this lightcurve to a fixed time stride.
 
+        :param verbose:
+            Should we output a logging message about every missing time point?
+        :type verbose:
+            bool
+        :param max_errors:
+            The maximum number of errors we should show
+        :type max_errors:
+            int
         :return:
             [LightcurveFixedStep]
         """
@@ -203,10 +211,15 @@ class LightcurveArbitraryRaster:
         rel_tol = 0
 
         spacing = self.estimate_sampling_interval()
+
+        if verbose:
+            logging.info("Time step is {:.15f}".format(spacing))
+
         start_time = self.times[0]
         end_time = self.times[-1]
         times = np.arange(start=start_time, stop=end_time, step=spacing)
         output = np.zeros_like(times)
+        error_count = 0
 
         input_position = 0
         for index, time in enumerate(times):
@@ -215,11 +228,13 @@ class LightcurveArbitraryRaster:
                 input_position += 1
 
             # If this time point has the correct spacing, it is OK
-            if math.isclose(time, self.times[input_position]):
+            if math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol):
                 output[index] = self.fluxes[input_position]
                 continue
 
-            logging.info("No data available at time point {:.5f}".format(time))
+            if verbose and (max_errors is None or error_count <= max_errors):
+                logging.info("No data available at time point {:.5f}".format(time))
+                error_count += 1
             output[index] = 1
 
         # Return lightcurve

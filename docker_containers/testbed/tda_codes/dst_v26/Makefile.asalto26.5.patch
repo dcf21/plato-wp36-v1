@@ -1,5 +1,5 @@
---- Makefile.orig	2020-10-03 04:35:19.917157000 +0000
-+++ Makefile	2020-10-03 04:39:20.710279000 +0000
+--- Makefile.original	2020-10-04 22:17:49.000000000 +0000
++++ Makefile	2020-10-04 22:46:38.449211000 +0000
 @@ -1,6 +1,3 @@
 -# ordena
 -#-----------------------------
@@ -190,7 +190,7 @@
  JUAN_LIB = $(JUAN_LIB_PATH)/lib$(JUAN_CLAU).a
  JUAN_SLS = $(JUAN_SRC) $(JUAN_HDR)
  JUAN_OLS = $(JUAN_OBJ)
-@@ -194,48 +65,15 @@
+@@ -194,48 +65,16 @@
  
  # libjuan_fits
  #-----------------------------
@@ -237,6 +237,7 @@
 +
  #--
  JUANFITS_CLAU = juan_fits
++JUANFITS_PATH = ../juan
  JUANFITS_HDR = $(JUANFITS_PATH)/$(JUANFITS_CLAU).h
  JUANFITS_SRC = $(JUANFITS_PATH)/$(JUANFITS_CLAU).c
 -JUANFITS_OBJ = $(JUANFITS_PATH)/obj/$(ORDENA)/$(JUANFITS_CLAU).o
@@ -244,7 +245,7 @@
  JUANFITS_LIB = $(JUANFITS_LIB_PATH)/lib$(JUANFITS_CLAU).a
  JUANFITS_SLS = $(JUANFITS_SRC) $(JUANFITS_HDR)
  JUANFITS_OLS = $(JUANFITS_OBJ)
-@@ -251,13 +89,13 @@
+@@ -251,13 +90,13 @@
  BT2_PATH = $(MAIN_PATH)
  BT2_HDR = $(BT2_PATH)/src/$(BT2_CLAU).h
  BT2_SRC = $(BT2_PATH)/src/$(BT2_CLAU).c
@@ -261,7 +262,7 @@
  
  
  
-@@ -267,13 +105,13 @@
+@@ -267,13 +106,13 @@
  BT2CLNSET_PATH = $(MAIN_PATH)
  BT2CLNSET_HDR = $(BT2CLNSET_PATH)/src/$(BT2CLNSET_CLAU).h
  BT2CLNSET_SRC = $(BT2CLNSET_PATH)/src/$(BT2CLNSET_CLAU).c
@@ -278,7 +279,7 @@
  
  
  
-@@ -283,13 +121,13 @@
+@@ -283,13 +122,13 @@
  BIN_PATH = $(MAIN_PATH)
  BIN_HDR = $(BIN_PATH)/src/$(BIN_CLAU).h
  BIN_SRC = $(BIN_PATH)/src/$(BIN_CLAU).c
@@ -295,7 +296,7 @@
  
  
  
-@@ -299,13 +137,13 @@
+@@ -299,13 +138,13 @@
  MPL_PATH = $(MAIN_PATH)
  MPL_HDR = $(MPL_PATH)/src/$(MPL_CLAU).h
  MPL_SRC = $(MPL_PATH)/src/$(MPL_CLAU).c
@@ -312,7 +313,7 @@
  
  
  
-@@ -315,8 +153,8 @@
+@@ -315,8 +154,8 @@
  TMG_PATH = $(MAIN_PATH)
  TMG_HDR = $(TMG_PATH)/src/$(TMG_CLAU).h
  TMG_SRC = $(TMG_PATH)/src/$(TMG_CLAU).c
@@ -323,7 +324,7 @@
  TMG_SLS = $(TMP_SRC) $(TMG_HDR) $(MPL_HDR) $(BIN_HDR)
  TMG_OLS = $(TMG_OBJ) 
  TMG_LLS = $(TMG_LIB) $(MPL_LLS)
-@@ -330,7 +168,6 @@
+@@ -330,7 +169,6 @@
  all : onyva onyva_imagette onyva_kepler onyva_kepler_eduardo onyva_k2vanderburg onyva_everest onyva_k2sc onyva_polar onyva_tess onyva_cheops onyva_tasoc onyva_clnset tsevi AN2_onyva winid header lector_ia binarias binarias_fake timing timing_ajtlin timing_irwin AN2_timing fitmodpl tendencia fold traduce rednoise readclnset hsa
  
  test :
@@ -331,7 +332,14 @@
  	@echo $(JUAN_PATH)
  	@echo $(JUANFITS_PATH)
  	@echo $(GSL_PATH)
-@@ -345,8 +182,8 @@
+@@ -340,13 +178,15 @@
+          onyva onyva_imagette onyva_kepler onyva_kepler_eduardo onyva_k2vanderburg onyva_everest onyva_k2sc onyva_polar onyva_tess onyva_cheops onyva_tasoc onyva_clnset tsevi AN2_onyva winid header lector_ia binarias binarias_fake timing timing_ajtlin timing_irwin AN2_timing fitmodpl datejd tendencia fold traduce horriblesospecha rednoise wdscdb readclnset hsa
+ 
+ 
++make_directories:
++	mkdir -p ../juan/obj ../juan/lib ../asalto26.5/obj ../asalto26.5/bin ../asalto26.5/lib ../asalto27/obj ../asalto27/bin ../asalto27/lib
+ 
+ # onyva
  #-----------------------------
  ONYVA_CLAU = onyva
  ONYVA_SRC = $(MAIN_PATH)/src/$(ONYVA_CLAU).c
@@ -342,7 +350,22 @@
  ONYVA_SLS = $(ONYVA_SRC) $(BT2_HDR)
  ONYVA_OLS = $(ONYVA_OBJ) 
  ONYVA_LLS = $(BT2_LLS)
-@@ -372,8 +209,8 @@
+@@ -356,12 +196,12 @@
+ $(ONYVA_CLAU) : $(ONYVA_EXE)
+ 	@echo " clau: $(ONYVA_CLAU)"
+ 
+-$(ONYVA_EXE) : $(ONYVA_OLS) $(ONYVA_LLS)
++$(ONYVA_EXE) : $(ONYVA_OLS) $(ONYVA_LLS) make_directories
+ 	@echo "****** linking $(ONYVA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVA_OLS) -o $@ $(ONYVA_LNK) 
+ 	@echo "## $(ONYVA_CLAU) linked successfully"
+ 
+-$(ONYVA_OBJ) : $(ONYVA_SLS)
++$(ONYVA_OBJ) : $(ONYVA_SLS) make_directories
+ 	@echo "****** compiling $(ONYVA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVA_SRC) $(ONYVA_INC) -o $@ 
+ 	@echo "## $(ONYVA_CLAU) compiled successfully"
+@@ -372,8 +212,8 @@
  #-----------------------------
  ONYVAIMAG_CLAU = onyva_imagette
  ONYVAIMAG_SRC = $(MAIN_PATH)/src/$(ONYVAIMAG_CLAU).c
@@ -353,7 +376,22 @@
  ONYVAIMAG_SLS = $(ONYVAIMAG_SRC) $(ONYVAIMAG_HDR) $(BT2_HDR)
  ONYVAIMAG_OLS = $(ONYVAIMAG_OBJ)
  ONYVAIMAG_LLS = $(BT2_LLS)
-@@ -399,8 +236,8 @@
+@@ -384,12 +224,12 @@
+ $(ONYVAIMAG_CLAU) : $(ONYVAIMAG_EXE)
+ 	@echo " clau: $(ONYVAIMAG_CLAU)"
+ 
+-$(ONYVAIMAG_EXE) : $(ONYVAIMAG_OLS) $(ONYVAIMAG_LLS)
++$(ONYVAIMAG_EXE) : $(ONYVAIMAG_OLS) $(ONYVAIMAG_LLS) make_directories
+ 	@echo "****** linking $(ONYVAIMAG_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAIMAG_OLS) -o $@ $(BT2_LNK) 
+ 	@echo "## $(ONYVAIMAG_CLAU) linked successfully"
+ 
+-$(ONYVAIMAG_OBJ) : $(ONYVAIMAG_SLS)
++$(ONYVAIMAG_OBJ) : $(ONYVAIMAG_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAIMAG_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAIMAG_SRC) $(ONYVAIMAG_INC) -o $@  
+ 	@echo "## $(ONYVAIMAG_CLAU) compiled successfully"
+@@ -399,8 +239,8 @@
  #-----------------------------
  ONYVAIMAGC9B_CLAU = onyva_imagette_c9b
  ONYVAIMAGC9B_SRC = $(MAIN_PATH)/src/$(ONYVAIMAGC9B_CLAU).c
@@ -364,7 +402,22 @@
  ONYVAIMAGC9B_SLS = $(ONYVAIMAGC9B_SRC) $(ONYVAIMAGC9B_HDR) $(BT2_HDR)
  ONYVAIMAGC9B_OLS = $(ONYVAIMAGC9B_OBJ)
  ONYVAIMAGC9B_LLS = $(BT2_LLS)
-@@ -422,313 +259,115 @@
+@@ -409,12 +249,12 @@
+ $(ONYVAIMAGC9B_CLAU) : $(ONYVAIMAGC9B_EXE)
+ 	@echo " clau: $(ONYVAIMAGC9B_CLAU)"
+ 
+-$(ONYVAIMAGC9B_EXE) : $(ONYVAIMAGC9B_OLS) $(ONYVAIMAGC09B_LLS)
++$(ONYVAIMAGC9B_EXE) : $(ONYVAIMAGC9B_OLS) $(ONYVAIMAGC09B_LLS) make_directories
+ 	@echo "****** linking $(ONYVAIMAGC9B_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAIMAGC9B_OLS) -o $@ $(ONYVAIMAGC9B_LNK) 
+ 	@echo "## $(ONYVAIMAGC9B_CLAU) linked successfully"
+ 
+-$(ONYVAIMAGC9B_OBJ) : $(ONYVAIMAGC9B_SLS)
++$(ONYVAIMAGC9B_OBJ) : $(ONYVAIMAGC9B_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAIMAGC9B_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAIMAGC9B_SRC) $(ONYVAIMAGC9B_INC) -o $@ 
+ 	@echo "## $(ONYVAIMAGC9B_CLAU) compiled successfully"
+@@ -422,313 +262,115 @@
  
  # libk2vanderburg_fits
  #-----------------------------
@@ -720,7 +773,7 @@
  
  
  
-@@ -736,8 +375,8 @@
+@@ -736,8 +378,8 @@
  #-----------------------------
  ONYVAKEPLER_CLAU = onyva_kepler
  ONYVAKEPLER_SRC = $(MAIN_PATH)/src/$(ONYVAKEPLER_CLAU).c
@@ -731,7 +784,22 @@
  ONYVAKEPLER_SLS = $(ONYVAKEPLER_SRC) $(ONYVAKEPLER_HDR)
  ONYVAKEPLER_OLS = $(ONYVAKEPLER_OBJ)
  ONYVAKEPLER_LLS = $(BT2_LLS) $(KFTS_LLS)
-@@ -763,8 +402,8 @@
+@@ -747,12 +389,12 @@
+ $(ONYVAKEPLER_CLAU) : $(ONYVAKEPLER_EXE)
+ 	@echo " clau: $(ONYVAKEPLER_CLAU)"
+ 
+-$(ONYVAKEPLER_EXE) : $(ONYVAKEPLER_OLS) $(ONYVAKEPLER_LLS)
++$(ONYVAKEPLER_EXE) : $(ONYVAKEPLER_OLS) $(ONYVAKEPLER_LLS) make_directories
+ 	@echo "****** linking $(ONYVAKEPLER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAKEPLER_OLS) -o $@ $(ONYVAKEPLER_LNK) 
+ 	@echo "## $(ONYVAKEPLER_CLAU) linked successfully"
+ 
+-$(ONYVAKEPLER_OBJ) : $(ONYVAKEPLER_SLS)
++$(ONYVAKEPLER_OBJ) : $(ONYVAKEPLER_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAKEPLER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAKEPLER_SRC) $(ONYVAKEPLER_INC) -o $@ 
+ 	@echo "## $(ONYVAKEPLER_CLAU) compiled successfully"
+@@ -763,8 +405,8 @@
  #-----------------------------
  ONYVAKEPLEREDUARDO_CLAU = onyva_kepler_eduardo
  ONYVAKEPLEREDUARDO_SRC = $(MAIN_PATH)/src/$(ONYVAKEPLEREDUARDO_CLAU).c
@@ -742,7 +810,22 @@
  ONYVAKEPLEREDUARDO_SLS = $(ONYVAKEPLEREDUARDO_SRC) $(ONYVAKEPLEREDUARDO_HDR)
  ONYVAKEPLEREDUARDO_OLS = $(ONYVAKEPLEREDUARDO_OBJ)
  ONYVAKEPLEREDUARDO_LLS = $(BT2_LLS) $(KFTS_LLS)
-@@ -790,8 +429,8 @@
+@@ -774,12 +416,12 @@
+ $(ONYVAKEPLEREDUARDO_CLAU) : $(ONYVAKEPLEREDUARDO_EXE)
+ 	@echo " clau: $(ONYVAKEPLEREDUARDO_CLAU)"
+ 
+-$(ONYVAKEPLEREDUARDO_EXE) : $(ONYVAKEPLEREDUARDO_OLS) $(ONYVAKEPLEREDUARDO_LLS)
++$(ONYVAKEPLEREDUARDO_EXE) : $(ONYVAKEPLEREDUARDO_OLS) $(ONYVAKEPLEREDUARDO_LLS) make_directories
+ 	@echo "****** linking $(ONYVAKEPLEREDUARDO_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAKEPLEREDUARDO_OLS) -o $@ $(ONYVAKEPLEREDUARDO_LNK) 
+ 	@echo "## $(ONYVAKEPLEREDUARDO_CLAU) linked successfully"
+ 
+-$(ONYVAKEPLEREDUARDO_OBJ) : $(ONYVAKEPLEREDUARDO_SLS)
++$(ONYVAKEPLEREDUARDO_OBJ) : $(ONYVAKEPLEREDUARDO_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAKEPLEREDUARDO_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAKEPLEREDUARDO_SRC) $(ONYVAKEPLEREDUARDO_INC) -o $@ 
+ 	@echo "## $(ONYVAKEPLEREDUARDO_CLAU) compiled successfully"
+@@ -790,8 +432,8 @@
  #-----------------------------
  ONYVAK2VANDERBURG_CLAU = onyva_k2vanderburg
  ONYVAK2VANDERBURG_SRC = $(MAIN_PATH)/src/$(ONYVAK2VANDERBURG_CLAU).c
@@ -753,7 +836,22 @@
  ONYVAK2VANDERBURG_SLS = $(ONYVAK2VANDERBURG_SRC) $(ONYVAK2VANDERBURG_HDR) $(K2VFTS_HDR)
  ONYVAK2VANDERBURG_OLS = $(ONYVAK2VANDERBURG_OBJ)
  ONYVAK2VANDERBURG_LLS = $(BT2_LLS) $(K2VFTS_LLS)
-@@ -817,8 +456,8 @@
+@@ -801,12 +443,12 @@
+ $(ONYVAK2VANDERBURG_CLAU) : $(ONYVAK2VANDERBURG_EXE)
+ 	@echo " clau: $(ONYVAK2VANDERBURG_CLAU)"
+ 
+-$(ONYVAK2VANDERBURG_EXE) : $(ONYVAK2VANDERBURG_OLS) $(ONYVAK2VANDERBURG_LLS)
++$(ONYVAK2VANDERBURG_EXE) : $(ONYVAK2VANDERBURG_OLS) $(ONYVAK2VANDERBURG_LLS) make_directories
+ 	@echo "****** linking $(ONYVAK2VANDERBURG_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAK2VANDERBURG_OLS) -o $@ $(ONYVAK2VANDERBURG_LNK) 
+ 	@echo "## $(ONYVAK2VANDERBURG_CLAU) linked successfully"
+ 
+-$(ONYVAK2VANDERBURG_OBJ) : $(ONYVAK2VANDERBURG_SLS)
++$(ONYVAK2VANDERBURG_OBJ) : $(ONYVAK2VANDERBURG_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAK2VANDERBURG_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAK2VANDERBURG_SRC) $(ONYVAK2VANDERBURG_INC) -o $@ 
+ 	@echo "## $(ONYVAK2VANDERBURG_CLAU) compiled successfully"
+@@ -817,8 +459,8 @@
  #-----------------------------
  ONYVAEVEREST_CLAU = onyva_everest
  ONYVAEVEREST_SRC = $(MAIN_PATH)/src/$(ONYVAEVEREST_CLAU).c
@@ -764,7 +862,22 @@
  ONYVAEVEREST_SLS = $(ONYVAEVEREST_SRC) $(ONYVAEVEREST_HDR) $(K2EFTS_HDR)
  ONYVAEVEREST_OLS = $(ONYVAEVEREST_OBJ)
  ONYVAEVEREST_LLS = $(BT2_LLS) $(K2EFTS_LLS)
-@@ -844,8 +483,8 @@
+@@ -828,12 +470,12 @@
+ $(ONYVAEVEREST_CLAU) : $(ONYVAEVEREST_EXE)
+ 	@echo " clau: $(ONYVAEVEREST_CLAU)"
+ 
+-$(ONYVAEVEREST_EXE) : $(ONYVAEVEREST_OLS) $(ONYVAEVEREST_LLS)
++$(ONYVAEVEREST_EXE) : $(ONYVAEVEREST_OLS) $(ONYVAEVEREST_LLS) make_directories
+ 	@echo "****** linking $(ONYVAEVEREST_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAEVEREST_OLS) -o $@ $(ONYVAEVEREST_LNK) 
+ 	@echo "## $(ONYVAEVEREST_CLAU) linked successfully"
+ 
+-$(ONYVAEVEREST_OBJ) : $(ONYVAEVEREST_SLS)
++$(ONYVAEVEREST_OBJ) : $(ONYVAEVEREST_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAEVEREST_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAEVEREST_SRC) $(ONYVAEVEREST_INC) -o $@ 
+ 	@echo "## $(ONYVAEVEREST_CLAU) compiled successfully"
+@@ -844,8 +486,8 @@
  #-----------------------------
  ONYVAK2SC_CLAU = onyva_k2sc
  ONYVAK2SC_SRC = $(MAIN_PATH)/src/$(ONYVAK2SC_CLAU).c
@@ -775,7 +888,22 @@
  ONYVAK2SC_SLS = $(ONYVAK2SC_SRC) $(ONYVAK2SC_HDR) $(K2SCFTS_HDR)
  ONYVAK2SC_OLS = $(ONYVAK2SC_OBJ)
  ONYVAK2SC_LLS = $(BT2_LLS) $(K2SCFTS_LLS)
-@@ -871,8 +510,8 @@
+@@ -855,12 +497,12 @@
+ $(ONYVAK2SC_CLAU) : $(ONYVAK2SC_EXE)
+ 	@echo " clau: $(ONYVAK2SC_CLAU)"
+ 
+-$(ONYVAK2SC_EXE) : $(ONYVAK2SC_OLS) $(ONYVAK2SC_LLS)
++$(ONYVAK2SC_EXE) : $(ONYVAK2SC_OLS) $(ONYVAK2SC_LLS) make_directories
+ 	@echo "****** linking $(ONYVAK2SC_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAK2SC_OLS) -o $@ $(ONYVAK2SC_LNK) 
+ 	@echo "## $(ONYVAK2SC_CLAU) linked successfully"
+ 
+-$(ONYVAK2SC_OBJ) : $(ONYVAK2SC_SLS)
++$(ONYVAK2SC_OBJ) : $(ONYVAK2SC_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAK2SC_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAK2SC_SRC) $(ONYVAK2SC_INC) -o $@ 
+ 	@echo "## $(ONYVAK2SC_CLAU) compiled successfully"
+@@ -871,8 +513,8 @@
  #-----------------------------
  ONYVAPOLAR_CLAU = onyva_polar
  ONYVAPOLAR_SRC = $(MAIN_PATH)/src/$(ONYVAPOLAR_CLAU).c
@@ -786,7 +914,22 @@
  ONYVAPOLAR_SLS = $(ONYVAPOLAR_SRC) $(ONYVAPOLAR_HDR) $(K2PFTS_HDR)
  ONYVAPOLAR_OLS = $(ONYVAPOLAR_OBJ)
  ONYVAPOLAR_LLS = $(BT2_LLS) $(K2PFTS_LLS)
-@@ -898,8 +537,8 @@
+@@ -882,12 +524,12 @@
+ $(ONYVAPOLAR_CLAU) : $(ONYVAPOLAR_EXE)
+ 	@echo " clau: $(ONYVAPOLAR_CLAU)"
+ 
+-$(ONYVAPOLAR_EXE) : $(ONYVAPOLAR_OLS) $(ONYVAPOLAR_LLS)
++$(ONYVAPOLAR_EXE) : $(ONYVAPOLAR_OLS) $(ONYVAPOLAR_LLS) make_directories
+ 	@echo "****** linking $(ONYVAPOLAR_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVAPOLAR_OLS) -o $@ $(ONYVAPOLAR_LNK) 
+ 	@echo "## $(ONYVAPOLAR_CLAU) linked successfully"
+ 
+-$(ONYVAPOLAR_OBJ) : $(ONYVAPOLAR_SLS)
++$(ONYVAPOLAR_OBJ) : $(ONYVAPOLAR_SLS) make_directories
+ 	@echo "****** compiling $(ONYVAPOLAR_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVAPOLAR_SRC) $(ONYVAPOLAR_INC) -o $@ 
+ 	@echo "## $(ONYVAPOLAR_CLAU) compiled successfully"
+@@ -898,8 +540,8 @@
  #-----------------------------
  ONYVATESS_CLAU = onyva_tess
  ONYVATESS_SRC = $(MAIN_PATH)/src/$(ONYVATESS_CLAU).c
@@ -797,7 +940,22 @@
  ONYVATESS_SLS = $(ONYVATESS_SRC) $(ONYVATESS_HDR)
  ONYVATESS_OLS = $(ONYVATESS_OBJ)
  ONYVATESS_LLS = $(BT2_LLS) $(TFTS_LLS)
-@@ -925,8 +564,8 @@
+@@ -909,12 +551,12 @@
+ $(ONYVATESS_CLAU) : $(ONYVATESS_EXE)
+ 	@echo " clau: $(ONYVATESS_CLAU)"
+ 
+-$(ONYVATESS_EXE) : $(ONYVATESS_OLS) $(ONYVATESS_LLS)
++$(ONYVATESS_EXE) : $(ONYVATESS_OLS) $(ONYVATESS_LLS) make_directories
+ 	@echo "****** linking $(ONYVATESS_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVATESS_OLS) -o $@ $(ONYVATESS_LNK) 
+ 	@echo "## $(ONYVATESS_CLAU) linked successfully"
+ 
+-$(ONYVATESS_OBJ) : $(ONYVATESS_SLS)
++$(ONYVATESS_OBJ) : $(ONYVATESS_SLS) make_directories
+ 	@echo "****** compiling $(ONYVATESS_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVATESS_SRC) $(ONYVATESS_INC) -o $@ 
+ 	@echo "## $(ONYVATESS_CLAU) compiled successfully"
+@@ -925,8 +567,8 @@
  #-----------------------------
  ONYVACHEOPS_CLAU = onyva_cheops
  ONYVACHEOPS_SRC = $(MAIN_PATH)/src/$(ONYVACHEOPS_CLAU).c
@@ -808,7 +966,22 @@
  ONYVACHEOPS_SLS = $(ONYVACHEOPS_SRC) $(ONYVACHEOPS_HDR)
  ONYVACHEOPS_OLS = $(ONYVACHEOPS_OBJ)
  ONYVACHEOPS_LLS = $(BT2_LLS) $(TFTS_LLS)
-@@ -952,8 +591,8 @@
+@@ -936,12 +578,12 @@
+ $(ONYVACHEOPS_CLAU) : $(ONYVACHEOPS_EXE)
+ 	@echo " clau: $(ONYVACHEOPS_CLAU)"
+ 
+-$(ONYVACHEOPS_EXE) : $(ONYVACHEOPS_OLS) $(ONYVACHEOPS_LLS)
++$(ONYVACHEOPS_EXE) : $(ONYVACHEOPS_OLS) $(ONYVACHEOPS_LLS) make_directories
+ 	@echo "****** linking $(ONYVACHEOPS_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVACHEOPS_OLS) -o $@ $(ONYVACHEOPS_LNK) 
+ 	@echo "## $(ONYVACHEOPS_CLAU) linked successfully"
+ 
+-$(ONYVACHEOPS_OBJ) : $(ONYVACHEOPS_SLS)
++$(ONYVACHEOPS_OBJ) : $(ONYVACHEOPS_SLS) make_directories
+ 	@echo "****** compiling $(ONYVACHEOPS_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVACHEOPS_SRC) $(ONYVACHEOPS_INC) -o $@ 
+ 	@echo "## $(ONYVACHEOPS_CLAU) compiled successfully"
+@@ -952,8 +594,8 @@
  #-----------------------------
  ONYVATASOC_CLAU = onyva_tasoc
  ONYVATASOC_SRC = $(MAIN_PATH)/src/$(ONYVATASOC_CLAU).c
@@ -819,7 +992,22 @@
  ONYVATASOC_SLS = $(ONYVATASOC_SRC) $(ONYVATASOC_HDR)
  ONYVATASOC_OLS = $(ONYVATASOC_OBJ)
  ONYVATASOC_LLS = $(BT2_LLS) $(TFTS_LLS)
-@@ -979,8 +618,8 @@
+@@ -963,12 +605,12 @@
+ $(ONYVATASOC_CLAU) : $(ONYVATASOC_EXE)
+ 	@echo " clau: $(ONYVATASOC_CLAU)"
+ 
+-$(ONYVATASOC_EXE) : $(ONYVATASOC_OLS) $(ONYVATASOC_LLS)
++$(ONYVATASOC_EXE) : $(ONYVATASOC_OLS) $(ONYVATASOC_LLS) make_directories
+ 	@echo "****** linking $(ONYVATASOC_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVATASOC_OLS) -o $@ $(ONYVATASOC_LNK) 
+ 	@echo "## $(ONYVATASOC_CLAU) linked successfully"
+ 
+-$(ONYVATASOC_OBJ) : $(ONYVATASOC_SLS)
++$(ONYVATASOC_OBJ) : $(ONYVATASOC_SLS) make_directories
+ 	@echo "****** compiling $(ONYVATASOC_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVATASOC_SRC) $(ONYVATASOC_INC) -o $@ 
+ 	@echo "## $(ONYVATASOC_CLAU) compiled successfully"
+@@ -979,8 +621,8 @@
  #-----------------------------
  ONYVACLNSET_CLAU = onyva_clnset
  ONYVACLNSET_SRC = $(MAIN_PATH)/src/$(ONYVACLNSET_CLAU).c
@@ -830,7 +1018,22 @@
  ONYVACLNSET_SLS = $(ONYVACLNSET_SRC) $(BT2_HDR)
  ONYVACLNSET_OLS = $(ONYVACLNSET_OBJ) 
  ONYVACLNSET_LLS = $(BT2_LLS) 
-@@ -1006,8 +645,8 @@
+@@ -990,12 +632,12 @@
+ $(ONYVACLNSET_CLAU) : $(ONYVACLNSET_EXE)
+ 	@echo " clau: $(ONYVACLNSET_CLAU)"
+ 
+-$(ONYVACLNSET_EXE) : $(ONYVACLNSET_OLS) $(ONYVACLNSET_LLS)
++$(ONYVACLNSET_EXE) : $(ONYVACLNSET_OLS) $(ONYVACLNSET_LLS) make_directories
+ 	@echo "****** linking $(ONYVACLNSET_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(ONYVACLNSET_OLS) -o $@ $(ONYVACLNSET_LNK) 
+ 	@echo "## $(ONYVACLNSET_CLAU) linked successfully"
+ 
+-$(ONYVACLNSET_OBJ) : $(ONYVACLNSET_SLS)
++$(ONYVACLNSET_OBJ) : $(ONYVACLNSET_SLS) make_directories
+ 	@echo "****** compiling $(ONYVACLNSET_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(ONYVACLNSET_SRC) $(ONYVACLNSET_INC) -o $@ 
+ 	@echo "## $(ONYVACLNSET_CLAU) compiled successfully"
+@@ -1006,8 +648,8 @@
  #-----------------------------
  TSEVI_CLAU = tsevi
  TSEVI_SRC = $(MAIN_PATH)/src/$(TSEVI_CLAU).c
@@ -841,7 +1044,22 @@
  TSEVI_SLS = $(TSEVI_SRC) $(BT2_HDR)
  TSEVI_OLS = $(TSEVI_OBJ) 
  TSEVI_LLS = $(BT2_LLS) 
-@@ -1033,8 +672,8 @@
+@@ -1017,12 +659,12 @@
+ $(TSEVI_CLAU) : $(TSEVI_EXE)
+ 	@echo " clau: $(TSEVI_CLAU)"
+ 
+-$(TSEVI_EXE) : $(TSEVI_OLS) $(TSEVI_LLS)
++$(TSEVI_EXE) : $(TSEVI_OLS) $(TSEVI_LLS) make_directories
+ 	@echo "****** linking $(TSEVI_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(TSEVI_OLS) -o $@ $(TSEVI_LNK) 
+ 	@echo "## $(TSEVI_CLAU) linked successfully"
+ 
+-$(TSEVI_OBJ) : $(TSEVI_SLS)
++$(TSEVI_OBJ) : $(TSEVI_SLS) make_directories
+ 	@echo "****** compiling $(TSEVI_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(TSEVI_SRC) $(TSEVI_INC) -o $@ 
+ 	@echo "## $(TSEVI_CLAU) compiled successfully"
+@@ -1033,8 +675,8 @@
  #-----------------------------
  AN2ONYVA_CLAU = AN2_onyva
  AN2ONYVA_SRC = $(MAIN_PATH)/src/$(AN2ONYVA_CLAU).c
@@ -852,7 +1070,22 @@
  AN2ONYVA_SLS = $(AN2ONYVA_SRC) $(BT2_HDR)
  AN2ONYVA_OLS = $(AN2ONYVA_OBJ) 
  AN2ONYVA_LLS = $(BT2_LLS) 
-@@ -1060,8 +699,8 @@
+@@ -1044,12 +686,12 @@
+ $(AN2ONYVA_CLAU) : $(AN2ONYVA_EXE)
+ 	@echo " clau: $(AN2ONYVA_CLAU)"
+ 
+-$(AN2ONYVA_EXE) : $(AN2ONYVA_OLS) $(AN2ONYVA_LLS)
++$(AN2ONYVA_EXE) : $(AN2ONYVA_OLS) $(AN2ONYVA_LLS) make_directories
+ 	@echo "****** linking $(AN2ONYVA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(AN2ONYVA_OLS) -o $@ $(AN2ONYVA_LNK) 
+ 	@echo "## $(AN2ONYVA_CLAU) linked successfully"
+ 
+-$(AN2ONYVA_OBJ) : $(AN2ONYVA_SLS)
++$(AN2ONYVA_OBJ) : $(AN2ONYVA_SLS) make_directories
+ 	@echo "****** compiling $(AN2ONYVA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(AN2ONYVA_SRC) $(AN2ONYVA_INC) -o $@ 
+ 	@echo "## $(AN2ONYVA_CLAU) compiled successfully"
+@@ -1060,8 +702,8 @@
  #-----------------------------
  WINID_CLAU = winid
  WINID_SRC = $(MAIN_PATH)/src/$(WINID_CLAU).c
@@ -863,7 +1096,22 @@
  WINID_SLS = $(WINID_SRC) $(BT2_HDR)
  WINID_OLS = $(WINID_OBJ) 
  WINID_LLS = $(BT2_LLS) 
-@@ -1087,8 +726,8 @@
+@@ -1071,12 +713,12 @@
+ $(WINID_CLAU) : $(WINID_EXE)
+ 	@echo " clau: $(WINID_CLAU)"
+ 
+-$(WINID_EXE) : $(WINID_OLS) $(WINID_LLS)
++$(WINID_EXE) : $(WINID_OLS) $(WINID_LLS) make_directories
+ 	@echo "****** linking $(WINID_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(WINID_OLS) -o $@ $(WINID_LNK) 
+ 	@echo "## $(WINID_CLAU) linked successfully"
+ 
+-$(WINID_OBJ) : $(WINID_SLS)
++$(WINID_OBJ) : $(WINID_SLS) make_directories
+ 	@echo "****** compiling $(WINID_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(WINID_SRC) $(WINID_INC) -o $@ 
+ 	@echo "## $(WINID_CLAU) compiled successfully"
+@@ -1087,8 +729,8 @@
  #-----------------------------
  HEADER_CLAU = header
  HEADER_SRC = $(MAIN_PATH)/src/$(HEADER_CLAU).c
@@ -874,7 +1122,22 @@
  HEADER_SLS = $(HEADER_SRC) $(BT2_HDR)
  HEADER_OLS = $(HEADER_OBJ) 
  HEADER_LLS = $(BT2_LLS) 
-@@ -1114,8 +753,8 @@
+@@ -1098,12 +740,12 @@
+ $(HEADER_CLAU) : $(HEADER_EXE)
+ 	@echo " clau: $(HEADER_CLAU)"
+ 
+-$(HEADER_EXE) : $(HEADER_OLS) $(HEADER_LLS)
++$(HEADER_EXE) : $(HEADER_OLS) $(HEADER_LLS) make_directories
+ 	@echo "****** linking $(HEADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(HEADER_OLS) -o $@ $(HEADER_LNK) 
+ 	@echo "## $(HEADER_CLAU) linked successfully"
+ 
+-$(HEADER_OBJ) : $(HEADER_SLS)
++$(HEADER_OBJ) : $(HEADER_SLS) make_directories
+ 	@echo "****** compiling $(HEADER_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(HEADER_SRC) $(HEADER_INC) -o $@ 
+ 	@echo "## $(HEADER_CLAU) compiled successfully"
+@@ -1114,8 +756,8 @@
  #-----------------------------
  LECTORIA_CLAU = lector_ia
  LECTORIA_SRC = $(MAIN_PATH)/src/$(LECTORIA_CLAU).c
@@ -885,7 +1148,22 @@
  LECTORIA_SLS = $(LECTORIA_SRC) $(BT2_HDR)
  LECTORIA_OLS = $(LECTORIA_OBJ) 
  LECTORIA_LLS = $(BT2_LLS) 
-@@ -1141,8 +780,8 @@
+@@ -1125,12 +767,12 @@
+ $(LECTORIA_CLAU) : $(LECTORIA_EXE)
+ 	@echo " clau: $(LECTORIA_CLAU)"
+ 
+-$(LECTORIA_EXE) : $(LECTORIA_OLS) $(LECTORIA_LLS)
++$(LECTORIA_EXE) : $(LECTORIA_OLS) $(LECTORIA_LLS) make_directories
+ 	@echo "****** linking $(LECTORIA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(LECTORIA_OLS) -o $@ $(LECTORIA_LNK) 
+ 	@echo "## $(LECTORIA_CLAU) linked successfully"
+ 
+-$(LECTORIA_OBJ) : $(LECTORIA_SLS)
++$(LECTORIA_OBJ) : $(LECTORIA_SLS) make_directories
+ 	@echo "****** compiling $(LECTORIA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(LECTORIA_SRC) $(LECTORIA_INC) -o $@ 
+ 	@echo "## $(LECTORIA_CLAU) compiled successfully"
+@@ -1141,8 +783,8 @@
  #-----------------------------
  BINARIAS_CLAU = binarias
  BINARIAS_SRC = $(MAIN_PATH)/src/$(BINARIAS_CLAU).c
@@ -896,7 +1174,22 @@
  BINARIAS_SLS = $(BINARIAS_SRC) $(BIN_HDR)
  BINARIAS_OLS = $(BINARIAS_OBJ) 
  BINARIAS_LLS = $(BIN_LLS) 
-@@ -1168,8 +807,8 @@
+@@ -1152,12 +794,12 @@
+ $(BINARIAS_CLAU) : $(BINARIAS_EXE)
+ 	@echo " clau: $(BINARIAS_CLAU)"
+ 
+-$(BINARIAS_EXE) : $(BINARIAS_OLS) $(BINARIAS_LLS)
++$(BINARIAS_EXE) : $(BINARIAS_OLS) $(BINARIAS_LLS) make_directories
+ 	@echo "****** linking $(BINARIAS_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(BINARIAS_OLS) -o $@ $(BINARIAS_LNK) 
+ 	@echo "## $(BINARIAS_CLAU) linked successfully"
+ 
+-$(BINARIAS_OBJ) : $(BINARIAS_SLS)
++$(BINARIAS_OBJ) : $(BINARIAS_SLS) make_directories
+ 	@echo "****** compiling $(BINARIAS_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(BINARIAS_SRC) $(BINARIAS_INC) -o $@ 
+ 	@echo "## $(BINARIAS_CLAU) compiled successfully"
+@@ -1168,8 +810,8 @@
  #-----------------------------
  BINARIASFAKE_CLAU = binarias_fake
  BINARIASFAKE_SRC = $(MAIN_PATH)/src/$(BINARIASFAKE_CLAU).c
@@ -907,7 +1200,22 @@
  BINARIASFAKE_SLS = $(BINARIASFAKE_SRC) $(BIN_HDR)
  BINARIASFAKE_OLS = $(BINARIASFAKE_OBJ) 
  BINARIASFAKE_LLS = $(BIN_LLS) 
-@@ -1196,8 +835,8 @@
+@@ -1179,12 +821,12 @@
+ $(BINARIASFAKE_CLAU) : $(BINARIASFAKE_EXE)
+ 	@echo " clau: $(BINARIASFAKE_CLAU)"
+ 
+-$(BINARIASFAKE_EXE) : $(BINARIASFAKE_OLS) $(BINARIASFAKE_LLS)
++$(BINARIASFAKE_EXE) : $(BINARIASFAKE_OLS) $(BINARIASFAKE_LLS) make_directories
+ 	@echo "****** linking $(BINARIASFAKE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(BINARIASFAKE_OLS) -o $@ $(BINARIASFAKE_LNK) 
+ 	@echo "## $(BINARIASFAKE_CLAU) linked successfully"
+ 
+-$(BINARIASFAKE_OBJ) : $(BINARIASFAKE_SLS)
++$(BINARIASFAKE_OBJ) : $(BINARIASFAKE_SLS) make_directories
+ 	@echo "****** compiling $(BINARIASFAKE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(BINARIASFAKE_SRC) $(BINARIASFAKE_INC) -o $@ 
+ 	@echo "## $(BINARIASFAKE_CLAU) compiled successfully"
+@@ -1196,8 +838,8 @@
  #-----------------------------
  TIMING_CLAU = timing
  TIMING_SRC = $(MAIN_PATH)/src/$(TIMING_CLAU).c
@@ -918,7 +1226,22 @@
  TIMING_SLS = $(TIMING_SRC) $(TMG_HDR)
  TIMING_OLS = $(TIMING_OBJ) 
  TIMING_LLS = $(TMG_LLS)
-@@ -1223,8 +862,8 @@
+@@ -1207,12 +849,12 @@
+ $(TIMING_CLAU) : $(TIMING_EXE)
+ 	@echo " clau: $(TIMING_CLAU)"
+ 
+-$(TIMING_EXE) : $(TIMING_OLS) $(TIMING_LLS)
++$(TIMING_EXE) : $(TIMING_OLS) $(TIMING_LLS) make_directories
+ 	@echo "****** linking $(TIMING_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(TIMING_OLS) -o $@ $(TIMING_LNK) 
+ 	@echo "## $(TIMING_CLAU) linked successfully"
+ 
+-$(TIMING_OBJ) : $(TIMING_SLS)
++$(TIMING_OBJ) : $(TIMING_SLS) make_directories
+ 	@echo "****** compiling $(TIMING_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(TIMING_SRC) $(TIMING_INC) -o $@ 
+ 	@echo "## $(TIMING_CLAU) compiled successfully"
+@@ -1223,8 +865,8 @@
  #-----------------------------
  TIMINGAJTLIN_CLAU = timing_ajtlin
  TIMINGAJTLIN_SRC = $(MAIN_PATH)/src/$(TIMINGAJTLIN_CLAU).c
@@ -929,7 +1252,22 @@
  TIMINGAJTLIN_SLS = $(TIMINGAJTLIN_SRC) $(TMG_HDR)
  TIMINGAJTLIN_OLS = $(TIMINGAJTLIN_OBJ) 
  TIMINGAJTLIN_LLS = $(TMG_LLS)
-@@ -1250,8 +889,8 @@
+@@ -1234,12 +876,12 @@
+ $(TIMINGAJTLIN_CLAU) : $(TIMINGAJTLIN_EXE)
+ 	@echo " clau: $(TIMINGAJTLIN_CLAU)"
+ 
+-$(TIMINGAJTLIN_EXE) : $(TIMINGAJTLIN_OLS) $(TIMINGAJTLIN_LLS)
++$(TIMINGAJTLIN_EXE) : $(TIMINGAJTLIN_OLS) $(TIMINGAJTLIN_LLS) make_directories
+ 	@echo "****** linking $(TIMINGAJTLIN_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(TIMINGAJTLIN_OLS) -o $@ $(TIMINGAJTLIN_LNK) 
+ 	@echo "## $(TIMINGAJTLIN_CLAU) linked successfully"
+ 
+-$(TIMINGAJTLIN_OBJ) : $(TIMINGAJTLIN_SLS)
++$(TIMINGAJTLIN_OBJ) : $(TIMINGAJTLIN_SLS) make_directories
+ 	@echo "****** compiling $(TIMINGAJTLIN_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(TIMINGAJTLIN_SRC) $(TIMINGAJTLIN_INC) -o $@ 
+ 	@echo "## $(TIMINGAJTLIN_CLAU) compiled successfully"
+@@ -1250,8 +892,8 @@
  #-----------------------------
  TIMINGIRWIN_CLAU = timing_irwin
  TIMINGIRWIN_SRC = $(MAIN_PATH)/src/$(TIMINGIRWIN_CLAU).c
@@ -940,7 +1278,22 @@
  TIMINGIRWIN_SLS = $(TIMINGIRWIN_SRC) $(TMG_HDR)
  TIMINGIRWIN_OLS = $(TIMINGIRWIN_OBJ) 
  TIMINGIRWIN_LLS = $(TMG_LLS)
-@@ -1277,8 +916,8 @@
+@@ -1261,12 +903,12 @@
+ $(TIMINGIRWIN_CLAU) : $(TIMINGIRWIN_EXE)
+ 	@echo " clau: $(TIMINGIRWIN_CLAU)"
+ 
+-$(TIMINGIRWIN_EXE) : $(TIMINGIRWIN_OLS) $(TIMINGIRWIN_LLS)
++$(TIMINGIRWIN_EXE) : $(TIMINGIRWIN_OLS) $(TIMINGIRWIN_LLS) make_directories
+ 	@echo "****** linking $(TIMINGIRWIN_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(TIMINGIRWIN_OLS) -o $@ $(TIMINGIRWIN_LNK) 
+ 	@echo "## $(TIMINGIRWIN_CLAU) linked successfully"
+ 
+-$(TIMINGIRWIN_OBJ) : $(TIMINGIRWIN_SLS)
++$(TIMINGIRWIN_OBJ) : $(TIMINGIRWIN_SLS) make_directories
+ 	@echo "****** compiling $(TIMINGIRWIN_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(TIMINGIRWIN_SRC) $(TIMINGIRWIN_INC) -o $@ 
+ 	@echo "## $(TIMINGIRWIN_CLAU) compiled successfully"
+@@ -1277,8 +919,8 @@
  #-----------------------------
  AN2TIMING_CLAU = AN2_timing
  AN2TIMING_SRC = $(MAIN_PATH)/src/$(AN2TIMING_CLAU).c
@@ -951,7 +1304,22 @@
  AN2TIMING_SLS = $(AN2TIMING_SRC) $(TMG_HDR)
  AN2TIMING_OLS = $(AN2TIMING_OBJ) 
  AN2TIMING_LLS = $(TMG_LLS)
-@@ -1304,8 +943,8 @@
+@@ -1288,12 +930,12 @@
+ $(AN2TIMING_CLAU) : $(AN2TIMING_EXE)
+ 	@echo " clau: $(AN2TIMING_CLAU)"
+ 
+-$(AN2TIMING_EXE) : $(AN2TIMING_OLS) $(AN2TIMING_LLS)
++$(AN2TIMING_EXE) : $(AN2TIMING_OLS) $(AN2TIMING_LLS) make_directories
+ 	@echo "****** linking $(AN2TIMING_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(AN2TIMING_OLS) -o $@ $(AN2TIMING_LNK) 
+ 	@echo "## $(AN2TIMING_CLAU) linked successfully"
+ 
+-$(AN2TIMING_OBJ) : $(AN2TIMING_SLS)
++$(AN2TIMING_OBJ) : $(AN2TIMING_SLS) make_directories
+ 	@echo "****** compiling $(AN2TIMING_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(AN2TIMING_SRC) $(AN2TIMING_INC) -o $@ 
+ 	@echo "## $(AN2TIMING_CLAU) compiled successfully"
+@@ -1304,8 +946,8 @@
  #-----------------------------
  FITMODPL_CLAU = fitmodpl
  FITMODPL_SRC = $(MAIN_PATH)/src/$(FITMODPL_CLAU).c
@@ -962,7 +1330,22 @@
  FITMODPL_SLS = $(FITMODPL_SRC) $(MPL_HDR)
  FITMODPL_OLS = $(FITMODPL_OBJ) 
  FITMODPL_LLS = $(MPL_LLS) 
-@@ -1331,8 +970,8 @@
+@@ -1315,12 +957,12 @@
+ $(FITMODPL_CLAU) : $(FITMODPL_EXE)
+ 	@echo " clau: $(FITMODPL_CLAU)"
+ 
+-$(FITMODPL_EXE) : $(FITMODPL_OLS) $(FITMODPL_LLS)
++$(FITMODPL_EXE) : $(FITMODPL_OLS) $(FITMODPL_LLS) make_directories
+ 	@echo "****** linking $(FITMODPL_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(FITMODPL_OLS) -o $@ $(FITMODPL_LNK) 
+ 	@echo "## $(FITMODPL_CLAU) linked successfully"
+ 
+-$(FITMODPL_OBJ) : $(FITMODPL_SLS)
++$(FITMODPL_OBJ) : $(FITMODPL_SLS) make_directories
+ 	@echo "****** compiling $(FITMODPL_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(FITMODPL_SRC) $(FITMODPL_INC) -o $@ 
+ 	@echo "## $(FITMODPL_CLAU) compiled successfully"
+@@ -1331,8 +973,8 @@
  #-----------------------------
  DATEJD_CLAU = datejd
  DATEJD_SRC = $(MAIN_PATH)/src/$(DATEJD_CLAU).c
@@ -973,7 +1356,22 @@
  DATEJD_SLS = $(DATEJD_SRC) $(JUANFITS_HDR)
  DATEJD_OLS = $(DATEJD_OBJ) 
  DATEJD_LLS = $(JUANFITS_LLS) 
-@@ -1359,8 +998,8 @@
+@@ -1342,12 +984,12 @@
+ $(DATEJD_CLAU) : $(DATEJD_EXE)
+ 	@echo " clau: $(DATEJD_CLAU)"
+ 
+-$(DATEJD_EXE) : $(DATEJD_OLS) $(DATEJD_LLS)
++$(DATEJD_EXE) : $(DATEJD_OLS) $(DATEJD_LLS) make_directories
+ 	@echo "****** linking $(DATEJD_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(DATEJD_OLS) -o $@ $(DATEJD_LNK) 
+ 	@echo "## $(DATEJD_CLAU) linked successfully"
+ 
+-$(DATEJD_OBJ) : $(DATEJD_SLS)
++$(DATEJD_OBJ) : $(DATEJD_SLS) make_directories
+ 	@echo "****** compiling $(DATEJD_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(DATEJD_SRC) $(DATEJD_INC) -o $@ 
+ 	@echo "## $(DATEJD_CLAU) compiled successfully"
+@@ -1359,8 +1001,8 @@
  #-----------------------------
  TENDENCIA_CLAU = tendencia
  TENDENCIA_SRC = $(MAIN_PATH)/src/$(TENDENCIA_CLAU).c
@@ -984,7 +1382,22 @@
  TENDENCIA_SLS = $(TENDENCIA_SRC) $(BT2_HDR)
  TENDENCIA_OLS = $(TENDENCIA_OBJ) 
  TENDENCIA_LLS = $(BT2_LLS) 
-@@ -1386,8 +1025,8 @@
+@@ -1370,12 +1012,12 @@
+ $(TENDENCIA_CLAU) : $(TENDENCIA_EXE)
+ 	@echo " clau: $(TENDENCIA_CLAU)"
+ 
+-$(TENDENCIA_EXE) : $(TENDENCIA_OLS) $(TENDENCIA_LLS)
++$(TENDENCIA_EXE) : $(TENDENCIA_OLS) $(TENDENCIA_LLS) make_directories
+ 	@echo "****** linking $(TENDENCIA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(TENDENCIA_OLS) -o $@ $(TENDENCIA_LNK) 
+ 	@echo "## $(TENDENCIA_CLAU) linked successfully"
+ 
+-$(TENDENCIA_OBJ) : $(TENDENCIA_SLS)
++$(TENDENCIA_OBJ) : $(TENDENCIA_SLS) make_directories
+ 	@echo "****** compiling $(TENDENCIA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(TENDENCIA_SRC) $(TENDENCIA_INC) -o $@ 
+ 	@echo "## $(TENDENCIA_CLAU) compiled successfully"
+@@ -1386,8 +1028,8 @@
  #-----------------------------
  FOLD_CLAU = fold
  FOLD_SRC = $(MAIN_PATH)/src/$(FOLD_CLAU).c
@@ -995,7 +1408,22 @@
  FOLD_SLS = $(FOLD_SRC) $(BT2_HDR)
  FOLD_OLS = $(FOLD_OBJ) 
  FOLD_LLS = $(BT2_LLS) 
-@@ -1413,8 +1052,8 @@
+@@ -1397,12 +1039,12 @@
+ $(FOLD_CLAU) : $(FOLD_EXE)
+ 	@echo " clau: $(FOLD_CLAU)"
+ 
+-$(FOLD_EXE) : $(FOLD_OLS) $(FOLD_LLS)
++$(FOLD_EXE) : $(FOLD_OLS) $(FOLD_LLS) make_directories
+ 	@echo "****** linking $(FOLD_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(FOLD_OLS) -o $@ $(FOLD_LNK) 
+ 	@echo "## $(FOLD_CLAU) linked successfully"
+ 
+-$(FOLD_OBJ) : $(FOLD_SLS)
++$(FOLD_OBJ) : $(FOLD_SLS) make_directories
+ 	@echo "****** compiling $(FOLD_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(FOLD_SRC) $(FOLD_INC) -o $@ 
+ 	@echo "## $(FOLD_CLAU) compiled successfully"
+@@ -1413,8 +1055,8 @@
  #-----------------------------
  TRADUCE_CLAU = traduce
  TRADUCE_SRC = $(MAIN_PATH)/src/$(TRADUCE_CLAU).c
@@ -1006,7 +1434,22 @@
  TRADUCE_SLS = $(TRADUCE_SRC) 
  TRADUCE_OLS = $(TRADUCE_OBJ) 
  TRADUCE_LLS = 
-@@ -1440,8 +1079,8 @@
+@@ -1424,12 +1066,12 @@
+ $(TRADUCE_CLAU) : $(TRADUCE_EXE)
+ 	@echo " clau: $(TRADUCE_CLAU)"
+ 
+-$(TRADUCE_EXE) : $(TRADUCE_OLS) $(TRADUCE_LLS)
++$(TRADUCE_EXE) : $(TRADUCE_OLS) $(TRADUCE_LLS) make_directories
+ 	@echo "****** linking $(TRADUCE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(TRADUCE_OLS) -o $@ $(TRADUCE_LNK) 
+ 	@echo "## $(TRADUCE_CLAU) linked successfully"
+ 
+-$(TRADUCE_OBJ) : $(TRADUCE_SLS)
++$(TRADUCE_OBJ) : $(TRADUCE_SLS) make_directories
+ 	@echo "****** compiling $(TRADUCE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(TRADUCE_SRC) $(TRADUCE_INC) -o $@ 
+ 	@echo "## $(TRADUCE_CLAU) compiled successfully"
+@@ -1440,8 +1082,8 @@
  #-----------------------------
  HORRIBLESOSPECHA_CLAU = horriblesospecha
  HORRIBLESOSPECHA_SRC = $(MAIN_PATH)/src/$(HORRIBLESOSPECHA_CLAU).c
@@ -1017,7 +1460,22 @@
  HORRIBLESOSPECHA_SLS = $(HORRIBLESOSPECHA_SRC) $(BT2_HDR)
  HORRIBLESOSPECHA_OLS = $(HORRIBLESOSPECHA_OBJ) 
  HORRIBLESOSPECHA_LLS = $(BT2_LLS) 
-@@ -1467,8 +1106,8 @@
+@@ -1451,12 +1093,12 @@
+ $(HORRIBLESOSPECHA_CLAU) : $(HORRIBLESOSPECHA_EXE)
+ 	@echo " clau: $(HORRIBLESOSPECHA_CLAU)"
+ 
+-$(HORRIBLESOSPECHA_EXE) : $(HORRIBLESOSPECHA_OLS) $(HORRIBLESOSPECHA_LLS)
++$(HORRIBLESOSPECHA_EXE) : $(HORRIBLESOSPECHA_OLS) $(HORRIBLESOSPECHA_LLS) make_directories
+ 	@echo "****** linking $(HORRIBLESOSPECHA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(HORRIBLESOSPECHA_OLS) -o $@ $(HORRIBLESOSPECHA_LNK) 
+ 	@echo "## $(HORRIBLESOSPECHA_CLAU) linked successfully"
+ 
+-$(HORRIBLESOSPECHA_OBJ) : $(HORRIBLESOSPECHA_SLS)
++$(HORRIBLESOSPECHA_OBJ) : $(HORRIBLESOSPECHA_SLS) make_directories
+ 	@echo "****** compiling $(HORRIBLESOSPECHA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(HORRIBLESOSPECHA_SRC) $(HORRIBLESOSPECHA_INC) -o $@ 
+ 	@echo "## $(HORRIBLESOSPECHA_CLAU) compiled successfully"
+@@ -1467,8 +1109,8 @@
  #-----------------------------
  REDNOISE_CLAU = rednoise
  REDNOISE_SRC = $(MAIN_PATH)/src/$(REDNOISE_CLAU).c
@@ -1028,7 +1486,22 @@
  REDNOISE_SLS = $(REDNOISE_SRC) $(BT2_HDR)
  REDNOISE_OLS = $(REDNOISE_OBJ) 
  REDNOISE_LLS = $(BT2_LLS) 
-@@ -1494,8 +1133,8 @@
+@@ -1478,12 +1120,12 @@
+ $(REDNOISE_CLAU) : $(REDNOISE_EXE)
+ 	@echo " clau: $(REDNOISE_CLAU)"
+ 
+-$(REDNOISE_EXE) : $(REDNOISE_OLS) $(REDNOISE_LLS)
++$(REDNOISE_EXE) : $(REDNOISE_OLS) $(REDNOISE_LLS) make_directories
+ 	@echo "****** linking $(REDNOISE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(REDNOISE_OLS) -o $@ $(REDNOISE_LNK) 
+ 	@echo "## $(REDNOISE_CLAU) linked successfully"
+ 
+-$(REDNOISE_OBJ) : $(REDNOISE_SLS)
++$(REDNOISE_OBJ) : $(REDNOISE_SLS) make_directories
+ 	@echo "****** compiling $(REDNOISE_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(REDNOISE_SRC) $(REDNOISE_INC) -o $@ 
+ 	@echo "## $(REDNOISE_CLAU) compiled successfully"
+@@ -1494,8 +1136,8 @@
  #-----------------------------
  WDSCDB_CLAU = wdscdb
  WDSCDB_SRC = $(MAIN_PATH)/src/$(WDSCDB_CLAU).c
@@ -1039,7 +1512,22 @@
  WDSCDB_SLS = $(WDSCDB_SRC) $(JUAN_HDR) $(JUANFITS_HDR)
  WDSCDB_OLS = $(WDSCDB_OBJ) 
  WDSCDB_LLS = $(JUAN_LLS) $(JUANFITS_LLS) 
-@@ -1521,8 +1160,8 @@
+@@ -1505,12 +1147,12 @@
+ $(WDSCDB_CLAU) : $(WDSCDB_EXE)
+ 	@echo " clau: $(WDSCDB_CLAU)"
+ 
+-$(WDSCDB_EXE) : $(WDSCDB_OLS) $(WDSCDB_LLS)
++$(WDSCDB_EXE) : $(WDSCDB_OLS) $(WDSCDB_LLS) make_directories
+ 	@echo "****** linking $(WDSCDB_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(WDSCDB_OLS) -o $@ $(WDSCDB_LNK) 
+ 	@echo "## $(WDSCDB_CLAU) linked successfully"
+ 
+-$(WDSCDB_OBJ) : $(WDSCDB_SLS)
++$(WDSCDB_OBJ) : $(WDSCDB_SLS) make_directories
+ 	@echo "****** compiling $(WDSCDB_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(WDSCDB_SRC) $(WDSCDB_INC) -o $@ 
+ 	@echo "## $(WDSCDB_CLAU) compiled successfully"
+@@ -1521,8 +1163,8 @@
  #-----------------------------
  READCLNSET_CLAU = readclnset
  READCLNSET_SRC = $(MAIN_PATH)/src/$(READCLNSET_CLAU).c
@@ -1050,7 +1538,22 @@
  READCLNSET_SLS = $(READCLNSET_SRC) $(JUAN_HDR) $(JUANFITS_HDR)
  READCLNSET_OLS = $(READCLNSET_OBJ) 
  READCLNSET_LLS = $(JUAN_LLS) $(JUANFITS_LLS) 
-@@ -1548,8 +1187,8 @@
+@@ -1532,12 +1174,12 @@
+ $(READCLNSET_CLAU) : $(READCLNSET_EXE)
+ 	@echo " clau: $(READCLNSET_CLAU)"
+ 
+-$(READCLNSET_EXE) : $(READCLNSET_OLS) $(READCLNSET_LLS)
++$(READCLNSET_EXE) : $(READCLNSET_OLS) $(READCLNSET_LLS) make_directories
+ 	@echo "****** linking $(READCLNSET_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(READCLNSET_OLS) -o $@ $(READCLNSET_LNK) 
+ 	@echo "## $(READCLNSET_CLAU) linked successfully"
+ 
+-$(READCLNSET_OBJ) : $(READCLNSET_SLS)
++$(READCLNSET_OBJ) : $(READCLNSET_SLS) make_directories
+ 	@echo "****** compiling $(READCLNSET_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(READCLNSET_SRC) $(READCLNSET_INC) -o $@ 
+ 	@echo "## $(READCLNSET_CLAU) compiled successfully"
+@@ -1548,8 +1190,8 @@
  #-----------------------------
  HSA_CLAU = hsa
  HSA_SRC = $(MAIN_PATH)/src/$(HSA_CLAU).c
@@ -1061,3 +1564,226 @@
  HSA_SLS = $(HSA_SRC)
  HSA_OLS = $(HSA_OBJ) 
  HSA_LLS = 
+@@ -1559,12 +1201,12 @@
+ $(HSA_CLAU) : $(HSA_EXE)
+ 	@echo " clau: $(HSA_CLAU)"
+ 
+-$(HSA_EXE) : $(HSA_OLS) $(HSA_LLS)
++$(HSA_EXE) : $(HSA_OLS) $(HSA_LLS) make_directories
+ 	@echo "****** linking $(HSA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) $(HSA_OLS) -o $@ $(HSA_LNK) 
+ 	@echo "## $(HSA_CLAU) linked successfully"
+ 
+-$(HSA_OBJ) : $(HSA_SLS)
++$(HSA_OBJ) : $(HSA_SLS) make_directories
+ 	@echo "****** compiling $(HSA_CLAU) *****"
+ 	$(COMPILADOR) $(FLAGS) -c $(HSA_SRC) $(HSA_INC) -o $@ 
+ 	@echo "## $(HSA_CLAU) compiled successfully"
+@@ -1573,13 +1215,13 @@
+ 
+ # libreria juan
+ #-----------------------------
+-$(JUAN_LIB) : $(JUAN_OBJ)
++$(JUAN_LIB) : $(JUAN_OBJ) make_directories
+ 	@echo "***** creating library $(JUAN_CLAU) *****"
+ 	ar -rc $@ $(JUAN_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(JUAN_OBJ) : $(JUAN_SLS) 
++$(JUAN_OBJ) : $(JUAN_SLS)  make_directories
+ 	@echo "***** compiling $(JUAN_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(JUAN_SRC) $(JUAN_INC)
+ 	@echo "## library compiled successfully"
+@@ -1591,13 +1233,13 @@
+ 
+ # libreria juan_fits
+ #-----------------------------
+-$(JUANFITS_LIB) : $(JUANFITS_OBJ)
++$(JUANFITS_LIB) : $(JUANFITS_OBJ) make_directories
+ 	@echo "***** creating library $(JUANFITS_CLAU) *****"
+ 	ar -rc $@ $(JUANFITS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(JUANFITS_OBJ) : $(JUANFITS_SLS)
++$(JUANFITS_OBJ) : $(JUANFITS_SLS) make_directories
+ 	@echo "***** compiling $(JUANFITS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(JUANFITS_SRC) $(JUANFITS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1609,13 +1251,13 @@
+ 
+ # libreria libbt2
+ #-----------------------------
+-$(BT2_LIB) : $(BT2_OBJ)
++$(BT2_LIB) : $(BT2_OBJ) make_directories
+ 	@echo "***** creating library $(BT2_CLAU) *****"
+ 	ar -rc $@ $(BT2_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(BT2_OBJ) : $(BT2_SLS) 
++$(BT2_OBJ) : $(BT2_SLS)  make_directories
+ 	@echo "***** compiling $(BT2_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(BT2_SRC) $(BT2_INC)
+ 	@echo "## library compiled successfully"
+@@ -1627,13 +1269,13 @@
+ 
+ # libreria libbt2_clnset
+ #-----------------------------
+-$(BT2CLNSET_LIB) : $(BT2CLNSET_OBJ)
++$(BT2CLNSET_LIB) : $(BT2CLNSET_OBJ) make_directories
+ 	@echo "***** creating library $(BT2CLNSET_CLAU) *****"
+ 	ar -rc $@ $(BT2CLNSET_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(BT2CLNSET_OBJ) : $(BT2CLNSET_SLS) 
++$(BT2CLNSET_OBJ) : $(BT2CLNSET_SLS)  make_directories
+ 	@echo "***** compiling $(BT2CLNSET_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(BT2CLNSET_SRC) $(BT2CLNSET_INC)
+ 	@echo "## library compiled successfully"
+@@ -1645,13 +1287,13 @@
+ 
+ # libreria libbin
+ #-----------------------------
+-$(BIN_LIB) : $(BIN_OBJ)
++$(BIN_LIB) : $(BIN_OBJ) make_directories
+ 	@echo "***** creating library $(BIN_CLAU) *****"
+ 	ar -rc $@ $(BIN_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(BIN_OBJ) : $(BIN_SLS) 
++$(BIN_OBJ) : $(BIN_SLS)  make_directories
+ 	@echo "***** compiling $(BIN_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(BIN_SRC) $(BIN_INC)
+ 	@echo "## library compiled successfully"
+@@ -1663,13 +1305,13 @@
+ 
+ # libreria libtmg
+ #-----------------------------
+-$(TMG_LIB) : $(TMG_OBJ)
++$(TMG_LIB) : $(TMG_OBJ) make_directories
+ 	@echo "***** creating library $(TMG_CLAU) *****"
+ 	ar -rc $@ $(TMG_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(TMG_OBJ) : $(TMG_SLS) 
++$(TMG_OBJ) : $(TMG_SLS)  make_directories
+ 	@echo "***** compiling $(TMG_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(TMG_SRC) $(TMG_INC)
+ 	@echo "## library compiled successfully"
+@@ -1681,13 +1323,13 @@
+ 
+ # libreria libmpl
+ #-----------------------------
+-$(MPL_LIB) : $(MPL_OBJ)
++$(MPL_LIB) : $(MPL_OBJ) make_directories
+ 	@echo "***** creating library $(MPL_CLAU) *****"
+ 	ar -rc $@ $(MPL_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(MPL_OBJ) : $(MPL_SLS) 
++$(MPL_OBJ) : $(MPL_SLS)  make_directories
+ 	@echo "***** compiling $(MPL_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(MPL_SRC) $(MPL_INC)
+ 	@echo "## library compiled successfully"
+@@ -1699,13 +1341,13 @@
+ 
+ # library libkepler_fits
+ #-----------------------------
+-$(KFTS_LIB) : $(KFTS_OBJ)
++$(KFTS_LIB) : $(KFTS_OBJ) make_directories
+ 	@echo "***** creating library $(KFTS_CLAU) *****"
+ 	ar -rc $@ $(KFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(KFTS_OBJ) : $(KFTS_SRC) $(KFTS_HDR_LIST) 
++$(KFTS_OBJ) : $(KFTS_SRC) $(KFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(KFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(KFTS_SRC) $(KFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1717,13 +1359,13 @@
+ 
+ # library libk2vanderburg_fits
+ #-----------------------------
+-$(K2VFTS_LIB) : $(K2VFTS_OBJ)
++$(K2VFTS_LIB) : $(K2VFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2VFTS_CLAU) *****"
+ 	ar -rc $@ $(K2VFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2VFTS_OBJ) : $(K2VFTS_SRC) $(K2VFTS_HDR_LIST) 
++$(K2VFTS_OBJ) : $(K2VFTS_SRC) $(K2VFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2VFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2VFTS_SRC) $(K2VFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1735,13 +1377,13 @@
+ 
+ # library libeverest_fits
+ #-----------------------------
+-$(K2EFTS_LIB) : $(K2EFTS_OBJ)
++$(K2EFTS_LIB) : $(K2EFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2EFTS_CLAU) *****"
+ 	ar -rc $@ $(K2EFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2EFTS_OBJ) : $(K2EFTS_SRC) $(K2EFTS_HDR_LIST) 
++$(K2EFTS_OBJ) : $(K2EFTS_SRC) $(K2EFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2EFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2EFTS_SRC) $(K2EFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1753,13 +1395,13 @@
+ 
+ # library libk2sc_fits
+ #-----------------------------
+-$(K2SCFTS_LIB) : $(K2SCFTS_OBJ)
++$(K2SCFTS_LIB) : $(K2SCFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2SCFTS_CLAU) *****"
+ 	ar -rc $@ $(K2SCFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2SCFTS_OBJ) : $(K2SCFTS_SRC) $(K2SCFTS_HDR_LIST) 
++$(K2SCFTS_OBJ) : $(K2SCFTS_SRC) $(K2SCFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2SCFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2SCFTS_SRC) $(K2SCFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1771,13 +1413,13 @@
+ 
+ # library libpolar_fits
+ #-----------------------------
+-$(K2PFTS_LIB) : $(K2PFTS_OBJ)
++$(K2PFTS_LIB) : $(K2PFTS_OBJ) make_directories
+ 	@echo "***** creating library $(K2PFTS_CLAU) *****"
+ 	ar -rc $@ $(K2PFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(K2PFTS_OBJ) : $(K2PFTS_SRC) $(K2PFTS_HDR_LIST) 
++$(K2PFTS_OBJ) : $(K2PFTS_SRC) $(K2PFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(K2PFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(K2PFTS_SRC) $(K2PFTS_INC)
+ 	@echo "## library compiled successfully"
+@@ -1789,13 +1431,13 @@
+ 
+ # library libtess_fits
+ #-----------------------------
+-$(TFTS_LIB) : $(TFTS_OBJ)
++$(TFTS_LIB) : $(TFTS_OBJ) make_directories
+ 	@echo "***** creating library $(TFTS_CLAU) *****"
+ 	ar -rc $@ $(TFTS_OBJ)
+ 	ranlib $@
+ 	@echo "## library created successfully"
+ 
+-$(TFTS_OBJ) : $(TFTS_SRC) $(TFTS_HDR_LIST) 
++$(TFTS_OBJ) : $(TFTS_SRC) $(TFTS_HDR_LIST)  make_directories
+ 	@echo "***** compiling $(TFTS_CLAU) *****"
+ 	$(COMPILADOR) -o $@ -c $(TFTS_SRC) $(TFTS_INC)
+ 	@echo "## library compiled successfully"

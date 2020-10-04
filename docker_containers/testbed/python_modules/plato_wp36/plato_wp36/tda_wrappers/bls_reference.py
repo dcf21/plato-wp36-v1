@@ -4,9 +4,25 @@
 import numpy as np
 from astropy import units as u
 from astropy.timeseries import BoxLeastSquares
+from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 
-def process_lightcurve(lc, lc_duration):
+def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
+    """
+    Perform a transit search on a light curve, using the bls_reference code.
+
+    :param lc:
+        The lightcurve object containing the input lightcurve.
+    :type lc:
+        LightcurveArbitraryRaster
+    :param lc_duration:
+        The duration of the lightcurve, in units of days.
+    :type lc_duration:
+        float
+    :return:
+        dict containing the results of the transit search.
+    """
+
     t = lc.times * u.day
     y_filt = lc.fluxes
 
