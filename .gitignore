@@ -10,11 +10,11 @@ datadir_local
 # Plotting
 plotting/
 
-# Specific proprietary codes
-private_code/asalto26.5.tar.gz
-private_code/asalto27.tar.gz
-private_code/asalto29.tgz
-private_code/juan.tar.gz
+# Transit decection codes which are non-public
+docker_containers/private_code/asalto26.5.tar.gz
+docker_containers/private_code/asalto27.tar.gz
+docker_containers/private_code/asalto29.tgz
+docker_containers/private_code/juan.tar.gz
 
 # pycharm
 .idea

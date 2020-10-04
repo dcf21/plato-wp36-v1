@@ -1,7 +1,7 @@
 This builds a Docker image containing version 26 (C code) of DST.
 
 This code is not publicly available, and a tar file of the source code must be
-placed in the `private_codes` directory in the root of the pipeline
+placed in the `private_code` directory in the root of the pipeline
 installation.
 
 Furthermore, the distributed Makefiles need to be modified to compile within a

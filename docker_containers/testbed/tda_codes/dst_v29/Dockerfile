@@ -2,7 +2,7 @@
 FROM plato/eas:v1
 
 # Patch Juan's Makefiles into a working state
-WORKDIR /plato_eas/private_codes/asalto29
+WORKDIR /plato_eas/private_code/asalto29
 COPY Makefile.asalto29.patch Makefile.patch
 
 # Default working directory

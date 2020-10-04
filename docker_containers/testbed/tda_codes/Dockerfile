@@ -10,19 +10,19 @@ FROM plato/eas:v1
 # *** dst_v26
 
 # Patch Juan's Makefiles into a working state
-WORKDIR /plato_eas/proprietary/juan
+WORKDIR /plato_eas/private_code/juan
 COPY dst_v26/Makefile.juan.patch Makefile.patch
 
-WORKDIR /plato_eas/proprietary/asalto26.5
+WORKDIR /plato_eas/private_code/asalto26.5
 COPY dst_v26/Makefile.asalto26.5.patch Makefile.patch
 
-WORKDIR /plato_eas/proprietary/asalto27
+WORKDIR /plato_eas/private_code/asalto27
 COPY dst_v26/Makefile.asalto27.patch Makefile.patch
 
 # *** dst_v29
 
 # Patch Juan's Makefiles into a working state
-WORKDIR /plato_eas/proprietary/asalto29
+WORKDIR /plato_eas/private_code/asalto29
 COPY dst_v29/Makefile.asalto29.patch Makefile.patch
 
 # *** exotrans

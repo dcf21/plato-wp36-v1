@@ -9,35 +9,36 @@ cd "$(dirname "$0")"
 cwd=`pwd`
 
 # First build a copy of the base container in local Docker environment
-cd ${cwd}/..
+cd ${cwd}/../docker_containers
 docker build . --tag plato/eas:v1 2>&1 | tee docker_build.log
 
 # Build containers within minikube environment
 eval $(minikube -p minikube docker-env)
 
 # Build top-level Docker container containing python requirements
-cd ${cwd}/..
+cd ${cwd}/../docker_containers
 docker build . --tag plato/eas:v1 2>&1 | tee docker_build.log
 
 # Build Docker images for each transit detection code
-# cd ${cwd}/../src/tda_codes/bls_reference
+# cd ${cwd}/../docker_containers/testbed/tda_codes/bls_reference
 # docker build . --tag plato/eas_bls_reference:v1 2>&1 | tee docker_build.log
 
-# cd ${cwd}/../src/tda_codes/bls_kovacs
+# cd ${cwd}/../docker_containers/testbed/tda_codes/bls_kovacs
 # docker build . --tag plato/eas_bls_kovacs:v1 2>&1 | tee docker_build.log
 
-# cd ${cwd}/../src/tda_codes/dst_v26
+# cd ${cwd}/../docker_containers/testbed/tda_codes/dst_v26
 # docker build . --tag plato/eas_dst_v26:v1 2>&1 | tee docker_build.log
 
-# cd ${cwd}/../src/tda_codes/dst_v29
+# cd ${cwd}/../docker_containers/testbed/tda_codes/dst_v29
 # docker build . --tag plato/eas_dst_v29:v1 2>&1 | tee docker_build.log
 
-# cd ${cwd}/../src/tda_codes/qats
+# cd ${cwd}/../docker_containers/testbed/tda_codes/qats
 # docker build . --tag plato/eas_qats:v1 2>&1 | tee docker_build.log
 
-# cd ${cwd}/../src/tda_codes/tls
+# cd ${cwd}/../docker_containers/testbed/tda_codes/tls
 # docker build . --tag plato/eas_tls:v1 2>&1 | tee docker_build.log
 
 # Build a master Docker image containing all transit detection codes
-cd ${cwd}/../src/tda_codes
+cd ${cwd}/../docker_containers/testbed/tda_codes
 docker build . --tag plato/eas_all_tdas:v1 2>&1 | tee docker_build.log
+
