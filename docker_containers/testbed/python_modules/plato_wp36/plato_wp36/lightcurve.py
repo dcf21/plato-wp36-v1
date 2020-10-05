@@ -184,7 +184,7 @@ class LightcurveArbitraryRaster:
         for index, time in enumerate(times):
             closest_time_point = self.times[input_position]
             while ((not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol)) and
-                   (self.times[input_position] < time)):
+                   (time > self.times[input_position])):
                 if abs(self.times[input_position] - time) < abs(closest_time_point - time):
                     closest_time_point = self.times[input_position]
                 input_position += 1
@@ -241,22 +241,22 @@ class LightcurveArbitraryRaster:
             # Find the time point in the input lightcurve which is closest to this time
             closest_time_point = [self.times[input_position], self.fluxes[input_position]]
             while ((not math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol))
-                   and (time < self.times[input_position])):
+                   and (time > self.times[input_position])):
                 if abs(self.times[input_position] - time) < abs(closest_time_point[0] - time):
                     closest_time_point = [self.times[input_position], self.fluxes[input_position]]
                 input_position += 1
 
-            if abs(self.times[input_position] - time) < abs(closest_time_point - time):
-                closest_time_point = self.times[input_position]
+            if abs(self.times[input_position] - time) < abs(closest_time_point[0] - time):
+                closest_time_point = [self.times[input_position], self.fluxes[input_position]]
 
             # If this time point has the correct spacing, it is OK
             if math.isclose(time, self.times[input_position], abs_tol=abs_tol, rel_tol=rel_tol):
                 output[index] = closest_time_point[1]
                 continue
-                
+
             if verbose and (max_errors is None or error_count <= max_errors):
                 logging.info("index {:5d} - Point missing at time {:.15f}. Closest time was {:.15f}.".
-                             format(index, self.times[index], closest_time_point))
+                             format(index, self.times[index], closest_time_point[0]))
             error_count += 1
             output[index] = 1
 
