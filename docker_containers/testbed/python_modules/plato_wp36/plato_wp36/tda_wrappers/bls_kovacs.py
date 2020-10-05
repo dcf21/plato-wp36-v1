@@ -55,10 +55,10 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     nf = (fmax - fmin) / df
 
     # Number of bins (maximum 2000)
-    nb = 1200
+    nb = 10
 
-    results = {}
-    # results = bls.eebls(time, flux, u, v, nf, fmin, df, nb, qmi, qma)
+    # results = {}
+    results = bls.eebls(time, flux, u, v, nf, fmin, df, nb, qmi, qma)
 
     # Return results
     return results
