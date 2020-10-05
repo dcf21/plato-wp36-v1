@@ -55,10 +55,25 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     nf = (fmax - fmin) / df
 
     # Number of bins (maximum 2000)
+    # For large number of bins, the FORTRAN code seems to segfault, which limits usefulness of this code
+    # See issue described here <https://github.com/dfm/python-bls/issues/4>
     nb = 10
 
     # results = {}
     results = bls.eebls(time, flux, u, v, nf, fmin, df, nb, qmi, qma)
 
+    # Unpack results
+    power, best_period, best_power, depth, q, in1, in2 = results
+
+    output = {
+        "power": None,  # power
+        "best_period": best_period,
+        "best_power": best_power,
+        "depth": depth,
+        "q": q,
+        "in1": in1,
+        "in2": in2
+    }
+
     # Return results
-    return results
+    return output
