@@ -1,6 +1,6 @@
 # DST (version 26)
 
-This builds a Docker image containing version 26 (C code) of DST.
+This builds a Docker image containing version 26 (C code) of Détection Spécialisée de Transits (DST).
 
 This code is not publicly available, and a tar file of the source code must be
 placed in the `private_code` directory in the root of the pipeline

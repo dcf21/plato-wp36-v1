@@ -1,6 +1,6 @@
 # DST (version 29)
 
-This builds a Docker image containing version 29 (C++ code) of DST.
+This builds a Docker image containing version 29 (C++ code) of Détection Spécialisée de Transits (DST).
 
 This code is not publicly available, and a tar file of the source code must be
 placed in the `private_code` directory in the root of the pipeline
