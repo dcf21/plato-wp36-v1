@@ -1,4 +1,4 @@
-# plato-wp36
+# PLATO EAS baseline algorithm test bench
 
 This code is used to evaluate the performance of candidate transit detection algorithms (TDAs) which might be used
 in the PLATO WP36 Exoplanet Analysis System (EAS). It also serves as a prototype for the pipeline architecture which the
