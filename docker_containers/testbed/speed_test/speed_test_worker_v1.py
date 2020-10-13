@@ -1,6 +1,6 @@
 #!../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# speed_test_worker.py
+# speed_test_worker_v1.py
 
 """
 Run speed tests as requested through the RabbitMQ message queue
