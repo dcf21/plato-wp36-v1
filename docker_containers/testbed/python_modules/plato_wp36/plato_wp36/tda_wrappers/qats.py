@@ -64,7 +64,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
 
     # Maximum TTV relative magnitude f
     f = 0.1
-    sigma_spans = int(floor(log(maximum_period / minimum_period) / log(f)))
+    sigma_spans = int(floor(log(maximum_period / minimum_period) / log(1 + f)))
     sigma_min = minimum_period / lc_time_step_days  # time steps
 
     # Initialise empty results structure

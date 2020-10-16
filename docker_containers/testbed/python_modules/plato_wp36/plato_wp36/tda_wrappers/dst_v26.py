@@ -29,7 +29,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
 
     # Create working directory for DST
     work_dir = "/plato_eas/private_code"
-    fits_file_path = os.path.join(work_dir, "DATOS", "DAT", "lc.fits")
+    fits_file_path = os.path.join(work_dir, "k2-3", "DATOS", "DAT", "lc.fits")
 
     # Make working directory structure
     os.system("cd {} ; ./asalto26.5/scripts/hazdir.sh k2-3".format(work_dir))
