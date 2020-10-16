@@ -52,7 +52,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     # List of transit durations to consider
     lc_time_step = lc_fixed_step.time_step  # seconds
     lc_time_step_days = lc_time_step / 86400  # days
-    durations_days = np.linspace(0.05, 0.2, 10)  # days
+    durations_days = np.linspace(0.05, 0.2, 5)  # days
     durations = durations_days / lc_time_step_days  # time steps
 
     # Minimum transit period, days
@@ -63,7 +63,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     maximum_period = lc_duration / minimum_n_transits  # days
 
     # Maximum TTV relative magnitude f
-    f = 0.1
+    f = 0.15
     sigma_spans = int(floor(log(maximum_period / minimum_period) / log(1 + f)))
     sigma_min = minimum_period / lc_time_step_days  # time steps
 
@@ -95,7 +95,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
             logging.info("QATS returned error text <{}>".format(err))
 
             # Store output
-            results.append(output)
+            results.append(output.decode('utf-8'))
 
     # Clean up temporary directory
     os.system("rm -Rf {}".format(tmp_dir))
