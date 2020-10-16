@@ -2,6 +2,7 @@
 # qats.py
 
 from math import floor, log
+import logging
 import numpy as np
 import os
 import secrets
@@ -49,22 +50,29 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     np.savetxt(lc_file, lc_fixed_step.fluxes)
 
     # List of transit durations to consider
-    durations = np.linspace(0.05, 0.2, 10) / lc_fixed_step.time_step
+    lc_time_step = lc_fixed_step.time_step  # seconds
+    lc_time_step_days = lc_time_step / 86400  # days
+    durations_days = np.linspace(0.05, 0.2, 10)  # days
+    durations = durations_days / lc_time_step_days  # time steps
 
     # Minimum transit period, days
-    minimum_period = 0.5
+    minimum_period = 0.5  # days
 
     # Maximum transit period, days
     minimum_n_transits = 2
-    maximum_period = lc_duration / minimum_n_transits
+    maximum_period = lc_duration / minimum_n_transits  # days
 
     # Maximum TTV relative magnitude f
     f = 0.1
-    sigma_spans = int(floor(log(maximum_period / minimum_period)) / log(f))
-    sigma_min = minimum_period / lc_fixed_step.time_step
+    sigma_spans = int(floor(log(maximum_period / minimum_period) / log(f)))
+    sigma_min = minimum_period / lc_time_step_days  # time steps
 
     # Initialise empty results structure
     results = []
+
+    # Logging
+    logging.info("QATS testing {:d} transit lengths".format(len(durations)))
+    logging.info("QATS testing {} sigma spans".format(sigma_spans))
 
     # Loop over all values of q
     for transit_length in durations:
@@ -81,6 +89,10 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
                       stdin=None, stdout=PIPE, stderr=PIPE)
             output, err = p.communicate()
             rc = p.returncode
+
+            # Logging
+            logging.info("QATS returned status code <{}>".format(rc))
+            logging.info("QATS returned error text <{}>".format(err))
 
             # Store output
             results.append(output)

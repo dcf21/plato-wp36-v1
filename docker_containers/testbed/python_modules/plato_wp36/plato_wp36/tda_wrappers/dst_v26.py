@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 # dst_v26.py
 
+import os
+import numpy as np
+from astropy.io import fits
+
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 
@@ -23,6 +27,40 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     time = lc.times
     flux = lc.fluxes
 
+    # Create working directory for DST
+    work_dir = "/plato_eas/private_code"
+    fits_file_path = os.path.join(work_dir, "DATOS", "DAT", "lc.fits")
+
+    # Make working directory structure
+    os.system("cd {} ; ./asalto26.5/scripts/hazdir.sh k2-3".format(work_dir))
+
+    # Output LC in FITS format for DST
+    col1 = fits.Column(name='T', format='E', array=time)
+    col2 = fits.Column(name='CADENCENO', format='E', array=np.arange(len(time)))
+    col3 = fits.Column(name='FCOR', format='E', array=flux)
+    cols = fits.ColDefs([col1, col2, col3])
+    table_hdu = fits.BinTableHDU.from_columns(cols)
+
+    # Populate FITS headers
+    hdr = fits.Header()
+    hdr['KEPLERID'] = '0'
+    hdr['RA'] = '0'
+    hdr['DEC'] = '0'
+    hdr['KEPMAG'] = '0'
+    empty_primary = fits.PrimaryHDU(header=hdr)
+
+    # Output FITS file
+    hdul = fits.HDUList([empty_primary, table_hdu])
+    hdul.writeto(fits_file_path)
+
+    # Run onyva_k2vanderburg.exe
+    command_line = "onyva_k2vanderburg.exe -Rru . lc.fits"
+    os.system(command_line)
+
+    # Clean up DST working directories
+    os.system("cd {} ; rm -Rf k2-3".format(work_dir))
+
+    # Return nothing for now
     results = {}
 
     # Return results
