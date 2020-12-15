@@ -25,18 +25,59 @@ from plato_wp36 import lc_reader_lcsg, lc_reader_psls, settings, results_logger,
 from plato_wp36.tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
 
 
-def psls_synthesise():
+def psls_synthesise(lc_filename, lc_directory, lc_specs):
     """
     Perform the task of synthesising a lightcurve using PSLS.
     """
     logging.info("Running PSLS synthesis")
 
 
-def verify_lightcurve():
+def verify_lightcurve(lc_filename, lc_directory, lc_source):
     """
     Perform the task of verifying a lightcurve.
     """
-    logging.info("Verifying lightcurve")
+    logging.info("Verifying <{lc_filename}>.".format(lc_filename=lc_filename))
+
+    # Work out which lightcurve reader to use
+    if lc_source == 'lcsg':
+        lc_reader = lc_reader_lcsg.read_lcsg_lightcurve
+    elif lc_source == 'psls':
+        lc_reader = lc_reader_psls.read_psls_lightcurve
+    else:
+        raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
+
+    # Open connections to transit results and run times to RabbitMQ message queues
+    time_log = run_time_logger.RunTimesToRabbitMQ()
+
+    # Load lightcurve
+    with task_timer.TaskTimer(target_name=lc_filename, task_name='verify_lc', time_logger=time_log):
+        lc = lc_reader(
+            filename=lc_filename,
+            directory=lc_directory,
+            gzipped=True
+        )
+
+    # Verify lightcurve
+    display_name = os.path.split(lc_filename)[1]
+
+    # Run first code for checking LCs
+    error_count = lc.check_fixed_step(verbose=True, max_errors=4)
+
+    if error_count == 0:
+        logging.info("V1: Lightcurve <{}> has fixed step".format(display_name))
+    else:
+        logging.info("V1: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(display_name, error_count))
+
+    # Run second code for checking LCs
+    error_count = lc.check_fixed_step_v2(verbose=True, max_errors=4)
+
+    if error_count == 0:
+        logging.info("V2: Lightcurve <{}> has fixed step".format(display_name))
+    else:
+        logging.info("V2: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(display_name, error_count))
+
+    # Close connection to message queue
+    time_log.close()
 
 
 def transit_search(lc_duration, tda_name, lc_filename, lc_directory, lc_source):
@@ -67,7 +108,7 @@ def transit_search(lc_duration, tda_name, lc_filename, lc_directory, lc_source):
     # Load lightcurve
     with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load_lc',
                               lc_length=lc_duration, time_logger=time_log):
-        lc = lc_reader_lcsg.read_lcsg_lightcurve(
+        lc = lc_reader(
             filename=lc_filename,
             directory=lc_directory,
             gzipped=True,

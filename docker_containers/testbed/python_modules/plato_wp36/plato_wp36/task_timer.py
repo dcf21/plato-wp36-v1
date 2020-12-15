@@ -21,7 +21,7 @@ class TaskTimer:
     and also CPU time.
     """
 
-    def __init__(self, tda_code, target_name, task_name, lc_length, time_logger=RunTimesToRabbitMQ()):
+    def __init__(self, tda_code="", target_name="", task_name="null", lc_length=0, time_logger=RunTimesToRabbitMQ()):
         """
         Create a new timer.
 
