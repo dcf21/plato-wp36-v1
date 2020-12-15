@@ -26,7 +26,7 @@ spec:
         - name: plato-persistent-storage
           mountPath: /plato_eas/datadir
         - name: lightcurves-persistent-storage
-          mountPath: /plato_eas/lightcurves
+          mountPath: /plato_eas/datadir_input
       volumes:
       - name: plato-persistent-storage
         persistentVolumeClaim:

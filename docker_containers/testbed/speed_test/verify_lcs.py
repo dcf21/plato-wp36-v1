@@ -11,7 +11,7 @@ import logging
 import os
 
 import argparse
-from plato_wp36 import lcsg_lc_reader, settings
+from plato_wp36 import lc_reader_lcsg, settings
 
 lightcurves_path = "csvs/bright/plato_bright*"
 
@@ -28,7 +28,7 @@ def verify_lcs():
 
     # Loop over lightcurves
     for lc_filename in lightcurve_list:
-        lc = lcsg_lc_reader.read_lcsg_lightcurve(
+        lc = lc_reader_lcsg.read_lcsg_lightcurve(
             filename=lc_filename,
             gzipped=True
         )

@@ -21,11 +21,28 @@ import json
 import time
 import threading
 
-from plato_wp36 import lcsg_lc_reader, settings, results_logger, run_time_logger, task_timer
+from plato_wp36 import lc_reader_lcsg, lc_reader_psls, settings, results_logger, run_time_logger, task_timer
 from plato_wp36.tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
 
 
-def speed_test(lc_duration, tda_name, lc_filename):
+def psls_synthesise():
+    """
+    Perform the task of synthesising a lightcurve using PSLS.
+    """
+    logging.info("Running PSLS synthesis")
+
+
+def verify_lightcurve():
+    """
+    Perform the task of verifying a lightcurve.
+    """
+    logging.info("Verifying lightcurve")
+
+
+def transit_search(lc_duration, tda_name, lc_filename, lc_directory, lc_source):
+    """
+    Perform the task of running a lightcurve through a transit-detection algorithm.
+    """
     logging.info("Running <{lc_filename}> through <{tda_name}> with duration {lc_days:.1f}.".format(
         lc_filename=lc_filename,
         tda_name=tda_name,
@@ -35,6 +52,14 @@ def speed_test(lc_duration, tda_name, lc_filename):
     # Record start time
     start_time = time.time()
 
+    # Work out which lightcurve reader to use
+    if lc_source == 'lcsg':
+        lc_reader = lc_reader_lcsg.read_lcsg_lightcurve
+    elif lc_source == 'psls':
+        lc_reader = lc_reader_psls.read_psls_lightcurve
+    else:
+        raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
+
     # Open connections to transit results and run times to RabbitMQ message queues
     time_log = run_time_logger.RunTimesToRabbitMQ()
     result_log = results_logger.ResultsToRabbitMQ()
@@ -42,8 +67,9 @@ def speed_test(lc_duration, tda_name, lc_filename):
     # Load lightcurve
     with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load_lc',
                               lc_length=lc_duration, time_logger=time_log):
-        lc = lcsg_lc_reader.read_lcsg_lightcurve(
+        lc = lc_reader_lcsg.read_lcsg_lightcurve(
             filename=lc_filename,
+            directory=lc_directory,
             gzipped=True,
             cut_off_time=lc_duration / 86400
         )
@@ -79,23 +105,48 @@ def speed_test(lc_duration, tda_name, lc_filename):
 
 
 def acknowledge_message(channel, delivery_tag):
+    """
+    Acknowledge receipt of a RabbitMQ message, thereby preventing it from being sent to other worker nodes.
+    """
     channel.basic_ack(delivery_tag=delivery_tag)
 
 
-def do_work(connection, channel, delivery_tag, body):
-    # Process lightcurve
-    job_description = json.loads(body)
-    speed_test(
-        lc_duration=job_description['lc_duration'],
-        tda_name=job_description['tda_name'],
-        lc_filename=job_description['lc_filename']
-    )
+def do_work(connection=None, channel=None, delivery_tag=None, body="[{'task':'null'}]"):
+    """
+    Perform a list of tasks sent to us via a RabbitMQ message
+    """
+    # Extract list of the jobs we are to do
+    task_list = json.loads(body)
+
+    # Do each task in list
+    for job_description in task_list:
+        if job_description['task'] == 'null':
+            logging.info("Running null task")
+        elif job_description['task'] == 'transit_search':
+            transit_search(
+                lc_source=job_description['lc_source'],
+                lc_duration=job_description['lc_duration'],
+                lc_directory=job_description['lc_directory'],
+                tda_name=job_description['tda_name'],
+                lc_filename=job_description['lc_filename']
+            )
+        elif job_description['task'] == 'psls_synthesise':
+            psls_synthesise()
+        elif job_description['task'] == 'verify_lc':
+            verify_lc()
+        else:
+            raise ValueError("Unknown task <{}>".format(job_description['task']))
 
     # Acknowledge the message we've just processed
-    cb = functools.partial(acknowledge_message, channel, delivery_tag)
-    connection.add_callback_threadsafe(cb)
+    if connection is not None:
+        cb = functools.partial(acknowledge_message, channel, delivery_tag)
+        connection.add_callback_threadsafe(cb)
+
 
 def message_callback(channel, method_frame, properties, body, args):
+    """
+    Callback function called by RabbitMQ when we receive a message telling us to do some work.
+    """
     (connection, threads) = args
 
     logging.info("--> Received {}".format(body))
@@ -106,7 +157,12 @@ def message_callback(channel, method_frame, properties, body, args):
     t.start()
     threads.append(t)
 
+
 def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+    """
+    Set up a RabbitMQ consumer to call the <message_callback> function whenever we receive a message
+    telling us to do some work.
+    """
     connection = pika.BlockingConnection(pika.URLParameters(url=broker))
     channel = connection.channel()
     channel.basic_qos(prefetch_count=1)
@@ -137,5 +193,5 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.info(__doc__.strip())
 
-    # Run speed tests
+    # Enter infinite loop of listening for RabbitMQ messages telling us to do work
     run_speed_tests()

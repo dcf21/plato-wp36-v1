@@ -48,8 +48,11 @@ for line in open(os.path.join(root_path, "../configuration_local/installation_se
 # data from the pipeline
 data_directory = os.path.join(root_path, "../datadir")
 
-# The path to the <lightcurves> directory which contains input lightcurves
-lc_directory = os.path.join(root_path, "../lightcurves")
+# The path to the directory which contains input lightcurves
+lc_directory = os.path.join(root_path, "../datadir_local")
+
+# The path to the directory which contains input data such as PSLS's frequency data
+input_directory = os.path.join(root_path, "../datadir_local")
 
 # The default settings are below
 settings = {
@@ -60,6 +63,9 @@ settings = {
 
     # The directory where we can store persistent data
     'dataPath': data_directory,
+
+    # The directory where we expect to find input data
+    'inDataPath': input_directory,
 
     # The directory where we expect to find lightcurves to work on
     'lcPath': lc_directory,
@@ -72,5 +78,5 @@ settings = {
 # access persistent data volume.
 assert os.path.exists(settings['dataPath']), """
 You need to create a directory or symlink <datadir> in the root of your working
-copy of the pipeline, where we store all recorded data.
+copy of the pipeline, where we store all persistent data.
 """

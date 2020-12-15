@@ -11,26 +11,20 @@ https://github.com/pika/pika/blob/0.12.0/examples/basic_consumer_threaded.py
 """
 
 import argparse
-import json
 import logging
 import os
 
 import pika
 from plato_wp36 import settings
-from speed_test_worker_v1 import speed_test
-
-
-def do_work(body):
-    # Process lightcurve
-    job_description = json.loads(body)
-    speed_test(
-        lc_duration=job_description['lc_duration'],
-        tda_name=job_description['tda_name'],
-        lc_filename=job_description['lc_filename']
-    )
+from speed_test_worker_v1 import do_work
 
 
 def receive(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+    """
+    A very simple RabbitMQ consumer, which receives a simple task from the job queue, acknowledges it, and then
+    closes the connection to RabbitMQ. This workflow prevents issues with the RabbitMQ connection dropping during
+    long-running transit-search tasks.
+    """
     connection = pika.BlockingConnection(pika.URLParameters(url=broker))
     channel = connection.channel()
     channel.queue_declare(queue=queue)
@@ -45,6 +39,9 @@ def receive(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
 
 
 def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+    """
+    Set up a very simple RabbitMQ consumer to receive messages from the job queue, one by one
+    """
     logging.info('Waiting for messages. To exit press CTRL+C')
     while True:
         # Fetch next message from queue
@@ -75,5 +72,5 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.info(__doc__.strip())
 
-    # Run speed tests
+    # Enter infinite loop of listening for RabbitMQ messages telling us to do work
     run_speed_tests()
