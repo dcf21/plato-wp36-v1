@@ -1,3 +1,7 @@
+# This Dockerfile creates a generic Docker image containing the WP36 algorithm
+# test bench code, and with various useful libraries installed. From this image
+# are derived various containers which run specific codes.
+
 # Use a Ubuntu base image
 FROM ubuntu:latest
 
