@@ -1,6 +1,6 @@
-#!../../datadir_local/virtualenv/bin/python3
+#!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# speed_test.py
+# display_message_queue.py
 
 """
 Display the contents of the RabbitMQ message queues
@@ -33,7 +33,7 @@ def print_queues(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks
 
 
 if __name__ == "__main__":
-    # Read commandline arguments
+    # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
     args = parser.parse_args()
 

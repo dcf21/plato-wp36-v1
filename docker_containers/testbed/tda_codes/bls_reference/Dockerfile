@@ -2,7 +2,7 @@
 FROM plato/eas:v1
 
 # Default working directory
-WORKDIR /plato_eas
+WORKDIR /plato_eas/docker_containers/testbed
 
 # Build code
 COPY build.sh build.sh

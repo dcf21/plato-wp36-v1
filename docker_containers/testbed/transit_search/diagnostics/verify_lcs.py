@@ -1,4 +1,4 @@
-#!../../datadir_local/virtualenv/bin/python3
+#!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
 # verify_lcs.py
 
@@ -53,7 +53,7 @@ def verify_lcs():
 
 
 if __name__ == "__main__":
-    # Read commandline arguments
+    # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
     args = parser.parse_args()
 

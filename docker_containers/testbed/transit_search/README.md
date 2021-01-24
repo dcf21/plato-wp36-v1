@@ -5,23 +5,23 @@ The scripts in this directory provide a command-line interface for launching tim
 To insert a test into a job queue, run the script:
 
 ```
-./speed_test_request.py
+./master_node/transit_search_request.py
 ```
 
 To start running tests from the job queue on a node in a processing cluster, run:
 
 ```
-./speed_test_worker.py
+./worker_node/transit_search_worker.py
 ```
 
 To display the results in CSV format:
 
 ```
-./results_to_csv.py
+./diagnostics/results_to_csv.py
 ```
 
 Other scripts are as follows:
 
-* `display_message_queue.py` -- Display a list of tests which are currently waiting in the queue.
+* `diagnostics/display_message_queue.py` -- Display a list of tests which are currently waiting in the queue.
 
-* `verify_lcss.py` -- Open the input light curves, and check their time span and sampling interval.
+* `diagnostics/verify_lcs.py` -- Open the input light curves, and check their time span and sampling interval.

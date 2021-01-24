@@ -1,13 +1,13 @@
 #!/bin/bash
 
-mkdir -p ../../datadir/mysql
-chmod 775 ../../datadir/mysql
+mkdir -p ../../datadir_output/mysql
+chmod 775 ../../datadir_output/mysql
 
-mkdir -p ../../datadir/json_out
-chmod 775 ../../datadir/json_out
+mkdir -p ../../datadir_output/json_out
+chmod 775 ../../datadir_output/json_out
 
-mkdir -p ../../datadir/scratch
-chmod 775 ../../datadir/scratch
+mkdir -p ../../datadir_output/scratch
+chmod 775 ../../datadir_output/scratch
 
 kubectl apply -f mysql-pv.yaml
 kubectl apply -f mysql-deployment.yaml

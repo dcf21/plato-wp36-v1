@@ -1,6 +1,6 @@
-#!../../datadir_local/virtualenv/bin/python3
+#!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# speed_test_worker_v2.py
+# transit_search_worker_v2.py
 
 """
 Run speed tests as requested through the RabbitMQ message queue
@@ -13,10 +13,34 @@ https://github.com/pika/pika/blob/0.12.0/examples/basic_consumer_threaded.py
 import argparse
 import logging
 import os
+import functools
+import json
 
 import pika
-from plato_wp36 import settings
-from speed_test_worker_v1 import do_work
+from plato_wp36 import settings, task_runner
+
+
+def acknowledge_message(channel, delivery_tag):
+    """
+    Acknowledge receipt of a RabbitMQ message, thereby preventing it from being sent to other worker nodes.
+    """
+    channel.basic_ack(delivery_tag=delivery_tag)
+
+
+def do_work(connection=None, channel=None, delivery_tag=None, body="[{'task':'null'}]"):
+    """
+    Perform a list of tasks sent to us via a RabbitMQ message
+    """
+    # Extract list of the jobs we are to do
+    task_list = json.loads(body)
+
+    # Do each task in list
+    task_runner.do_work(task_list=task_list)
+
+    # Acknowledge the message we've just processed
+    if connection is not None:
+        cb = functools.partial(acknowledge_message, channel, delivery_tag)
+        connection.add_callback_threadsafe(cb)
 
 
 def receive(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
@@ -38,7 +62,7 @@ def receive(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
         return body
 
 
-def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+def run_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
     """
     Set up a very simple RabbitMQ consumer to receive messages from the job queue, one by one
     """
@@ -56,7 +80,7 @@ def run_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="ta
 
 
 if __name__ == "__main__":
-    # Read commandline arguments
+    # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
     args = parser.parse_args()
 
@@ -73,4 +97,4 @@ if __name__ == "__main__":
     logger.info(__doc__.strip())
 
     # Enter infinite loop of listening for RabbitMQ messages telling us to do work
-    run_speed_tests()
+    run_transit_searches()

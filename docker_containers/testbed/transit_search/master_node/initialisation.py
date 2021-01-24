@@ -1,25 +1,33 @@
-#!../../datadir_local/virtualenv/bin/python3
+#!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# run_times_output_daemon.py
+# initialisation.py
 
 """
-Listen for run times which are broadcast through RabbitMQ, and record results in output database
+Initialise the light curve speed test output database
 """
 
 import os
 import argparse
 import logging
 
-from plato_wp36 import run_time_logger, settings
+from plato_wp36 import settings, results_database
 
 
-def run_times_output_daemon():
-    output_connection = run_time_logger.RunTimesToMySQL()
-    output_connection.read_from_rabbitmq()
+def initialise_transit_search():
+    logging.info("Initialising speed test database")
+
+    # Make sure that SQL database exists to hold the run times for each transit detection algorithm
+    results_database.ResultsDatabase(refresh=True)
+
+    # Wipe JSON files
+    os.system("rm -Rf {}/*".format(os.path.join(settings.settings['dataPath'], "json_out")))
+
+    # Wipe scratch space
+    os.system("rm -Rf {}/*".format(os.path.join(settings.settings['dataPath'], "scratch")))
 
 
 if __name__ == "__main__":
-    # Read commandline arguments
+    # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
     args = parser.parse_args()
 
@@ -35,5 +43,5 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.info(__doc__.strip())
 
-    # Run speed test
-    run_times_output_daemon()
+    # Do initialisation
+    initialise_transit_search()

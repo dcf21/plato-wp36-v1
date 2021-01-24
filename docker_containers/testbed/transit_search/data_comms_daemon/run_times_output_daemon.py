@@ -1,25 +1,25 @@
-#!../../datadir_local/virtualenv/bin/python3
+#!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
 # run_times_output_daemon.py
 
 """
-Listen for transit-detection results which are broadcast through RabbitMQ, and record results in output database
+Listen for run times which are broadcast through RabbitMQ, and record results in output database
 """
 
 import os
 import argparse
 import logging
 
-from plato_wp36 import results_logger, settings
+from plato_wp36 import run_time_logger, settings
 
 
-def results_output_daemon():
-    output_connection = results_logger.ResultsToMySQL()
+def run_times_output_daemon():
+    output_connection = run_time_logger.RunTimesToMySQL()
     output_connection.read_from_rabbitmq()
 
 
 if __name__ == "__main__":
-    # Read commandline arguments
+    # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
     args = parser.parse_args()
 
@@ -36,4 +36,4 @@ if __name__ == "__main__":
     logger.info(__doc__.strip())
 
     # Run speed test
-    results_output_daemon()
+    run_times_output_daemon()

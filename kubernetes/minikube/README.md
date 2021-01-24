@@ -43,8 +43,8 @@ The steps to deploy the test bench are as follows:
     The Kubernetes cluster needs access to the directories containing the input lightcurves and where it should write the output from the transit detection codes:
     
     ```
-    minikube mount --uid 999 ../datadir_output/:/mnt/datadir/
-    minikube mount --uid 999 ../datadir_input/lightcurves_v2/:/mnt/lightcurves_v2
+    minikube mount --uid 999 ../../datadir_output/:/mnt/datadir_output/
+    minikube mount --uid 999 ../../datadir_input/:/mnt/datadir_input/
     ```
 
 3. Deploy the test bench Docker containers within Kubernetes
@@ -67,9 +67,9 @@ The steps to deploy the test bench are as follows:
     
     ```
     ./plato-shell.sh
-    cd src/speed_test
-    ./speed_test_request.py
-    ./speed_test_worker.py
+    cd src/transit_search
+    ./master_node/transit_search_request_psls.py
+    ./worker_node/transit_search_worker_v2.py
     ```
 
 6. Restart

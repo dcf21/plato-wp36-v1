@@ -5,4 +5,4 @@
 # This is already integrated into astropy
 
 # Write list of available TDAs
-echo '["bls_reference"]' > /plato_eas/tda_list.json
+echo '["bls_reference"]' > /plato_eas/docker_containers/tda_list.json

@@ -51,7 +51,7 @@ COPY tls/build.sh build.sh
 RUN ./build.sh
 
 # *** Write list of available TDAs
-RUN echo '["bls_reference","bls_kovacs","qats","tls"]' > /plato_eas/tda_list.json
+RUN echo '["bls_reference","bls_kovacs","qats","tls"]' > /plato_eas/docker_containers/tda_list.json
 
 # Default working directory
-WORKDIR /plato_eas
+WORKDIR /plato_eas/docker_containers/testbed

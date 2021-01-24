@@ -24,19 +24,19 @@ RUN /plato_eas/datadir_local/virtualenv/bin/pip install numpy  # Required by bat
 RUN /plato_eas/datadir_local/virtualenv/bin/pip install -r requirements.txt
 
 # Copy PLATO EAS code into Docker container
-WORKDIR /plato_eas
+WORKDIR /plato_eas/docker_containers
 ADD configuration_local configuration_local
-ADD testbed src
+ADD testbed testbed
 
 # Copy non open-source transit-detection codes into this Docker container
 ADD private_code private_code
 
 # Install plato_wp36 module
-WORKDIR /plato_eas/src/python_modules/plato_wp36/
+WORKDIR /plato_eas/docker_containers/testbed/python_modules/plato_wp36/
 RUN /plato_eas/datadir_local/virtualenv/bin/python setup.py develop
 
 # Write list of available TDAs
-RUN echo '[]' > /plato_eas/tda_list.json
+RUN echo '[]' > /plato_eas/docker_containers/tda_list.json
 
 # Default working directory
-WORKDIR /plato_eas
+WORKDIR /plato_eas/docker_containers/testbed

@@ -1,6 +1,6 @@
-#!../../datadir_local/virtualenv/bin/python3
+#!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# speed_test_request_psls.py
+# transit_search_request_psls.py
 
 """
 Populate message queue with speed test tasks with all available TDAs, using lightcurves synthesised on-the-fly with PSLS
@@ -38,7 +38,7 @@ lightcurve_specs = [
 ]
 
 
-def request_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
     connection = pika.BlockingConnection(pika.URLParameters(url=broker))
     channel = connection.channel()
 
@@ -86,7 +86,7 @@ def request_speed_tests(broker="amqp://guest:guest@rabbitmq-service:5672", queue
 
 
 if __name__ == "__main__":
-    # Read commandline arguments
+    # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
     args = parser.parse_args()
 
@@ -103,4 +103,4 @@ if __name__ == "__main__":
     logger.info(__doc__.strip())
 
     # Request speed tests
-    request_speed_tests()
+    request_transit_searches()
