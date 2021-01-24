@@ -26,7 +26,7 @@ def fetch_tda_list(tda_list_filename=None):
 
     # Default path for list of available TDAs
     if tda_list_filename is None:
-        tda_list_filename = os.path.join(settings['pythonPath'], '../tda_list.json')
+        tda_list_filename = os.path.join(settings['pythonPath'], 'tda_list.json')
 
     with open(tda_list_filename) as in_stream:
         tda_list_json = in_stream.read()
