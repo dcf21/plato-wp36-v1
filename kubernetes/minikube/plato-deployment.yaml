@@ -24,7 +24,7 @@ spec:
           value: plato
         volumeMounts:
         - name: plato-persistent-storage
-          mountPath: /plato_eas/datadir
+          mountPath: /plato_eas/datadir_output
         - name: lightcurves-persistent-storage
           mountPath: /plato_eas/datadir_input
       volumes:

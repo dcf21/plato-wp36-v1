@@ -14,14 +14,14 @@ import sys
 # Fetch path to local installation settings file
 our_path = os.path.abspath(__file__)
 root_path = re.match(r"(.*/docker_containers/)", our_path).group(1)
-if not os.path.exists(os.path.join(root_path, "docker_containers/configuration_local/installation_settings.conf")):
+if not os.path.exists(os.path.join(root_path, "configuration_local/installation_settings.conf")):
     sys.stderr.write(
         "You must create a file <configuration_local/installation_settings.conf> with local settings.\n")
     sys.exit(1)
 
 # Read the local installation information from <configuration_local/installation_settings.conf>
 installation_info = {}
-for line in open(os.path.join(root_path, "docker_containers/configuration_local/installation_settings.conf")):
+for line in open(os.path.join(root_path, "configuration_local/installation_settings.conf")):
     line = line.strip()
 
     # Ignore blank lines and comment lines

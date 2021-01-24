@@ -33,7 +33,7 @@ The steps to deploy the test bench are as follows:
 1. Start minikube
 
     ```
-    minikube start --cpus=4 --memory='9g' --mount=true
+    minikube start --cpus=2 --memory='4g' --mount=true
     ```
     
     You may wish to tweak the number of CPU cores and the amount of RAM made available to the Kubernetes cluster.
