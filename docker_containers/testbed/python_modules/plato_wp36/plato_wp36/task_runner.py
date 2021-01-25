@@ -10,7 +10,12 @@ import logging
 import os
 import time
 
-import lc_reader_lcsg, lc_reader_psls, results_logger, run_time_logger, task_timer
+from .lc_reader_lcsg import read_lcsg_lightcurve
+from .lc_reader_psls import read_psls_lightcurve
+from .results_logger import ResultsToRabbitMQ
+from .run_time_logger import RunTimesToRabbitMQ
+from .task_timer import TaskTimer
+
 from tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
 
 
@@ -29,17 +34,17 @@ def verify_lightcurve(lc_filename, lc_directory, lc_source):
 
     # Work out which lightcurve reader to use
     if lc_source == 'lcsg':
-        lc_reader = lc_reader_lcsg.read_lcsg_lightcurve
+        lc_reader = read_lcsg_lightcurve
     elif lc_source == 'psls':
-        lc_reader = lc_reader_psls.read_psls_lightcurve
+        lc_reader = read_psls_lightcurve
     else:
         raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
     # Open connections to transit results and run times to RabbitMQ message queues
-    time_log = run_time_logger.RunTimesToRabbitMQ()
+    time_log = RunTimesToRabbitMQ()
 
     # Load lightcurve
-    with task_timer.TaskTimer(target_name=lc_filename, task_name='verify_lc', time_logger=time_log):
+    with TaskTimer(target_name=lc_filename, task_name='verify_lc', time_logger=time_log):
         lc = lc_reader(
             filename=lc_filename,
             directory=lc_directory,
@@ -84,19 +89,19 @@ def transit_search(lc_duration, tda_name, lc_filename, lc_directory, lc_source):
 
     # Work out which lightcurve reader to use
     if lc_source == 'lcsg':
-        lc_reader = lc_reader_lcsg.read_lcsg_lightcurve
+        lc_reader = read_lcsg_lightcurve
     elif lc_source == 'psls':
-        lc_reader = lc_reader_psls.read_psls_lightcurve
+        lc_reader = read_psls_lightcurve
     else:
         raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
     # Open connections to transit results and run times to RabbitMQ message queues
-    time_log = run_time_logger.RunTimesToRabbitMQ()
-    result_log = results_logger.ResultsToRabbitMQ()
+    time_log = RunTimesToRabbitMQ()
+    result_log = ResultsToRabbitMQ()
 
     # Load lightcurve
-    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load_lc',
-                              lc_length=lc_duration, time_logger=time_log):
+    with TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='load_lc',
+                   lc_length=lc_duration, time_logger=time_log):
         lc = lc_reader(
             filename=lc_filename,
             directory=lc_directory,
@@ -105,8 +110,8 @@ def transit_search(lc_duration, tda_name, lc_filename, lc_directory, lc_source):
         )
 
     # Process lightcurve
-    with task_timer.TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
-                              lc_length=lc_duration, time_logger=time_log):
+    with TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
+                   lc_length=lc_duration, time_logger=time_log):
         if tda_name == 'bls_reference':
             output = bls_reference.process_lightcurve(lc, lc_duration / 86400)
         elif tda_name == 'bls_kovacs':
