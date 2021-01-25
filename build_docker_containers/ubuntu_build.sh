@@ -10,8 +10,7 @@ cd "$(dirname "$0")"
 cwd=`pwd`
 
 # Create virtual environment
-datadir=${cwd}/../docker_containers/datadir_local
-mkdir -p ${datadir}
+datadir=${cwd}/../datadir_local
 venv_dir=${datadir}/virtualenv
 rm -Rf ${venv_dir}
 virtualenv -p python3 ${venv_dir}
@@ -21,7 +20,7 @@ ${venv_dir}/bin/pip install numpy
 ${venv_dir}/bin/pip install -r ${cwd}/../docker_containers/requirements.txt
 
 # Install plato_wp36 package
-cd ${cwd}/../src/python_modules/plato_wp36/
+cd ${cwd}/../docker_containers/testbed/python_modules/plato_wp36/
 ${venv_dir}/bin/python setup.py develop
 
 # Install bls_reference code
@@ -35,6 +34,16 @@ git clone https://github.com/dfm/python-bls.git
 cd python-bls
 ${venv_dir}/bin/python setup.py install
 
+# Install QATS code
+cd ${cwd}
+rm -Rf ${datadir}/qats
+mkdir -p ${datadir}/qats
+cd ${datadir}/qats
+wget https://faculty.washington.edu/agol/QATS/qats.tgz
+tar xvfz qats.tgz
+cd qats
+make
+
 # Install TLS code
 cd ${cwd}
 rm -Rf ${datadir}/tda_build/tls
@@ -43,4 +52,3 @@ cd ${datadir}/tda_build/tls
 git clone https://github.com/hippke/tls.git
 cd tls
 ${venv_dir}/bin/python setup.py install
-
