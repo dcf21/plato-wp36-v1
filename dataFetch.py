@@ -6,9 +6,9 @@
 Automatically download all of the required data files from the internet.
 """
 
+import logging
 import os
 import sys
-import logging
 
 
 def fetch_file(web_address, destination, force_refresh=False):
@@ -63,6 +63,11 @@ def fetch_required_files():
             'url': 'https://sites.lesia.obspm.fr/psls/files/2017/11/m0y24h.tar_.gz',
             'destination': 'datadir_input/m0y24h.tar_.gz',
             'force_refresh': False
+        },
+        {
+            'url': 'https://files.pythonhosted.org/packages/09/16/1657adaa7444e1ce1884baf25e6fb3333d809ef2dc1a82cf8b3d9fdbe4c5/psls-1.3.tar.gz',
+            'destination': 'datadir_input/psls-1.3.tar.gz',
+            'force_refresh': False
         }
     ]
 
@@ -72,6 +77,13 @@ def fetch_required_files():
                    destination=required_file['destination'],
                    force_refresh=required_file['force_refresh']
                    )
+
+    # Unzip PSLS data files
+    os.system("""
+mkdir -p datadir_input/psls_data
+cd datadir_input/psls_data
+tar zxf ../psls-1.3.tar.gz
+""")
 
     # Unzip the PSLS star frequency models
     os.system("""
