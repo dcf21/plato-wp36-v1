@@ -9,6 +9,7 @@ import secrets
 from subprocess import Popen, PIPE
 
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
+from plato_wp36.settings import settings
 
 
 def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
@@ -84,7 +85,8 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
             sigma_max = sigma_min * (1 + f / 2)
 
             # Run QATS
-            p = Popen(['/plato_eas/qats/qats/call_qats',
+            qats_path = os.path.join(settings['pythonPath'], "../datadir_local/qats/qats/call_qats")
+            p = Popen([qats_path,
                        lc_file, str(sigma_min), str(sigma_max), str(transit_length)],
                       stdin=None, stdout=PIPE, stderr=PIPE)
             output, err = p.communicate()

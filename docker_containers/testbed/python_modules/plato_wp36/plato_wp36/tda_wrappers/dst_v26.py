@@ -6,6 +6,7 @@ import numpy as np
 from astropy.io import fits
 
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
+from plato_wp36.settings import settings
 
 
 def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
@@ -28,7 +29,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     flux = lc.fluxes
 
     # Create working directory for DST
-    work_dir = "/plato_eas/private_code"
+    work_dir = os.path.join(settings['pythonPath'], "private_code")
     fits_file_path = os.path.join(work_dir, "k2-3", "DATOS", "DAT", "lc.fits")
 
     # Make working directory structure
@@ -54,7 +55,8 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     hdul.writeto(fits_file_path)
 
     # Run onyva_k2vanderburg.exe
-    command_line = "onyva_k2vanderburg.exe -Rru . lc.fits"
+    binary_path = os.path.join(work_dir, "asalto26.5/bin/onyva_k2vanderburg.exe")
+    command_line = "{} -Rru . lc.fits".format(binary_path)
     os.system(command_line)
 
     # Clean up DST working directories

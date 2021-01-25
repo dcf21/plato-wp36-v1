@@ -2,6 +2,7 @@
 # dst_v29.py
 
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
+from plato_wp36.settings import settings
 
 
 def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):

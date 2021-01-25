@@ -44,7 +44,7 @@ def read_lcsg_lightcurve(filename, gzipped=True, cut_off_time=None, directory="l
     }
 
     # Full path for this lightcurve
-    file_path = os.path.join(settings.settings['lcPath'], directory, filename)
+    file_path = os.path.join(settings['lcPath'], directory, filename)
 
     # Look up file open function
     file_opener = gzip.open if gzipped else open

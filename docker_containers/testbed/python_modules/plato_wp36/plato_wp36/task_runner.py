@@ -16,7 +16,7 @@ from .results_logger import ResultsToRabbitMQ
 from .run_time_logger import RunTimesToRabbitMQ
 from .task_timer import TaskTimer
 
-from tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
+from .tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
 
 
 def psls_synthesise(lc_filename, lc_directory, lc_specs):

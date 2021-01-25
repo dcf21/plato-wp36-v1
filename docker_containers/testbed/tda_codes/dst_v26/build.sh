@@ -19,15 +19,15 @@ tar xvfz ../juan.tar.gz
 # Patch Juan's Makefiles into a working state
 cd /plato_eas/docker_containers/private_code/juan
 cp Makefile Makefile.original
-patch Makefile < Makefile.patch
+patch Makefile < ../../testbed/tda_codes/dst_v26/Makefile.juan.patch
 
 cd /plato_eas/docker_containers/private_code/asalto26.5
 cp Makefile Makefile.original
-patch Makefile < Makefile.patch
+patch Makefile < ../../testbed/tda_codes/dst_v26/Makefile.asalto26.5.patch
 
 cd /plato_eas/docker_containers/private_code/asalto27
 cp Makefile Makefile.original
-patch Makefile < Makefile.patch
+patch Makefile < ../../testbed/tda_codes/dst_v26/Makefile.asalto27.patch
 
 # Build Juan's code: libjuan
 cd /plato_eas/docker_containers/private_code/juan
