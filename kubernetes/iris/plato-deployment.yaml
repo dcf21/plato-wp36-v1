@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plato
+spec:
+  selector:
+    matchLabels:
+      app: plato
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: plato
+    spec:
+      containers:
+      - image: dcf21/plato_eas:v1
+        name: plato
+        command: ['sleep']
+        args: ['3600000']
+        env:
+          # Use secret in real usage
+        - name: dummy
+          value: plato
+        volumeMounts:
+        - name: output-persistent-storage
+          mountPath: /plato_eas/datadir_output
+        - name: input-persistent-storage
+          mountPath: /plato_eas/datadir_input
+      volumes:
+      - name: output-persistent-storage
+        persistentVolumeClaim:
+          claimName: output-pvc
+      - name: input-persistent-storage
+        persistentVolumeClaim:
+          claimName: input-pvc
