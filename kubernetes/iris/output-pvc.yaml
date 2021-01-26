@@ -4,6 +4,7 @@ metadata:
   name: output-pvc
   namespace: plato
 spec:
+  storageClassName: manila-cephfs-share
   accessModes:
     - ReadWriteMany
   resources:

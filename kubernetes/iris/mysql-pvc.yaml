@@ -4,6 +4,7 @@ metadata:
   name: mysql-pvc
   namespace: plato
 spec:
+  storageClassName: manila-cephfs-share
   accessModes:
     - ReadWriteOnce
   resources:
