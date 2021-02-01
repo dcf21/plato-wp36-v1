@@ -156,15 +156,25 @@ class PslsWrapper:
         os.system(command)
 
         # Filename of the output that PSLS produced
-        elephant
+        psls_output = "0012069449"
+
+        # Gzip output if requested
+        if gzipped:
+            command = "gzip {}.dat".format(psls_output)
+            os.system(command)
+
+        # Make sure target directory exists
+        os.system("mkdir -p '{}'".format(os.path.join(settings.settings['lcPath'], directory)))
 
         # Target path for this lightcurve
         target_path = os.path.join(settings.settings['lcPath'], directory, filename)
 
         # Copy PSLS output into lightcurve archive
+        os.system("mv {}.dat* '{}'".format(psls_output, target_path))
+        os.system("mv {}.txt '{}.metadata'".format(psls_output, target_path))
 
         # Make sure there aren't any old data files lying around
-        os.system("rm -Rf *.dat *.yaml")
+        os.system("rm -Rf *.modes *.yaml")
 
         # Switch back into the user's cwd
         os.chdir(cwd)

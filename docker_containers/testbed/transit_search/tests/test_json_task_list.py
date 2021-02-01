@@ -17,17 +17,33 @@ from plato_wp36 import settings, task_runner
 def do_work(body):
     """
     Perform a list of tasks sent to us via a JSON message
+
+    :param body:
+        List of dictionaries, describing the tasks to be performed.
+    :type body:
+        List[Dict]
     """
 
     # Do each task in list
-    task_runner.do_work(task_list=body)
+    worker = task_runner.TaskRunner(results_target="logging")
+    worker.do_work(task_list=body)
 
 
 def run_task_list(task_list):
     """
     Run a sequence of jobs, one by one
+
+    :param task_list:
+        List of list of dictionaries, describing the tasks to be performed.
+    :type task_list:
+        List[List[Dict]]
     """
     logging.info('Running sequence of tasks')
+
+    # Check that task list is a list
+    assert isinstance(task_list, list)
+
+    # Run each task in turn
     for message in task_list:
         # Run requested job
         do_work(body=message)
@@ -36,7 +52,7 @@ def run_task_list(task_list):
 if __name__ == "__main__":
     # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tasks', required=True, type=str,
+    parser.add_argument('--tasks', default="json/test_psls_synthesise_earth.json", type=str,
                         dest='tasks', help='The JSON file listing the tasks we are to perform')
 
     args = parser.parse_args()

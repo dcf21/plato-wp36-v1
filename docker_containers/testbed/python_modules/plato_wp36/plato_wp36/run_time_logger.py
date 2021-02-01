@@ -2,8 +2,9 @@
 # run_time_logger.py
 
 import json
-import pika
 import logging
+
+import pika
 
 from .results_database import ResultsDatabase
 
@@ -17,7 +18,10 @@ class RunTimesToRabbitMQ:
     Provides a class passing the run times of various tasks to a RabbitMQ message queue.
     """
 
-    def __init__(self, broker="amqp://guest:guest@rabbitmq-service:5672", queue="run_times"):
+    def __init__(self,
+                 broker="amqp://guest:guest@rabbitmq-service:5672",
+                 queue="run_times",
+                 results_target="rabbitmq"):
         """
         Open a handle to the message queue we send job run times to.
 
@@ -28,6 +32,7 @@ class RunTimesToRabbitMQ:
         """
         self.broker = broker
         self.queue = queue
+        self.results_target = results_target
 
     def record_timing(self, tda_code, target_name, task_name, lc_length, timestamp,
                       run_time_wall_clock, run_time_cpu):
@@ -76,13 +81,18 @@ class RunTimesToRabbitMQ:
             'run_time_cpu': run_time_cpu
         })
 
-        connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
-        channel = connection.channel()
-        channel.queue_declare(queue=self.queue)
+        if self.results_target == "rabbitmq":
+            connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
+            channel = connection.channel()
+            channel.queue_declare(queue=self.queue)
 
-        channel.basic_publish(exchange='', routing_key=self.queue, body=json_message)
+            channel.basic_publish(exchange='', routing_key=self.queue, body=json_message)
 
-        channel.close()
+            channel.close()
+        elif self.results_target == "logging":
+            logging.info(json_message)
+        else:
+            logging.info("Unknown target for results <{}>".format(self.results_target))
 
     def close(self):
         """

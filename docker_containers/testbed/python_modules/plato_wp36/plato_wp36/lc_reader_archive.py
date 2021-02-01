@@ -14,7 +14,7 @@ from .lightcurve import LightcurveArbitraryRaster
 from .settings import settings
 
 
-def read_archive_lightcurve(filename, gzipped=True, cut_off_time=None, directory="psls_temporary"):
+def read_archive_lightcurve(filename, gzipped=True, cut_off_time=None, directory="test_output"):
     """
     Read a lightcurve from an ASCII data file in our lightcurve archive.
 
@@ -72,8 +72,8 @@ def read_archive_lightcurve(filename, gzipped=True, cut_off_time=None, directory
                 continue
 
             # Unpack data
-            words = line.split(',')
-            time = float(words[0])
+            words = line.split()
+            time = float(words[0]) / 86400  # Times stored in seconds; but Lightcurve objects use days
             flux = float(words[1])
             flag = float(words[2])
             uncertainty = 0

@@ -35,7 +35,8 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
     task_list = json.loads(body)
 
     # Do each task in list
-    task_runner.do_work(task_list=task_list)
+    worker = task_runner.TaskRunner(results_target="rabbitmq")
+    worker.do_work(task_list=task_list)
 
     # Acknowledge the message we've just processed
     if connection is not None:

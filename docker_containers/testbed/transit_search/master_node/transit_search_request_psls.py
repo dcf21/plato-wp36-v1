@@ -58,7 +58,7 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                         'task': 'psls_synthesise',
                         'lc_directory': lightcurves_directory,
                         'lc_filename': lc_info['filename'],
-                        'lc_spec': {
+                        'lc_specs': {
                             'duration': 730,  # days
                             'planet_radius': 1,  # Jupiter radii
                             'orbital_period': 365,  # days

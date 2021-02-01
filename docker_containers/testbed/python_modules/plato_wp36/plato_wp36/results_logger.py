@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # results_logger.py
 
-import os
 import gzip
 import json
-import pika
 import logging
+import os
+
+import pika
 
 from .results_database import ResultsDatabase
 from .settings import settings
@@ -20,7 +21,10 @@ class ResultsToRabbitMQ:
     Provides a class passing the results of various tasks to a RabbitMQ message queue.
     """
 
-    def __init__(self, broker="amqp://guest:guest@rabbitmq-service:5672", queue="results"):
+    def __init__(self,
+                 broker="amqp://guest:guest@rabbitmq-service:5672",
+                 queue="results",
+                 results_target="rabbitmq"):
         """
         Open a handle to the message queue we send job results to.
 
@@ -31,6 +35,7 @@ class ResultsToRabbitMQ:
         """
         self.broker = broker
         self.queue = queue
+        self.results_target = results_target
 
     def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result):
         """
@@ -67,9 +72,9 @@ class ResultsToRabbitMQ:
 
         # Store a copy of this gzipped JSON output
         json_filename = "{}_{}_{}_{:08.1f}.json.gz".format(task_name,
-                                                        tda_code,
-                                                        os.path.split(target_name)[1],
-                                                        lc_length / 86400)
+                                                           tda_code,
+                                                           os.path.split(target_name)[1],
+                                                           lc_length / 86400)
         json_out_path = os.path.join(settings['dataPath'], "scratch", json_filename)
         with gzip.open(json_out_path, "wt") as f:
             f.write(result_json)
@@ -83,13 +88,18 @@ class ResultsToRabbitMQ:
             'result_filename': json_filename
         })
 
-        connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
-        channel = connection.channel()
-        channel.queue_declare(queue=self.queue)
+        if self.results_target == "rabbitmq":
+            connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
+            channel = connection.channel()
+            channel.queue_declare(queue=self.queue)
 
-        channel.basic_publish(exchange='', routing_key=self.queue, body=json_message)
+            channel.basic_publish(exchange='', routing_key=self.queue, body=json_message)
 
-        channel.close()
+            channel.close()
+        elif self.results_target == "logging":
+            logging.info(json_message)
+        else:
+            logging.info("Unknown target for results <{}>".format(self.results_target))
 
     def close(self):
         """
