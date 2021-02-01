@@ -11,32 +11,167 @@ import os
 import time
 
 from .lc_reader_lcsg import read_lcsg_lightcurve
-from .lc_reader_psls import read_psls_lightcurve
+from .lc_reader_archive import read_archive_lightcurve
 from .results_logger import ResultsToRabbitMQ
 from .run_time_logger import RunTimesToRabbitMQ
 from .task_timer import TaskTimer
-
 from .tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
+
+from eas_psls_wrapper.psls_wrapper import PslsWrapper
+from eas_batman_wrapper.batman_wrapper import BatmanWrapper
 
 
 def psls_synthesise(lc_filename, lc_directory, lc_specs):
     """
     Perform the task of synthesising a lightcurve using PSLS.
+
+    :param lc_filename:
+        Filename to give the lightcurve we synthesise.
+    :type lc_filename:
+        str
+    :param lc_directory:
+        Directory to place the output lightcurve into.
+    :type lc_directory:
+        str
+    :param lc_specs:
+        Specifications for the lightcurve we are to synthesise. The dictionary should define the following keys:
+        <duration>, <enable_transit>, <planet_radius>, <orbital_period>, <semi_major_axis>, <orbital_angle>
+    :type lc_specs:
+        dict
     """
     logging.info("Running PSLS synthesis")
+
+    synthesiser = PslsWrapper()
+    synthesiser.configure(**lc_specs)
+    synthesiser.synthesise(directory=lc_directory,
+                           filename=lc_filename,
+                           gzipped=True)
+
+
+def batman_synthesise(lc_filename, lc_directory, lc_specs):
+    """
+    Perform the task of synthesising a lightcurve using batman.
+
+    :param lc_filename:
+        Filename to give the lightcurve we synthesise.
+    :type lc_filename:
+        str
+    :param lc_directory:
+        Directory to place the output lightcurve into.
+    :type lc_directory:
+        str
+    :param lc_specs:
+        Specifications for the lightcurve we are to synthesise. The dictionary should define the following keys:
+        <duration>, <enable_transit>, <planet_radius>, <orbital_period>, <semi_major_axis>, <orbital_angle>
+    :type lc_specs:
+        dict
+    """
+    logging.info("Running Batman synthesis")
+
+    synthesiser = BatmanWrapper()
+    synthesiser.configure(**lc_specs)
+    synthesiser.synthesise(directory=lc_directory,
+                           filename=lc_filename,
+                           gzipped=True)
+
+
+def lightcurves_multiply(lc_source,
+                         input_1_filename, input_1_directory,
+                         input_2_filename, input_2_directory,
+                         output_filename, output_directory):
+    """
+    Perform the task of multiplying two lightcurves together.
+
+    :param lc_source:
+        The name of the format this lightcurve is in. Either <archive> or <lcsg>, for default formats used either
+        by the testbench code (archive), or the lightcurve stitching group.
+    :type lc_source:
+        str
+
+    :param input_1_filename:
+        Filename for the first lightcurve to multiply.
+    :type input_1_filename:
+        str
+    :param input_1_directory:
+        Directory for the first lightcurve to multiply.
+    :type input_1_directory:
+        str
+
+    :param input_2_filename:
+        Filename for the second lightcurve to multiply.
+    :type input_2_filename:
+        str
+    :param input_2_directory:
+        Directory for the second lightcurve to multiply.
+    :type input_2_directory:
+        str
+
+    :param output_filename:
+        Filename for storing the output of our multiplication.
+    :type output_filename:
+        str
+    :param output_directory:
+        Directory for storing the output of our multiplication.
+    :type output_directory:
+        str
+    """
+    logging.info("Multiplying lightcurves")
+
+    # Work out which lightcurve reader to use
+    if lc_source == 'lcsg':
+        lc_reader = read_lcsg_lightcurve
+    elif lc_source == 'archive':
+        lc_reader = read_archive_lightcurve
+    else:
+        raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
+
+    # Load lightcurve 1
+    with TaskTimer(target_name=lc_filename, task_name='load_lc', time_logger=time_log):
+        lc_1 = lc_reader(
+            filename=lc_filename,
+            directory=lc_directory,
+            gzipped=True
+        )
+
+    # Load lightcurve 2
+    with TaskTimer(target_name=lc_filename, task_name='load_lc', time_logger=time_log):
+        lc_2 = lc_reader(
+            filename=lc_filename,
+            directory=lc_directory,
+            gzipped=True
+        )
+
+    # Multiply lightcurves together
+    result = lc_1 * lc_2
+
+    # Store result
 
 
 def verify_lightcurve(lc_filename, lc_directory, lc_source):
     """
     Perform the task of verifying a lightcurve.
+
+    :param lc_filename:
+        The filename of the lightcurve to search for transits (within our local lightcurve archive).
+    :type lc_filename
+        str
+    :param lc_directory:
+        The name of the directory inside the lightcurve archive where this lightcurve can be found.
+    :type lc_directory:
+        str
+    :param lc_source:
+        The name of the format this lightcurve is in. Either <archive> or <lcsg>, for default formats used either
+        by the testbench code (archive), or the lightcurve stitching group.
+    :type lc_source:
+        str
     """
     logging.info("Verifying <{lc_filename}>.".format(lc_filename=lc_filename))
 
     # Work out which lightcurve reader to use
     if lc_source == 'lcsg':
         lc_reader = read_lcsg_lightcurve
-    elif lc_source == 'psls':
-        lc_reader = read_psls_lightcurve
+    elif lc_source == 'archive':
+        lc_reader = read_archive_lightcurve
     else:
         raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
@@ -44,7 +179,7 @@ def verify_lightcurve(lc_filename, lc_directory, lc_source):
     time_log = RunTimesToRabbitMQ()
 
     # Load lightcurve
-    with TaskTimer(target_name=lc_filename, task_name='verify_lc', time_logger=time_log):
+    with TaskTimer(target_name=lc_filename, task_name='load_lc', time_logger=time_log):
         lc = lc_reader(
             filename=lc_filename,
             directory=lc_directory,
@@ -77,6 +212,28 @@ def verify_lightcurve(lc_filename, lc_directory, lc_source):
 def transit_search(lc_duration, tda_name, lc_filename, lc_directory, lc_source):
     """
     Perform the task of running a lightcurve through a transit-detection algorithm.
+
+    :param lc_duration:
+        The maximum length of lightcurve to use; truncate the lightcurve after this period of time (sec).
+    :type lc_duration:
+        float
+    :param tda_name:
+        The name of the transit detection code to use.
+    :type tda_name:
+        str
+    :param lc_filename:
+        The filename of the lightcurve to search for transits (within our local lightcurve archive).
+    :type lc_filename
+        str
+    :param lc_directory:
+        The name of the directory inside the lightcurve archive where this lightcurve can be found.
+    :type lc_directory:
+        str
+    :param lc_source:
+        The name of the format this lightcurve is in. Either <archive> or <lcsg>, for default formats used either
+        by the testbench code (archive), or the lightcurve stitching group.
+    :type lc_source:
+        str
     """
     logging.info("Running <{lc_filename}> through <{tda_name}> with duration {lc_days:.1f}.".format(
         lc_filename=lc_filename,
@@ -90,8 +247,8 @@ def transit_search(lc_duration, tda_name, lc_filename, lc_directory, lc_source):
     # Work out which lightcurve reader to use
     if lc_source == 'lcsg':
         lc_reader = read_lcsg_lightcurve
-    elif lc_source == 'psls':
-        lc_reader = read_psls_lightcurve
+    elif lc_source == 'archive':
+        lc_reader = read_archive_lightcurve
     else:
         raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
@@ -153,8 +310,11 @@ def do_work(task_list):
 
     # Do each task in list
     for job_description in task_list:
+        # Null task
         if job_description['task'] == 'null':
             logging.info("Running null task")
+
+        # Transit search
         elif job_description['task'] == 'transit_search':
             transit_search(
                 lc_source=job_description['lc_source'],
@@ -163,18 +323,42 @@ def do_work(task_list):
                 tda_name=job_description['tda_name'],
                 lc_filename=job_description['lc_filename']
             )
+
+        # Synthesise lightcurve with PSLS
         elif job_description['task'] == 'psls_synthesise':
             psls_synthesise(
                 lc_filename=job_description['lc_filename'],
                 lc_directory=job_description['lc_directory'],
                 lc_specs=job_description['lc_specs']
-
             )
+
+        # Synthesise lightcurve with Batman
+        elif job_description['task'] == 'batman_synthesise':
+            batman_synthesise(
+                lc_filename=job_description['lc_filename'],
+                lc_directory=job_description['lc_directory'],
+                lc_specs=job_description['lc_specs']
+            )
+
+        # Multiply two lightcurves together
+        elif job_description['task'] == 'psls_synthesise':
+            lightcurves_multiply(
+                input_1_filename=job_description['input_1_filename'],
+                input_1_directory=job_description['input_1_directory'],
+                input_2_filename=job_description['input_2_filename'],
+                input_2_directory=job_description['input_2_directory'],
+                output_filename=job_description['output_filename'],
+                output_directory=job_description['output_directory']
+            )
+
+        # Verify lightcurve
         elif job_description['task'] == 'verify_lc':
             verify_lightcurve(
                 lc_filename=job_description['lc_filename'],
                 lc_directory=job_description['lc_directory'],
                 lc_source=job_description['lc_source']
             )
+
+        # Unknown task
         else:
             raise ValueError("Unknown task <{}>".format(job_description['task']))

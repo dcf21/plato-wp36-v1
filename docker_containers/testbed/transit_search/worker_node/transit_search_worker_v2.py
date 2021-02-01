@@ -27,7 +27,7 @@ def acknowledge_message(channel, delivery_tag):
     channel.basic_ack(delivery_tag=delivery_tag)
 
 
-def do_work(connection=None, channel=None, delivery_tag=None, body="[{'task':'null'}]"):
+def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"null"}]'):
     """
     Perform a list of tasks sent to us via a RabbitMQ message
     """

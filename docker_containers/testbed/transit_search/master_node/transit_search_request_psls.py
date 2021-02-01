@@ -6,13 +6,13 @@
 Populate message queue with speed test tasks with all available TDAs, using lightcurves synthesised on-the-fly with PSLS
 """
 
+import json
 import logging
 import os
-import pika
-import json
 
 import argparse
-from plato_wp36 import fetch_tda_list, settings
+import pika
+from plato_wp36 import settings
 
 # List of all the lightcurve lengths we are to test
 time_periods = [
@@ -28,7 +28,7 @@ time_periods = [
 available_tdas = ['tls']
 
 # Directory for input lightcurves, within the <datadir_input> directory
-lightcurves_directory = "psls_temporary"
+lightcurves_directory = "psls_output"
 
 # Create list of all LCSG lightcurves
 lightcurve_specs = [
@@ -56,22 +56,27 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                     # 1) Synthesise LC using PSLS
                     {
                         'task': 'psls_synthesise',
-                        'lc_source': 'psls',
-                        'lc_duration': 3 * 365.25 * 86400,
                         'lc_directory': lightcurves_directory,
-                        'lc_filename': lc_info['filename']
+                        'lc_filename': lc_info['filename'],
+                        'lc_spec': {
+                            'duration': 730,  # days
+                            'planet_radius': 1,  # Jupiter radii
+                            'orbital_period': 365,  # days
+                            'semi_major_axis': 1,  # AU
+                            'orbital_angle': 0  # degrees
+                        }
                     },
                     # 2) Verify lightcurve
                     {
                         'task': 'verify_lc',
-                        'lc_source': 'psls',
+                        'lc_source': 'archive',
                         'lc_directory': lightcurves_directory,
                         'lc_filename': lc_info['filename']
                     },
                     # 3) Perform transit search on LC
                     {
                         'task': 'transit_search',
-                        'lc_source': 'psls',
+                        'lc_source': 'archive',
                         'lc_duration': lc_duration,
                         'tda_name': tda_name,
                         'lc_directory': lightcurves_directory,

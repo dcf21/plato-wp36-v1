@@ -54,6 +54,9 @@ lc_directory = os.path.join(root_path, "../datadir_input")
 # The path to the directory which contains input data such as PSLS's frequency data
 input_directory = os.path.join(root_path, "../datadir_input")
 
+# The path to the directory which contains local installation
+locals_directory = os.path.join(root_path, "../datadir_local")
+
 # The default settings are below
 settings = {
     'softwareVersion': 1,
@@ -66,6 +69,9 @@ settings = {
 
     # The directory where we expect to find input data
     'inDataPath': input_directory,
+
+    # The directory where we expect to find input data
+    'localDataPath': locals_directory,
 
     # The directory where we expect to find lightcurves to work on
     'lcPath': lc_directory,

@@ -1,0 +1,21 @@
+[
+  {
+    "task": "psls_synthesise",
+    "lc_directory": "test_output",
+    "lc_filename": "test_earth",
+    "lc_spec": {
+      "duration": 730,
+      "planet_radius": 1,
+      "orbital_period": 365,
+      "semi_major_axis": 1,
+      "orbital_angle": 0
+    }
+  },
+  {
+    "task": "verify_lc",
+    "lc_source": "archive",
+    "lc_directory": "test_output",
+    "lc_filename": "test_earth"
+  }
+]
+
