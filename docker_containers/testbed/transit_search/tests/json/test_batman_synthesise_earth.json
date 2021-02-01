@@ -1,9 +1,9 @@
 [
   [
     {
-      "task": "psls_synthesise",
+      "task": "batman_synthesise",
       "lc_directory": "test_output",
-      "lc_filename": "test_earth_psls.gz",
+      "lc_filename": "test_earth_batman.gz",
       "lc_specs": {
         "duration": 730,
         "planet_radius": 1,
@@ -16,7 +16,7 @@
       "task": "verify_lc",
       "lc_source": "archive",
       "lc_directory": "test_output",
-      "lc_filename": "test_earth_psls.gz"
+      "lc_filename": "test_earth_batman.gz"
     }
   ]
 ]

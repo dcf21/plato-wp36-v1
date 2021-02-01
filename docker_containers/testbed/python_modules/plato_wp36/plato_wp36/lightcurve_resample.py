@@ -187,5 +187,5 @@ class LightcurveResampler(object):
             New LightcurveArbitraryRaster object.
         """
 
-        return self.onto_raster(output_raster=other.wavelengths,
+        return self.onto_raster(output_raster=other.times,
                                 resample_flags=resample_flags)

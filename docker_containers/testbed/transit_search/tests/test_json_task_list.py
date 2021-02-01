@@ -52,7 +52,7 @@ def run_task_list(task_list):
 if __name__ == "__main__":
     # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tasks', default="json/test_psls_synthesise_earth.json", type=str,
+    parser.add_argument('--tasks', default="json/test_batman_synthesise_earth.json", type=str,
                         dest='tasks', help='The JSON file listing the tasks we are to perform')
 
     args = parser.parse_args()

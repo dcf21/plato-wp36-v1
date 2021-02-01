@@ -161,28 +161,29 @@ class TaskRunner:
             raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
         # Load lightcurve 1
-        with TaskTimer(target_name=lc_filename, task_name='load_lc', time_logger=time_log):
+        with TaskTimer(target_name=input_1_filename, task_name='load_lc', time_logger=time_log):
             lc_1 = lc_reader(
-                filename=lc_filename,
-                directory=lc_directory,
+                filename=input_1_filename,
+                directory=input_1_directory,
                 gzipped=True
             )
 
         # Load lightcurve 2
-        with TaskTimer(target_name=lc_filename, task_name='load_lc', time_logger=time_log):
+        with TaskTimer(target_name=input_2_filename, task_name='load_lc', time_logger=time_log):
             lc_2 = lc_reader(
-                filename=lc_filename,
-                directory=lc_directory,
+                filename=input_2_filename,
+                directory=input_2_directory,
                 gzipped=True
             )
 
         # Multiply lightcurves together
-        with TaskTimer(target_name=lc_filename, task_name='multiplication', time_logger=time_log):
+        with TaskTimer(target_name=input_1_filename, task_name='multiplication', time_logger=time_log):
             result = lc_1 * lc_2
 
         # Store result
-        with TaskTimer(target_name=lc_filename, task_name='write_output', time_logger=time_log):
-            pass
+        with TaskTimer(target_name=output_filename, task_name='write_output', time_logger=time_log):
+            result.to_file(directory=output_directory,
+                           filename=output_filename)
 
         # Close connection to message queue
         time_log.close()
@@ -381,8 +382,9 @@ class TaskRunner:
                 )
 
             # Multiply two lightcurves together
-            elif job_description['task'] == 'psls_synthesise':
+            elif job_description['task'] == 'multiplication':
                 self.lightcurves_multiply(
+                    lc_source=job_description['lc_source'],
                     input_1_filename=job_description['input_1_filename'],
                     input_1_directory=job_description['input_1_directory'],
                     input_2_filename=job_description['input_2_filename'],
