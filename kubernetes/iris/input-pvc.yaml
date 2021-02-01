@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: input-pvc
+  namespace: plato
+spec:
+  storageClassName: manila-cephfs-share
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
