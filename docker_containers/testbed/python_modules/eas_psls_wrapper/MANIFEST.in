@@ -1,0 +1,3 @@
+include eas_psls_wrapper/red_giant_template.yaml
+include eas_psls_wrapper/main_sequence_template.yaml
+

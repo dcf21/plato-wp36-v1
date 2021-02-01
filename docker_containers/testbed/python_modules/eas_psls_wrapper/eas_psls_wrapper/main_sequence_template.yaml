@@ -1,0 +1,70 @@
+# PLATO Solar-like Light-curve Simulator (PSLS) configuration file (V 1.0)
+
+# Observation conditions
+Observation:
+  Duration : 730. #  [days]
+  MasterSeed : 904040900 # Master seed of the pseudo-random number generator
+
+# Instrument parameters
+Instrument:
+  Sampling : 25. # Sampling cadence of each camera [s]
+  IntegrationTime : 21. # Integration time [s]
+  NGroup : 4 # Number of camera groups (1 -> 4)
+  NCamera : 6 # Number of cameras per group (1 -> 6)
+  TimeShift : 6.25 # Time shift between camera groups [s]
+  RandomNoise:
+    Enable: 1
+    Type: PLATO_SIMU #  either 'User' or 'PLATO_SCALING' or 'PLATO_SIMU'.
+    NSR :  73. # User-specified Noise to Signal Ratio [ppm/hr] for a single camera. This value takes into account all random noises but does not include systematic errors.
+  Systematics:
+    Enable : 1
+# The binary file containing the systematics parameters:
+    Table : systematics/PLATO_systematics_BOL_V2.npy   
+#    Table : PLATO_systematics_BOL_FixedMask_V2.npy  
+#    Table : PLATO_systematics_BOL_P1_V2.npy 
+#    Table : PLATO_systematics_BOL_V0.npy  #   (version 0)
+    Version: 2
+    DriftLevel: low  # Amplitude of the drift:  'low', 'medium', 'high' or 'any'. Applicable only for Version>0
+
+# Stellar parameters
+Star:
+  Mag : 10. #  Magnitude
+  ID : 12069449  #  star ID
+  ModelDir : models/ # Directory containing the single models or the grid (parameters and associated theoretical frequencies)
+  ModelType: single  # Type of model: 'grid' or 'single' or 'UP'
+  ModelName: 0012069449  # Name of the input model, to be specified when ModelType = 'single'. The program will then load the corresonding .gsm file generated with ADIPLS.
+  ES : ms  # Evolutionary status: 'ms' for the main-sequence phase, 'sg' for the sub-giant phase, 'rg' for redgiants (Red Giant Branch or clump stars)
+  Teff : 5750.  # Effective temperature [K]
+  Logg : 4.353 # Surface gravity, ignored for the UP
+  SurfaceRotationPeriod :  0. # Surface rotation period [days], not used with the UP
+  CoreRotationFreq :  0. # Core rotation frequency [muHz], this is by definition Omega/2pi*1e6 where Omega is the angular rate [rad/s], used only with the UP
+  Inclination : 0. # Inclination angle [deg.]
+  
+# Oscillations parameters
+Oscillations:
+  Enable: 1
+  numax : 179.3 # frequency at maximum power [muHZ], used only with the UP
+  delta_nu : 13.68 # Mean large separation [muHz], used only with the UP, -1 if you want this parameter to be derived from a scaling relation
+  DPI : 80.58 # Asymptotic values of the gravity mode period spacing [s], used only with the UP, -1 if you don't want mixed modes to be included
+  q : 0.15 # Mixed mode coupling factor, used only with the UP
+  SurfaceEffects: 1 # Include near-surface effects in mode frequencies, not implemented for the UP
+  
+
+Activity : 
+  Enable: 1
+  Sigma : 40. # Amplitude of the activity component [ppm]
+  Tau : 0.2 # Time-scale of the activity component [days]
+
+Granulation : 
+  Enable: 1
+
+# Transit parameters
+Transit : 
+  Enable: 0
+  PlanetRadius : 0.5   # in jupiter radii
+  OrbitalPeriod : 10.  # in days
+  PlanetSemiMajorAxis : 1.  # in A.U.
+  OrbitalAngle : 0. # in deg
+  LimbDarkeningCoefficients: [0.25,0.75]
+
+

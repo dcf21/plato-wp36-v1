@@ -22,6 +22,10 @@ ${venv_dir}/bin/pip install -r ${cwd}/../docker_containers/requirements.txt
 # Install plato_wp36 package
 cd ${cwd}/../docker_containers/testbed/python_modules/plato_wp36/
 ${venv_dir}/bin/python setup.py develop
+cd ${cwd}/../docker_containers/testbed/python_modules/eas_psls_wrapper/
+${venv_dir}/bin/python setup.py develop
+cd ${cwd}/../docker_containers/testbed/python_modules/eas_batman_wrapper/
+${venv_dir}/bin/python setup.py develop
 
 # Install bls_reference code
 

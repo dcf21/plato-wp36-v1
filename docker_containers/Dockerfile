@@ -31,8 +31,12 @@ ADD testbed testbed
 # Copy non open-source transit-detection codes into this Docker container
 ADD private_code private_code
 
-# Install plato_wp36 module
+# Install plato_wp36 modules
 WORKDIR /plato_eas/docker_containers/testbed/python_modules/plato_wp36/
+RUN /plato_eas/datadir_local/virtualenv/bin/python setup.py develop
+WORKDIR /plato_eas/docker_containers/testbed/python_modules/eas_psls_wrapper/
+RUN /plato_eas/datadir_local/virtualenv/bin/python setup.py develop
+WORKDIR /plato_eas/docker_containers/testbed/python_modules/eas_batman_wrapper/
 RUN /plato_eas/datadir_local/virtualenv/bin/python setup.py develop
 
 # Write list of available TDAs

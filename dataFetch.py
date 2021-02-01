@@ -65,6 +65,7 @@ def fetch_required_files():
             'force_refresh': False
         },
         {
+            # https://pypi.org/project/psls/#files
             'url': 'https://files.pythonhosted.org/packages/09/16/1657adaa7444e1ce1884baf25e6fb3333d809ef2dc1a82cf8b3d9fdbe4c5/psls-1.3.tar.gz',
             'destination': 'datadir_input/psls-1.3.tar.gz',
             'force_refresh': False
