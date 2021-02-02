@@ -54,4 +54,4 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
             results[keyword] = value_numeric
 
     # Return results
-    return results
+    return {}, results

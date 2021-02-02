@@ -99,12 +99,20 @@ class LightcurveArbitraryRaster:
         else:
             opener = gzip.open
 
-        with opener(target_path, "w") as out:
+        with opener(target_path, "wt") as out:
+            # Include metadata in text file
+            for key, value in self.metadata.items():
+                out.write("# #{}={}\n".format(key, value))
+
+            # Output the lightcurve itself
             np.savetxt(out, np.transpose([self.times * 86400, self.fluxes, self.uncertainties]))
 
     def __add__(self, other):
         """
         Add two lightcurves together.
+
+        :type other:
+            LightcurveArbitraryRaster
         """
 
         # Avoid circular import
@@ -114,11 +122,16 @@ class LightcurveArbitraryRaster:
         resampler = LightcurveResampler(input_lc=other)
         other_resampled = resampler.match_to_other_lightcurve(other=self)
 
+        # Merge metadata from the two input lightcurves
+        output_metadata = {**self.metadata, **other.metadata}
+
+        # Create output lightcurve
         result = LightcurveArbitraryRaster(
             times=self.times,
             fluxes=self.fluxes + other_resampled.fluxes,
             uncertainties=np.hypot(self.uncertainties, other_resampled.uncertainties),
-            flags=np.hypot(self.flags, other_resampled.flags)
+            flags=np.hypot(self.flags, other_resampled.flags),
+            metadata=output_metadata
         )
 
         return result
@@ -126,6 +139,9 @@ class LightcurveArbitraryRaster:
     def __sub__(self, other):
         """
         Subtract one lightcurve from another.
+
+        :type other:
+            LightcurveArbitraryRaster
         """
 
         # Avoid circular import
@@ -135,11 +151,16 @@ class LightcurveArbitraryRaster:
         resampler = LightcurveResampler(input_lc=other)
         other_resampled = resampler.match_to_other_lightcurve(other=self)
 
+        # Merge metadata from the two input lightcurves
+        output_metadata = {**self.metadata, **other.metadata}
+
+        # Create output lightcurve
         result = LightcurveArbitraryRaster(
             times=self.times,
             fluxes=self.fluxes - other_resampled.fluxes,
             uncertainties=np.hypot(self.uncertainties, other_resampled.uncertainties),
-            flags=np.hypot(self.flags, other_resampled.flags)
+            flags=np.hypot(self.flags, other_resampled.flags),
+            metadata=output_metadata
         )
 
         return result
@@ -147,6 +168,9 @@ class LightcurveArbitraryRaster:
     def __mul__(self, other):
         """
         Multiply two lightcurves together.
+
+        :type other:
+            LightcurveArbitraryRaster
         """
 
         # Avoid circular import
@@ -156,11 +180,16 @@ class LightcurveArbitraryRaster:
         resampler = LightcurveResampler(input_lc=other)
         other_resampled = resampler.match_to_other_lightcurve(other=self)
 
+        # Merge metadata from the two input lightcurves
+        output_metadata = {**self.metadata, **other.metadata}
+
+        # Create output lightcurve
         result = LightcurveArbitraryRaster(
             times=self.times,
             fluxes=self.fluxes * other_resampled.fluxes,
             uncertainties=np.hypot(self.uncertainties, other_resampled.uncertainties),
-            flags=np.hypot(self.flags, other_resampled.flags)
+            flags=np.hypot(self.flags, other_resampled.flags),
+            metadata=output_metadata
         )
 
         return result

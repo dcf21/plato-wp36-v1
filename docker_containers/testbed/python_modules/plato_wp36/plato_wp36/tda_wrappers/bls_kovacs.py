@@ -75,5 +75,8 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
         "in2": in2
     }
 
+    # Extended results to save to disk
+    results_extended = results
+
     # Return results
-    return output
+    return output, results_extended

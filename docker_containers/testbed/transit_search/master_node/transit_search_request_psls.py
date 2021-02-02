@@ -14,14 +14,14 @@ import argparse
 import pika
 from plato_wp36 import settings
 
-# List of all the lightcurve lengths we are to test
+# List of all the lightcurve lengths we are to test (days)
 time_periods = [
-    3 * 28 * 86400,
-    4 * 28 * 86400,
-    6 * 28 * 86400,
-    9 * 28 * 86400,
-    365.25 * 86400,
-    2 * 365.25 * 86400
+    3 * 28,
+    4 * 28,
+    6 * 28,
+    9 * 28,
+    365.25,
+    2 * 365.25
 ]
 
 # Look up a list of all of the transit detection algorithms we have available

@@ -17,20 +17,20 @@ from plato_wp36 import fetch_tda_list, settings
 
 # List of all the lightcurve lengths we are to test
 time_periods = [
-    7 * 86400,
-    10 * 86400,
-    14 * 86400,
-    21 * 86400,
-    28 * 86400,
-    1.5 * 28 * 86400,
-    2 * 28 * 86400,
-    2.5 * 28 * 86400,
-    3 * 28 * 86400,
-    4 * 28 * 86400,
-    6 * 28 * 86400,
-    9 * 28 * 86400,
-    365.25 * 86400,
-    #    2 * 365.25 * 86400
+    7,
+    10,
+    14,
+    21,
+    28,
+    1.5 * 28,
+    2 * 28,
+    2.5 * 28,
+    3 * 28,
+    4 * 28,
+    6 * 28,
+    9 * 28,
+    365.25,
+    #    2 * 365.25
 ]
 
 # Look up a list of all of the transit detection algorithms we have available

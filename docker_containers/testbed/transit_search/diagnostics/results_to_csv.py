@@ -6,12 +6,13 @@
 Dump all of the run times from the MySQL database into a CSV file
 """
 
+import logging
 import os
 import sys
-import argparse
-import logging
 
+import argparse
 from plato_wp36 import connect_db, settings
+
 
 def results_to_csv():
     output = sys.stdout
@@ -21,15 +22,15 @@ def results_to_csv():
 
     # Fetch list of tasks
     c.execute("SELECT task_id, name FROM eas_tasks ORDER BY name;")
-    task_list = c.fetchall();
+    task_list = c.fetchall()
 
     # Fetch list of TDAs
     c.execute("SELECT code_id, name FROM eas_tda_codes ORDER BY name;")
-    code_list = c.fetchall();
+    code_list = c.fetchall()
 
     # Fetch list of LC durations
     c.execute("SELECT DISTINCT lc_length FROM eas_run_times ORDER BY lc_length;")
-    lc_lengths = c.fetchall();
+    lc_lengths = c.fetchall()
 
     # Loop over tasks
     for task in task_list:
@@ -60,7 +61,7 @@ WHERE code_id = %s AND
                     for item in c.fetchall():
                         timings_sum += item['value']
                         timings_count += 1
-                    output.write(",{:.1f}".format(timings_sum/timings_count))
+                    output.write(",{:.1f}".format(timings_sum / timings_count))
 
                 # New line
                 output.write("\n")
@@ -85,4 +86,3 @@ if __name__ == "__main__":
 
     # Dump results
     results_to_csv()
-

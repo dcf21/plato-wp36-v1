@@ -99,8 +99,11 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
             # Store output
             results.append(output.decode('utf-8'))
 
+    # Extended results to save to disk
+    results_extended = results
+
     # Clean up temporary directory
     os.system("rm -Rf {}".format(tmp_dir))
 
     # Return results
-    return results
+    return results, results_extended

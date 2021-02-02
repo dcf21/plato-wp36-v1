@@ -257,7 +257,7 @@ class TaskRunner:
         Perform the task of running a lightcurve through a transit-detection algorithm.
 
         :param lc_duration:
-            The maximum length of lightcurve to use; truncate the lightcurve after this period of time (sec).
+            The maximum length of lightcurve to use; truncate the lightcurve after this period of time (days).
         :type lc_duration:
             float
         :param tda_name:
@@ -281,7 +281,7 @@ class TaskRunner:
         logging.info("Running <{lc_filename}> through <{tda_name}> with duration {lc_days:.1f}.".format(
             lc_filename=lc_filename,
             tda_name=tda_name,
-            lc_days=lc_duration / 86400)
+            lc_days=lc_duration)
         )
 
         # Record start time
@@ -306,33 +306,33 @@ class TaskRunner:
                 filename=lc_filename,
                 directory=lc_directory,
                 gzipped=True,
-                cut_off_time=lc_duration / 86400
+                cut_off_time=lc_duration
             )
 
         # Process lightcurve
         with TaskTimer(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
                        lc_length=lc_duration, time_logger=time_log):
             if tda_name == 'bls_reference':
-                output = bls_reference.process_lightcurve(lc, lc_duration / 86400)
+                output, output_extended = bls_reference.process_lightcurve(lc, lc_duration)
             elif tda_name == 'bls_kovacs':
-                output = bls_kovacs.process_lightcurve(lc, lc_duration / 86400)
+                output, output_extended = bls_kovacs.process_lightcurve(lc, lc_duration)
             elif tda_name == 'dst_v26':
-                output = dst_v26.process_lightcurve(lc, lc_duration / 86400)
+                output, output_extended = dst_v26.process_lightcurve(lc, lc_duration)
             elif tda_name == 'dst_v29':
-                output = dst_v29.process_lightcurve(lc, lc_duration / 86400)
+                output, output_extended = dst_v29.process_lightcurve(lc, lc_duration)
             elif tda_name == 'exotrans':
-                output = exotrans.process_lightcurve(lc, lc_duration / 86400)
+                output, output_extended = exotrans.process_lightcurve(lc, lc_duration)
             elif tda_name == 'qats':
-                output = qats.process_lightcurve(lc, lc_duration / 86400)
+                output, output_extended = qats.process_lightcurve(lc, lc_duration)
             elif tda_name == 'tls':
-                output = tls.process_lightcurve(lc, lc_duration / 86400)
+                output, output_extended = tls.process_lightcurve(lc, lc_duration)
             else:
                 assert False, "Unknown transit detection code <{}>".format(tda_name)
 
         # Send result to message queue
         result_log.record_result(tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
                                  lc_length=lc_duration, timestamp=start_time,
-                                 result=output)
+                                 result=output, result_extended=output_extended)
 
         # Close connection to message queue
         time_log.close()

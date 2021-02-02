@@ -15,6 +15,7 @@ from plato_wp36 import settings
 sun_radius = 695500e3  # metres
 earth_radius = 6371e3  # metres
 jupiter_radius = 71492e3  # metres
+phy_AU = 149597870700  # metres
 
 defaults = {
     'duration': 730,  # days
@@ -24,7 +25,8 @@ defaults = {
     'planet_radius': 1,  # Jupiter radii
     'orbital_period': 365,  # days
     'semi_major_axis': 1,  # AU
-    'orbital_angle': 0  # degrees
+    'orbital_angle': 0,  # degrees
+    'noise': 0,
 }
 
 
@@ -40,7 +42,8 @@ class BatmanWrapper:
                  planet_radius=None,
                  orbital_period=None,
                  semi_major_axis=None,
-                 orbital_angle=None):
+                 orbital_angle=None,
+                 noise=None):
         """
         Instantiate wrapper for synthesising lightcurves using Batman
         """
@@ -61,6 +64,8 @@ class BatmanWrapper:
             self.settings['semi_major_axis'] = semi_major_axis
         if orbital_period is not None:
             self.settings['orbital_angle'] = orbital_angle
+        if noise is not None:
+            self.settings['noise'] = noise
 
         self.active = True
 
@@ -78,7 +83,8 @@ class BatmanWrapper:
                   planet_radius=None,
                   orbital_period=None,
                   semi_major_axis=None,
-                  orbital_angle=None):
+                  orbital_angle=None,
+                  noise=None):
         """
         Change settings for synthesising lightcurves using PSLS
         """
@@ -98,6 +104,8 @@ class BatmanWrapper:
             self.settings['semi_major_axis'] = semi_major_axis
         if orbital_period is not None:
             self.settings['orbital_angle'] = orbital_angle
+        if noise is not None:
+            self.settings['noise'] = noise
 
     def synthesise(self, filename, gzipped=True, directory="batman_output"):
         """
@@ -117,7 +125,7 @@ class BatmanWrapper:
         params.rp = self.settings['planet_radius'] / self.settings['star_radius']
 
         # semi-major axis (in units of stellar radii)
-        params.a = self.settings['semi_major_axis'] / self.settings['star_radius']
+        params.a = self.settings['semi_major_axis'] * (phy_AU / jupiter_radius) / self.settings['star_radius']
 
         # orbital inclination (in degrees)
         params.inc = 90 - self.settings['orbital_angle']
@@ -144,6 +152,10 @@ class BatmanWrapper:
         flux = m.light_curve(params)  # calculates light curve
         errors = np.zeros_like(t)
 
+        # Add noise to lightcurve
+        noise = np.random.normal(0, self.settings['noise'], size=len(flux))
+        flux += noise
+
         # Target path for this lightcurve
         target_path = os.path.join(settings.settings['lcPath'], directory, filename)
 
@@ -153,7 +165,11 @@ class BatmanWrapper:
         else:
             opener = gzip.open
 
-        with opener(target_path, "w") as out:
+        with opener(target_path, "wt") as out:
+            # Include metadata in text file
+            for key, value in self.settings.items():
+                out.write("# #{}={}\n".format(key, value))
+
             np.savetxt(out, np.transpose([t * 86400, flux, errors]))
 
         # Finished

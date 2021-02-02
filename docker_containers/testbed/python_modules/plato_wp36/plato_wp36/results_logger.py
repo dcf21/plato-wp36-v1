@@ -37,7 +37,7 @@ class ResultsToRabbitMQ:
         self.queue = queue
         self.results_target = results_target
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result):
+    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result, result_extended):
         """
         Create a new entry in the message queue for transit detection results.
 
@@ -63,6 +63,8 @@ class ResultsToRabbitMQ:
             float
         :param result:
             Data structure containing the output from the TDA code
+        :param result:
+            Data structure containing the extended output from the TDA code (saved to disk)
         :return:
             None
         """
@@ -77,7 +79,7 @@ class ResultsToRabbitMQ:
                                                            lc_length / 86400)
         json_out_path = os.path.join(settings['dataPath'], "scratch", json_filename)
         with gzip.open(json_out_path, "wt") as f:
-            f.write(result_json)
+            f.write(json.dumps(result_extended))
 
         json_message = json.dumps({
             'tda_code': tda_code,
@@ -85,6 +87,7 @@ class ResultsToRabbitMQ:
             'task_name': task_name,
             'lc_length': lc_length,
             'timestamp': timestamp,
+            'result': result_json,
             'result_filename': json_filename
         })
 
@@ -156,6 +159,7 @@ class ResultsToMySQL:
                                task_name=message['task_name'],
                                lc_length=message['lc_length'],
                                timestamp=message['timestamp'],
+                               result=message['result'],
                                result_filename=message['result_filename']
                                )
 
@@ -163,7 +167,7 @@ class ResultsToMySQL:
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result_filename):
+    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result, result_filename):
         """
         Create a new entry in the database for a transit detection result.
 
@@ -187,6 +191,10 @@ class ResultsToMySQL:
             The unix time stamp when this test was performed.
         :type timestamp:
             float
+        :param result:
+            JSON string continue the result of this test
+        :type result:
+            str
         :param result_filename:
             The filename of the data structure containing the output from the TDA code, in the <scratch> directory
         :type result_filename:
@@ -201,5 +209,6 @@ class ResultsToMySQL:
             task_name=task_name,
             lc_length=lc_length,
             timestamp=timestamp,
+            result=result,
             result_filename=result_filename
         )

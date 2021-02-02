@@ -2,8 +2,8 @@
 
 # Observation conditions
 Observation:
-  Duration : {duration} #  [days]
-  MasterSeed : {master_seed} # Master seed of the pseudo-random number generator
+  Duration : {duration:f} #  [days]
+  MasterSeed : {master_seed:d} # Master seed of the pseudo-random number generator
 
 # Instrument parameters
 Instrument:
@@ -15,7 +15,7 @@ Instrument:
   RandomNoise:
     Enable: 1
     Type: PLATO_SIMU #  either 'User' or 'PLATO_SCALING' or 'PLATO_SIMU'.
-    NSR :  73. # User-specified Noise to Signal Ratio [ppm/hr] for a single camera. This value takes into account all random noises but does not include systematic errors.
+    NSR : {nsr:f} # User-specified Noise to Signal Ratio [ppm/hr] for a single camera. This value takes into account all random noises but does not include systematic errors.
   Systematics:
     Enable : 1
 # The binary file containing the systematics parameters:
@@ -60,11 +60,11 @@ Granulation :
 
 # Transit parameters
 Transit : 
-  Enable: {enable_transit}
-  PlanetRadius : {planet_radius}   # in jupiter radii
-  OrbitalPeriod : {orbital_period}  # in days
-  PlanetSemiMajorAxis : {semi_major_axis}  # in A.U.
-  OrbitalAngle : {orbital_angle} # in deg
+  Enable: {enable_transit:d}
+  PlanetRadius : {planet_radius:f}   # in jupiter radii
+  OrbitalPeriod : {orbital_period:f}  # in days
+  PlanetSemiMajorAxis : {semi_major_axis:f}  # in A.U.
+  OrbitalAngle : {orbital_angle:f} # in deg
   LimbDarkeningCoefficients: [0.25,0.75]
 
 

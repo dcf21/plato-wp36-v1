@@ -5,11 +5,13 @@
 Class for synthesising lightcurves using PSLS.
 """
 
+import gzip
 import hashlib
 import os
 import random
 import time
 
+import numpy as np
 from plato_wp36 import settings
 
 defaults = {
@@ -21,7 +23,8 @@ defaults = {
     'planet_radius': 1,  # Jupiter radii
     'orbital_period': 365,  # days
     'semi_major_axis': 1,  # AU
-    'orbital_angle': 0  # degrees
+    'orbital_angle': 0,  # degrees
+    'nsr': 73  # noise-to-signal ratio (ppm/hr)
 }
 
 
@@ -37,7 +40,8 @@ class PslsWrapper:
                  planet_radius=None,
                  orbital_period=None,
                  semi_major_axis=None,
-                 orbital_angle=None):
+                 orbital_angle=None,
+                 nsr=None):
         """
         Instantiate wrapper for synthesising lightcurves using PSLS
         """
@@ -58,6 +62,8 @@ class PslsWrapper:
             self.settings['semi_major_axis'] = semi_major_axis
         if orbital_period is not None:
             self.settings['orbital_angle'] = orbital_angle
+        if nsr is not None:
+            self.settings['nsr'] = nsr
 
         # Create temporary working directory
         identifier = "eas_psls"
@@ -82,7 +88,8 @@ class PslsWrapper:
                   planet_radius=None,
                   orbital_period=None,
                   semi_major_axis=None,
-                  orbital_angle=None):
+                  orbital_angle=None,
+                  nsr=None):
         """
         Change settings for synthesising lightcurves using PSLS
         """
@@ -102,6 +109,8 @@ class PslsWrapper:
             self.settings['semi_major_axis'] = semi_major_axis
         if orbital_period is not None:
             self.settings['orbital_angle'] = orbital_angle
+        if nsr is not None:
+            self.settings['nsr'] = nsr
 
     def synthesise(self, filename, gzipped=True, directory="psls_output"):
         """
@@ -136,6 +145,7 @@ class PslsWrapper:
                 yaml_template.format(
                     duration=float(self.settings['duration']),
                     master_seed=int(self.settings['master_seed']),
+                    nsr=float(self.settings['nsr']),
                     datadir_input=settings.settings['inDataPath'],
                     enable_transit=int(self.settings['enable_transit']),
                     planet_radius=float(self.settings['planet_radius']),
@@ -158,10 +168,14 @@ class PslsWrapper:
         # Filename of the output that PSLS produced
         psls_output = "0012069449"
 
-        # Gzip output if requested
-        if gzipped:
-            command = "gzip {}.dat".format(psls_output)
-            os.system(command)
+        # Read output from PSLS
+        psls_filename = "{}.dat".format(psls_output)
+        data = np.loadtxt(psls_filename).T
+
+        # Read times and fluxes from text file
+        times = data[0]
+        fluxes = 1 + 1e-6 * data[1]
+        flags = data[2]
 
         # Make sure target directory exists
         os.system("mkdir -p '{}'".format(os.path.join(settings.settings['lcPath'], directory)))
@@ -169,12 +183,24 @@ class PslsWrapper:
         # Target path for this lightcurve
         target_path = os.path.join(settings.settings['lcPath'], directory, filename)
 
+        # Write PSLS output into lightcurve archive
+        if not gzipped:
+            opener = open
+        else:
+            opener = gzip.open
+
+        with opener(target_path, "wt") as out:
+            # Include metadata in text file
+            for key, value in self.settings.items():
+                out.write("# #{}={}\n".format(key, value))
+
+            np.savetxt(out, np.transpose([times, fluxes, flags]))
+
         # Copy PSLS output into lightcurve archive
-        os.system("mv {}.dat* '{}'".format(psls_output, target_path))
         os.system("mv {}.txt '{}.metadata'".format(psls_output, target_path))
 
         # Make sure there aren't any old data files lying around
-        os.system("rm -Rf *.modes *.yaml")
+        os.system("rm -Rf *.modes *.yaml *.dat")
 
         # Switch back into the user's cwd
         os.chdir(cwd)
