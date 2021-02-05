@@ -1,5 +1,6 @@
-[
-  [
+{
+  "test_name": "test_multiplication",
+  "task_list": [
     {
       "task": "psls_synthesise",
       "lc_directory": "test_output",
@@ -46,4 +47,4 @@
       "lc_filename": "test_multiplication_output.gz"
     }
   ]
-]
+}

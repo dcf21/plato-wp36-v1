@@ -37,10 +37,14 @@ class ResultsToRabbitMQ:
         self.queue = queue
         self.results_target = results_target
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result, result_extended):
+    def record_result(self, job_name, tda_code, target_name, task_name, lc_length, timestamp, result, result_extended):
         """
         Create a new entry in the message queue for transit detection results.
 
+        :param job_name:
+            Specify the name of the job that these tasks is part of.
+        :type job_name:
+            str
         :param tda_code:
             The name of the Transit Detection Algorithm being used.
         :type tda_code:
@@ -72,8 +76,9 @@ class ResultsToRabbitMQ:
         # Convert results data structure to JSON
         result_json = json.dumps(result)
 
-        # Store a copy of this gzipped JSON output
-        json_filename = "{}_{}_{}_{:08.1f}.json.gz".format(task_name,
+        # Store extended results of this task as gzipped JSON output (if it's too big to fit in the database)
+        json_filename = "{}_{}_{}_{}_{:08.1f}.json.gz".format(job_name,
+                                                              task_name,
                                                            tda_code,
                                                            os.path.split(target_name)[1],
                                                            lc_length / 86400)
@@ -81,7 +86,9 @@ class ResultsToRabbitMQ:
         with gzip.open(json_out_path, "wt") as f:
             f.write(json.dumps(result_extended))
 
+        # Turn summarised result into a JSON string for storage in the database
         json_message = json.dumps({
+            'job_name': job_name,
             'tda_code': tda_code,
             'target_name': target_name,
             'task_name': task_name,
@@ -91,6 +98,7 @@ class ResultsToRabbitMQ:
             'result_filename': json_filename
         })
 
+        # Put this result in the queue to be saved in the database
         if self.results_target == "rabbitmq":
             connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
             channel = connection.channel()
@@ -154,7 +162,8 @@ class ResultsToMySQL:
 
             message = json.loads(body)
 
-            self.record_result(tda_code=message['tda_code'],
+            self.record_result(job_name=message['job_name'],
+                               tda_code=message['tda_code'],
                                target_name=message['target_name'],
                                task_name=message['task_name'],
                                lc_length=message['lc_length'],
@@ -167,10 +176,14 @@ class ResultsToMySQL:
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result, result_filename):
+    def record_result(self, job_name, tda_code, target_name, task_name, lc_length, timestamp, result, result_filename):
         """
         Create a new entry in the database for a transit detection result.
 
+        :param job_name:
+            Specify the name of the job that these tasks is part of.
+        :type job_name:
+            str
         :param tda_code:
             The name of the Transit Detection Algorithm being used.
         :type tda_code:
@@ -204,6 +217,7 @@ class ResultsToMySQL:
         """
 
         self.results_database.record_result(
+            job_name=job_name,
             tda_code=tda_code,
             target_name=target_name,
             task_name=task_name,

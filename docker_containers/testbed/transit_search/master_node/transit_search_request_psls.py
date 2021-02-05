@@ -46,6 +46,9 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
 
     logging.info("Requesting speed tests of TDAs {}".format(available_tdas))
 
+    # ID for the job that these tasks are part of
+    job_name = 'psls_transit_search'
+
     # Loop over time period
     for lc_duration in time_periods:
         # Loop over TDAs
@@ -56,6 +59,7 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                     # 1) Synthesise LC using PSLS
                     {
                         'task': 'psls_synthesise',
+                        'job_name': job_name,
                         'lc_directory': lightcurves_directory,
                         'lc_filename': lc_info['filename'],
                         'lc_specs': {
@@ -69,6 +73,7 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                     # 2) Verify lightcurve
                     {
                         'task': 'verify_lc',
+                        'job_name': job_name,
                         'lc_source': 'archive',
                         'lc_directory': lightcurves_directory,
                         'lc_filename': lc_info['filename']
@@ -76,6 +81,7 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                     # 3) Perform transit search on LC
                     {
                         'task': 'transit_search',
+                        'job_name': job_name,
                         'lc_source': 'archive',
                         'lc_duration': lc_duration,
                         'tda_name': tda_name,

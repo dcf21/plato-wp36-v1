@@ -1,5 +1,6 @@
-[
-  [
+{
+  "test_name": "test_batman_tls_null",
+  "task_list": [
     {
       "task": "batman_synthesise",
       "lc_directory": "test_output",
@@ -22,4 +23,4 @@
       "lc_filename": "test_batman_tls_null.gz"
     }
   ]
-]
+}

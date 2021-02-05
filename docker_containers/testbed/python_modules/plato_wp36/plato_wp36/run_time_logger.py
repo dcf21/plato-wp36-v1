@@ -34,11 +34,15 @@ class RunTimesToRabbitMQ:
         self.queue = queue
         self.results_target = results_target
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, timestamp,
+    def record_timing(self, job_name, tda_code, target_name, task_name, lc_length, timestamp,
                       run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the message queue for a new code performance measurement.
 
+        :param job_name:
+            Specify the name of the job that these tasks is part of.
+        :type job_name:
+            str
         :param tda_code:
             The name of the Transit Detection Algorithm being used.
         :type tda_code:
@@ -71,7 +75,9 @@ class RunTimesToRabbitMQ:
             None
         """
 
+        # Turn run-time into a JSON string for storage in the database
         json_message = json.dumps({
+            'job_name': job_name,
             'tda_code': tda_code,
             'target_name': target_name,
             'task_name': task_name,
@@ -81,6 +87,7 @@ class RunTimesToRabbitMQ:
             'run_time_cpu': run_time_cpu
         })
 
+        # Put this result in the queue to be saved in the database
         if self.results_target == "rabbitmq":
             connection = pika.BlockingConnection(pika.URLParameters(url=self.broker))
             channel = connection.channel()
@@ -144,7 +151,8 @@ class RunTimesToMySQL:
 
             message = json.loads(body)
 
-            self.record_timing(tda_code=message['tda_code'],
+            self.record_timing(job_name=message['job_name'],
+                               tda_code=message['tda_code'],
                                target_name=message['target_name'],
                                task_name=message['task_name'],
                                lc_length=message['lc_length'],
@@ -157,11 +165,15 @@ class RunTimesToMySQL:
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, timestamp,
+    def record_timing(self, job_name, tda_code, target_name, task_name, lc_length, timestamp,
                       run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the database for a new code performance measurement.
 
+        :param job_name:
+            Specify the name of the job that these tasks is part of.
+        :type job_name:
+            str
         :param tda_code:
             The name of the Transit Detection Algorithm being used.
         :type tda_code:
@@ -195,6 +207,7 @@ class RunTimesToMySQL:
         """
 
         self.results_database.record_timing(
+            job_name=job_name,
             tda_code=tda_code,
             target_name=target_name,
             task_name=task_name,

@@ -64,6 +64,9 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
 
     logging.info("Requesting speed tests of TDAs {}".format(available_tdas))
 
+    # ID for the job that these tasks are part of
+    job_name = 'lcsg_transit_search'
+
     # Loop over time period
     for lc_duration in time_periods:
         # Loop over TDAs
@@ -73,6 +76,7 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                 job_description = [
                     {
                         'task': 'transit_search',
+                        'job_name': job_name,
                         'lc_source': 'lcsg',
                         'lc_duration': lc_duration,
                         'tda_name': tda_name,

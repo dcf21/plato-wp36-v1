@@ -38,6 +38,12 @@ CREATE TABLE eas_tda_codes (
     name VARCHAR(255) UNIQUE NOT NULL
 );
 
+# Table of jobs
+CREATE TABLE eas_jobs (
+    job_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) UNIQUE NOT NULL
+);
+
 # Table of server hostnames
 CREATE TABLE eas_servers (
     server_id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -59,6 +65,7 @@ CREATE TABLE eas_tasks (
 # Table of code run times
 CREATE TABLE eas_run_times (
     run_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    job_id INTEGER NOT NULL,
     code_id INTEGER NOT NULL,
     server_id INTEGER NOT NULL,
     target_id INTEGER NOT NULL,
@@ -67,6 +74,7 @@ CREATE TABLE eas_run_times (
     timestamp REAL NOT NULL,
     run_time_wall_clock REAL,
     run_time_cpu REAL,
+    FOREIGN KEY (job_id) REFERENCES eas_jobs (job_id),
     FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
     FOREIGN KEY (server_id) REFERENCES eas_servers (server_id),
     FOREIGN KEY (target_id) REFERENCES eas_targets (target_id),
@@ -76,6 +84,7 @@ CREATE TABLE eas_run_times (
 # Table of code output
 CREATE TABLE eas_results (
     run_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    job_id INTEGER NOT NULL,
     code_id INTEGER NOT NULL,
     server_id INTEGER NOT NULL,
     target_id INTEGER NOT NULL,
@@ -84,6 +93,7 @@ CREATE TABLE eas_results (
     timestamp REAL NOT NULL,
     results JSON,
     result_filename VARCHAR(1024),
+    FOREIGN KEY (job_id) REFERENCES eas_jobs (job_id),
     FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
     FOREIGN KEY (server_id) REFERENCES eas_servers (server_id),
     FOREIGN KEY (target_id) REFERENCES eas_targets (target_id),
@@ -190,6 +200,37 @@ CREATE TABLE eas_results (
         db.close()
         return server_id
 
+    def get_job_id(self, job_name):
+        """
+            Return the ID number associated with a particular job.
+
+            :param job_name:
+                String name for a particular job, which might be, for example, a group of tests we are running.
+            :return:
+                Numeric data generator identifier.
+            """
+
+        # Open connection to database
+        connector = DatabaseConnector()
+        db, c = connector.connect_db()
+
+        # Look up the ID for this TDA code (with protection against race conditions)
+        c.execute("SELECT job_id FROM eas_jobs WHERE name=%s;", (code_name,))
+        tmp = c.fetchall()
+
+        # If it doesn't exist, create a new ID
+        if len(tmp) == 0:
+            c.execute("INSERT IGNORE INTO eas_jobs (name) VALUES (%s);", (code_name,))
+            db.commit()
+            c.execute("SELECT job_id FROM eas_jobs WHERE name=%s;", (code_name,))
+            tmp = c.fetchall()
+
+        # Extract UID from the data returned by the SQL query
+        code_id = tmp[0]["code_id"]
+        db.commit()
+        db.close()
+        return code_id
+
     def get_code_id(self, code_name):
         """
             Return the ID number associated with a particular TDA code. Used to keep track of which run time
@@ -288,11 +329,15 @@ CREATE TABLE eas_results (
         db.close()
         return code_id
 
-    def record_timing(self, tda_code, target_name, task_name, lc_length, timestamp,
+    def record_timing(self, job_name, tda_code, target_name, task_name, lc_length, timestamp,
                       run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the database for a new code performance measurement.
 
+        :param job_name:
+            Specify the name of the job that these tasks is part of.
+        :type job_name:
+            str
         :param tda_code:
             The name of the Transit Detection Algorithm being used.
         :type tda_code:
@@ -328,6 +373,9 @@ CREATE TABLE eas_results (
         # Look up the uid for this server
         server_id = self.get_server_id()
 
+        # Look up what job this is part of
+        job_id = self.get_job_id(job_name=job_name)
+
         # Look up the uid for the TDA code
         code_id = self.get_code_id(code_name=tda_code)
 
@@ -343,17 +391,21 @@ CREATE TABLE eas_results (
 
         c.execute("""
 INSERT INTO eas_run_times
-(code_id, server_id, target_id, task_id, lc_length, timestamp, run_time_wall_clock, run_time_cpu)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
-        """, (code_id, server_id, target_id, task_id, lc_length / 86400, timestamp,
+(job_id, code_id, server_id, target_id, task_id, lc_length, timestamp, run_time_wall_clock, run_time_cpu)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """, (job_id, code_id, server_id, target_id, task_id, lc_length / 86400, timestamp,
               run_time_wall_clock, run_time_cpu))
         db.commit()
         db.close()
 
-    def record_result(self, tda_code, target_name, task_name, lc_length, timestamp, result, result_filename):
+    def record_result(self, job_name, tda_code, target_name, task_name, lc_length, timestamp, result, result_filename):
         """
         Create a new entry in the database for a new code performance measurement.
 
+        :param job_name:
+            Specify the name of the job that these tasks is part of.
+        :type job_name:
+            str
         :param tda_code:
             The name of the Transit Detection Algorithm being used.
         :type tda_code:
@@ -389,6 +441,9 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         # Look up the uid for this server
         server_id = self.get_server_id()
 
+        # Look up what job this is part of
+        job_id = self.get_job_id(job_name=job_name)
+
         # Look up the uid for the TDA code
         code_id = self.get_code_id(code_name=tda_code)
 
@@ -413,9 +468,9 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         # Commit results to MySQL
         c.execute("""
 INSERT INTO eas_results
-(code_id, server_id, target_id, task_id, lc_length, timestamp, result_filename)
-VALUES (%s, %s, %s, %s, %s, %s, %s);
-""", (code_id, server_id, target_id, task_id, lc_length, timestamp, result_filename))
+(job_id, code_id, server_id, target_id, task_id, lc_length, timestamp, result_filename)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+""", (job_id, code_id, server_id, target_id, task_id, lc_length, timestamp, result_filename))
 
         # Fetch UID of the record we just created
         uid = db.insert_id()

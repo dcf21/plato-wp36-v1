@@ -21,10 +21,15 @@ class TaskTimer:
     and also CPU time.
     """
 
-    def __init__(self, tda_code="", target_name="", task_name="null", lc_length=0, time_logger=RunTimesToRabbitMQ()):
+    def __init__(self, job_name, tda_code="", target_name="", task_name="null", lc_length=0,
+                 time_logger=RunTimesToRabbitMQ()):
         """
         Create a new timer.
 
+        :param job_name:
+            Specify the name of the job that these tasks is part of.
+        :type job_name:
+            str
         :param tda_code:
             The name of the Transit Detection Algorithm being used.
         :type tda_code:
@@ -49,6 +54,7 @@ class TaskTimer:
         assert isinstance(time_logger, RunTimesToRabbitMQ)
 
         # Store the state of this timer
+        self.job_name = job_name
         self.tda_code = tda_code
         self.target_name = target_name
         self.task_name = task_name
@@ -103,6 +109,7 @@ class TaskTimer:
 
         # Record run time
         self.time_logger.record_timing(
+            job_name=self.job_name,
             tda_code=self.tda_code,
             target_name=self.target_name,
             task_name=self.task_name,
