@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # quality_control.py
 
+import numpy as np
+
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 
@@ -30,9 +32,9 @@ def quality_control(lc: LightcurveArbitraryRaster, metadata: dict):
 
         # For now, pick an arbitrary target, of detection period to within 10%
         if 0.9 < period_offset < 1.1:
-            outcome="PASS"
+            outcome = "PASS"
         else:
-            outcome="FAIL"
+            outcome = "FAIL"
 
     # Return summary results
     metadata['outcome'] = outcome
