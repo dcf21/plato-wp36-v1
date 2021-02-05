@@ -13,8 +13,8 @@ import time
 from eas_batman_wrapper.batman_wrapper import BatmanWrapper
 from eas_psls_wrapper.psls_wrapper import PslsWrapper
 
-from .lc_reader_archive import read_archive_lightcurve
 from .lc_reader_lcsg import read_lcsg_lightcurve
+from .lightcurve import LightcurveArbitraryRaster
 from .results_logger import ResultsToRabbitMQ
 from .run_time_logger import RunTimesToRabbitMQ
 from .task_timer import TaskTimer
@@ -168,7 +168,7 @@ class TaskRunner:
         if lc_source == 'lcsg':
             lc_reader = read_lcsg_lightcurve
         elif lc_source == 'archive':
-            lc_reader = read_archive_lightcurve
+            lc_reader = LightcurveArbitraryRaster.from_file
         else:
             raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
@@ -235,7 +235,7 @@ class TaskRunner:
         if lc_source == 'lcsg':
             lc_reader = read_lcsg_lightcurve
         elif lc_source == 'archive':
-            lc_reader = read_archive_lightcurve
+            lc_reader = LightcurveArbitraryRaster.from_file
         else:
             raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
@@ -315,7 +315,7 @@ class TaskRunner:
         if lc_source == 'lcsg':
             lc_reader = read_lcsg_lightcurve
         elif lc_source == 'archive':
-            lc_reader = read_archive_lightcurve
+            lc_reader = LightcurveArbitraryRaster.from_file
         else:
             raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
