@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 # quality_control.py
 
-import logging
-import numpy as np
-from astropy import units as u
-from transitleastsquares import transitleastsquares
-
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 
-def quality_control(metadata: dict):
+def quality_control(lc: LightcurveArbitraryRaster, metadata: dict):
     """
     Determine whether the metadata returned by a transit detection algorithm is a successful detection, or a failure.
 
+    :param lc:
+        The lightcurve object containing the input lightcurve.
+    :type lc:
+        LightcurveArbitraryRaster
     :param metadata:
         The metadata dictionary returned by the transit detection code.
     :type metadata:
@@ -24,8 +23,8 @@ def quality_control(metadata: dict):
     # Test success
     outcome = "UNDEFINED"
     target_period = np.nan
-    if ('orbital_period' in metadata) and ('period' in metadata):
-        target_period = metadata['orbital_period']
+    if ('orbital_period' in lc.metadata) and ('period' in metadata):
+        target_period = lc.metadata['orbital_period']
         observed_period = metadata['period']
         period_offset = target_period / observed_period
 
@@ -36,7 +35,8 @@ def quality_control(metadata: dict):
             outcome="FAIL"
 
     # Return summary results
-    metadata['outcome':] = outcome
+    metadata['outcome'] = outcome
+    metadata['target_period'] = target_period
 
     # Return results
     return metadata

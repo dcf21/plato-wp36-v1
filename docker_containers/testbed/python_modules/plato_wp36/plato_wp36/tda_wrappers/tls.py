@@ -65,8 +65,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
         'transit_count': transit_count,
         'depth': results.depth,
         'duration': results.duration,
-        'sde': results.SDE,
-        'target_period': target_period
+        'sde': results.SDE
     }
 
     # Extended results to save to disk

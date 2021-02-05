@@ -360,7 +360,7 @@ class TaskRunner:
                 assert False, "Unknown transit detection code <{}>".format(tda_name)
 
         # Test whether transit detection was successful
-        quality_control(output)
+        quality_control(lc=lc, metadata=output)
 
         # Send result to message queue
         result_log.record_result(job_name=job_name, tda_code=tda_name, target_name=lc_filename,
