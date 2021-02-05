@@ -5,14 +5,13 @@
 Class for synthesising lightcurves using PSLS.
 """
 
-import gzip
 import hashlib
 import os
 import random
 import time
 
 import numpy as np
-from plato_wp36 import settings
+from plato_wp36 import settings, lightcurve
 
 defaults = {
     'mode': 'main_sequence',
@@ -173,31 +172,25 @@ class PslsWrapper:
         data = np.loadtxt(psls_filename).T
 
         # Read times and fluxes from text file
-        times = data[0]
+        times = data[0]  # seconds
         fluxes = 1 + 1e-6 * data[1]
         flags = data[2]
 
-        # Make sure target directory exists
-        os.system("mkdir -p '{}'".format(os.path.join(settings.settings['lcPath'], directory)))
+        # Write Batman output into lightcurve archive
+        lc = lightcurve.LightcurveArbitraryRaster(
+            times=times / 86400,  # psls outputs seconds; we use days
+            fluxes=fluxes,
+            flags=flags,
+            metadata=self.settings
+        )
+
+        lc.to_file(directory=directory, filename=filename)
 
         # Target path for this lightcurve
         target_path = os.path.join(settings.settings['lcPath'], directory, filename)
 
-        # Write PSLS output into lightcurve archive
-        if not gzipped:
-            opener = open
-        else:
-            opener = gzip.open
-
-        with opener(target_path, "wt") as out:
-            # Include metadata in text file
-            for key, value in self.settings.items():
-                out.write("# #{}={}\n".format(key, value))
-
-            np.savetxt(out, np.transpose([times, fluxes, flags]))
-
         # Copy PSLS output into lightcurve archive
-        os.system("mv {}.txt '{}.metadata'".format(psls_output, target_path))
+        os.system("mv {}.txt '{}.psls_out'".format(psls_output, target_path))
 
         # Make sure there aren't any old data files lying around
         os.system("rm -Rf *.modes *.yaml *.dat")

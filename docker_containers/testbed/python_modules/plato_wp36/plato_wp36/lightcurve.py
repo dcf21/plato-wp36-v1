@@ -9,6 +9,7 @@ import gzip
 import logging
 import math
 import os
+import re
 
 import numpy as np
 
@@ -25,7 +26,7 @@ class LightcurveArbitraryRaster:
         Create a lightcurve which is sampled on an arbitrary raster of times.
 
         :param times:
-            The times of the data points.
+            The times of the data points (days).
         :type times:
             np.ndarray
         :param fluxes:
@@ -69,14 +70,14 @@ class LightcurveArbitraryRaster:
             uncertainties = np.zeros_like(fluxes)
 
         # Store the data
-        self.times = times
+        self.times = times  # days
         self.fluxes = fluxes
         self.uncertainties = uncertainties
         self.flags = flags
         self.flags_set = True
         self.metadata = metadata
 
-    def to_file(self, directory, filename, binary=False, gzipped=True, overwrite=True):
+    def to_file(self, directory, filename, binary=False, gzipped=True, overwrite=True, create_directory=True):
         """
         Write a lightcurve out to a text data file. The time axis is multiplied by a factor 86400 to convert
         from days into seconds.
@@ -101,7 +102,16 @@ class LightcurveArbitraryRaster:
             Boolean specifying whether we're allowed to overwrite existing files.
         :type overwrite:
             bool
+        :param create_directory:
+            Boolean flag indicating whether we should create the parent directory, if it doesn't exist.
+        :type create_directory:
+            bool
         """
+
+        # Make sure target directory exists
+        if create_directory:
+            os.system("mkdir -p '{}'".format(os.path.join(settings['lcPath'], directory)))
+
         # Target path for this lightcurve
         target_path = os.path.join(settings['lcPath'], directory, filename)
 
@@ -118,14 +128,14 @@ class LightcurveArbitraryRaster:
 
         # Write lightcurve metadata
         target_path_metadata = "{}.metadata".format(target_path)
-        with open(target_path_metadata, "w"):
+        with open(target_path_metadata, "w") as out:
             out.write("{}={}\n".format("binary", int(binary)))
             out.write("{}={}\n".format("gzipped", int(gzipped)))
             # Include metadata in text file
             for key, value in self.metadata.items():
                 out.write("{}={}\n".format(key, value))
 
-        # Write this lightcurve output into lightcurve archive
+        # Write this lightcurve output into lightcurve archive (store times in seconds)
         if not binary:
             with opener(target_path, "wt") as out:
                 # Output the lightcurve itself
@@ -154,7 +164,7 @@ class LightcurveArbitraryRaster:
             A <LightcurveArbitraryRaster> object.
         """
 
-        times = []
+        times = []  # Times stored as days, but data files contain seconds
         fluxes = []
         uncertainties = []
         flags = []
@@ -167,20 +177,21 @@ class LightcurveArbitraryRaster:
         file_path = os.path.join(settings['lcPath'], directory, filename)
 
         # Read all lightcurve metadata
-        target_path_metadata = "{}.metadata".format(target_path)
-        with open(target_path_metadata):
-            test = re.match(r"(.*)=(.*)", line)
-            if test is not None:
-                metadata_key = test.group(1).strip()
-                metadata_value = test.group(2).strip()
+        file_path_metadata = "{}.metadata".format(file_path)
+        with open(file_path_metadata) as f:
+            for line in f:
+                test = re.match(r"(.*)=(.*)", line)
+                if test is not None:
+                    metadata_key = test.group(1).strip()
+                    metadata_value = test.group(2).strip()
 
-                # If metadata value is a float, convert it to a float. Otherwise keep it as string.
-                try:
-                    metadata_value = float(metadata_value)
-                except ValueError:
-                    pass
+                    # If metadata value is a float, convert it to a float. Otherwise keep it as string.
+                    try:
+                        metadata_value = float(metadata_value)
+                    except ValueError:
+                        pass
 
-                metadata[metadata_key] = metadata_value
+                    metadata[metadata_key] = metadata_value
 
         # Read file format of lightcurve from metadata
         assert 'binary' in metadata
@@ -205,7 +216,7 @@ class LightcurveArbitraryRaster:
 
                     # Unpack data
                     words = line.split()
-                    time = float(words[0]) / 86400  # Times stored in seconds; but Lightcurve objects use days
+                    time = float(words[0]) / 86400  # Times stored on disk in seconds; but Lightcurve objects use days
                     flux = float(words[1])
                     flag = float(words[2])
                     uncertainty = float(words[3])

@@ -6,12 +6,14 @@
 Test that test bench can perform the series of tasks defined in a JSON file
 """
 
-import json
 import logging
 import os
+import sys
 
 import argparse
 from plato_wp36 import settings, task_runner
+
+import json
 
 
 def do_work(job_name, body):
@@ -66,16 +68,27 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Set up logging
+    class InfoFilter(logging.Filter):
+        def filter(self, rec):
+            return rec.levelno in (logging.DEBUG, logging.INFO)
+
+
+    h1 = logging.StreamHandler(sys.stdout)
+    h1.setLevel(logging.DEBUG)
+    h1.addFilter(InfoFilter())
+    h2 = logging.StreamHandler()
+    h2.setLevel(logging.WARNING)
+
     log_file_path = os.path.join(settings.settings['dataPath'], 'plato_wp36.log')
     logging.basicConfig(level=logging.INFO,
                         format='[%(asctime)s] %(levelname)s:%(filename)s:%(message)s',
                         datefmt='%d/%m/%Y %H:%M:%S',
                         handlers=[
                             logging.FileHandler(log_file_path),
-                            logging.StreamHandler()
+                            h1, h2
                         ])
     logger = logging.getLogger(__name__)
-    logger.info(__doc__.strip())
+    logger.info("Running tests <{}>".format(args.tasks))
 
     # Extract list of the jobs we are to do
     test_descriptor_json = open(args.tasks).read()

@@ -177,8 +177,7 @@ class TaskRunner:
                        target_name=input_1_filename, task_name='load_lc', time_logger=time_log):
             lc_1 = lc_reader(
                 filename=input_1_filename,
-                directory=input_1_directory,
-                gzipped=True
+                directory=input_1_directory
             )
 
         # Load lightcurve 2
@@ -186,8 +185,7 @@ class TaskRunner:
                        target_name=input_2_filename, task_name='load_lc', time_logger=time_log):
             lc_2 = lc_reader(
                 filename=input_2_filename,
-                directory=input_2_directory,
-                gzipped=True
+                directory=input_2_directory
             )
 
         # Multiply lightcurves together
@@ -243,8 +241,7 @@ class TaskRunner:
         with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='load_lc', time_logger=time_log):
             lc = lc_reader(
                 filename=lc_filename,
-                directory=lc_directory,
-                gzipped=True
+                directory=lc_directory
             )
 
         # Verify lightcurve
@@ -329,7 +326,6 @@ class TaskRunner:
             lc = lc_reader(
                 filename=lc_filename,
                 directory=lc_directory,
-                gzipped=True,
                 cut_off_time=lc_duration
             )
 

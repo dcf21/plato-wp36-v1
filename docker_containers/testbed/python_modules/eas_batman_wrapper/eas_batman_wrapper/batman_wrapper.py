@@ -10,7 +10,7 @@ import os
 
 import batman
 import numpy as np
-from plato_wp36 import settings
+from plato_wp36 import settings, lightcurve
 
 sun_radius = 695500e3  # metres
 earth_radius = 6371e3  # metres
@@ -156,21 +156,15 @@ class BatmanWrapper:
         noise = np.random.normal(0, self.settings['noise'], size=len(flux))
         flux += noise
 
-        # Target path for this lightcurve
-        target_path = os.path.join(settings.settings['lcPath'], directory, filename)
-
         # Write Batman output into lightcurve archive
-        if not gzipped:
-            opener = open
-        else:
-            opener = gzip.open
+        lc = lightcurve.LightcurveArbitraryRaster(
+            times=t,  # days
+            fluxes=flux,
+            uncertainties=errors,
+            metadata=self.settings
+        )
 
-        with opener(target_path, "wt") as out:
-            # Include metadata in text file
-            for key, value in self.settings.items():
-                out.write("# #{}={}\n".format(key, value))
-
-            np.savetxt(out, np.transpose([t * 86400, flux, errors]))
+        lc.to_file(directory=directory, filename=filename)
 
         # Finished
         return
