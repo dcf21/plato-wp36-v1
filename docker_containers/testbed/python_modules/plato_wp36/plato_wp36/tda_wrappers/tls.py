@@ -54,17 +54,6 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     #         value_numeric = list(results[keyword])
     #         results[keyword] = value_numeric
 
-    # Test success
-    outcome = "UNDEFINED"
-    target_period = np.nan
-    if 'orbital_period' in lc.metadata:
-        target_period = lc.metadata['orbital_period']
-        period_offset = target_period / results.period
-        if 0.9 < period_offset < 1.1:
-            outcome="PASS"
-        else:
-            outcome="FAIL"
-
     # Work out how many transit we found
     transit_count = 0
     if isinstance(results.transit_times, list):
@@ -77,8 +66,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
         'depth': results.depth,
         'duration': results.duration,
         'sde': results.SDE,
-        'target_period': target_period,
-        'outcome': outcome
+        'target_period': target_period
     }
 
     # Extended results to save to disk

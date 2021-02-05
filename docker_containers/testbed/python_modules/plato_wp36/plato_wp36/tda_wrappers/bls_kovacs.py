@@ -67,8 +67,8 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
 
     output = {
         "power": None,  # power
-        "best_period": best_period,
-        "best_power": best_power,
+        "period": best_period,
+        "power": best_power,
         "depth": depth,
         "q": q,
         "in1": in1,

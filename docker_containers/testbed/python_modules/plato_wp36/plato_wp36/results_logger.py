@@ -77,14 +77,23 @@ class ResultsToRabbitMQ:
         result_json = json.dumps(result)
 
         # Store extended results of this task as gzipped JSON output (if it's too big to fit in the database)
-        json_filename = "{}_{}_{}_{}_{:08.1f}.json.gz".format(job_name,
-                                                              task_name,
-                                                           tda_code,
-                                                           os.path.split(target_name)[1],
-                                                           lc_length / 86400)
-        json_out_path = os.path.join(settings['dataPath'], "scratch", json_filename)
-        with gzip.open(json_out_path, "wt") as f:
-            f.write(json.dumps(result_extended))
+        if result_extended is not None:
+            result_extended_directory = os.path.join(settings['dataPath'], "scratch")
+
+            # Make sure directory exists for extended results files
+            os.system("mkdir -p '{}'".format(result_extended_directory))
+
+            # Create a filename for the extended results of this test
+            json_filename = "{}_{}_{}_{}_{:08.1f}.json.gz".format(job_name,
+                                                                  task_name,
+                                                               tda_code,
+                                                               os.path.split(target_name)[1],
+                                                               lc_length / 86400)
+            json_out_path = os.path.join(result_extended_directory, json_filename)
+
+            # Save extended results file
+            with gzip.open(json_out_path, "wt") as f:
+                f.write(json.dumps(result_extended))
 
         # Turn summarised result into a JSON string for storage in the database
         json_message = json.dumps({

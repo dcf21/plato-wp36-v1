@@ -10,6 +10,7 @@ import logging
 import os
 import time
 
+import numpy as np
 from eas_batman_wrapper.batman_wrapper import BatmanWrapper
 from eas_psls_wrapper.psls_wrapper import PslsWrapper
 
@@ -19,6 +20,7 @@ from .results_logger import ResultsToRabbitMQ
 from .run_time_logger import RunTimesToRabbitMQ
 from .task_timer import TaskTimer
 from .tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
+from .quality_control import quality_control
 
 
 class TaskRunner:
@@ -248,6 +250,14 @@ class TaskRunner:
         with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='verify', time_logger=time_log):
             display_name = os.path.split(lc_filename)[1]
 
+            logging.info("Lightcurve <{}> time span {:.1f} to {:.1f}".format(display_name,
+                                                                             np.min(lc.times),
+                                                                             np.max(lc.times)))
+
+            logging.info("Lightcurve <{}> flux range {:.6f} to {:.6f}".format(display_name,
+                                                                              np.min(lc.fluxes),
+                                                                              np.max(lc.fluxes)))
+
             # Run first code for checking LCs
             error_count = lc.check_fixed_step(verbose=True, max_errors=4)
 
@@ -348,6 +358,9 @@ class TaskRunner:
                 output, output_extended = tls.process_lightcurve(lc, lc_duration)
             else:
                 assert False, "Unknown transit detection code <{}>".format(tda_name)
+
+        # Test whether transit detection was successful
+        quality_control(output)
 
         # Send result to message queue
         result_log.record_result(job_name=job_name, tda_code=tda_name, target_name=lc_filename,

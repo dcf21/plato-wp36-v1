@@ -16,6 +16,12 @@
         }
       },
       {
+        "task": "verify_lc",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "test_batman_tls.gz"
+      },
+      {
         "task": "transit_search",
         "lc_source": "archive",
         "lc_duration": 55,
