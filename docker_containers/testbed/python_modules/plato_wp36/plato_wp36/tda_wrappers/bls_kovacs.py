@@ -65,18 +65,20 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     # Unpack results
     power, best_period, best_power, depth, q, in1, in2 = results
 
-    output = {
-        "power": None,  # power
-        "period": best_period,
-        "power": best_power,
-        "depth": depth,
-        "q": q,
-        "in1": in1,
-        "in2": in2
-    }
+    # output = {
+    #     "power": None,  # power
+    #     "period": best_period,
+    #     "power": best_power,
+    #     "depth": depth,
+    #     "q": q,
+    #     "in1": in1,
+    #     "in2": in2
+    # }
+
+    results = {}
 
     # Extended results to save to disk
     results_extended = results
 
     # Return results
-    return output, results_extended
+    return results, results_extended

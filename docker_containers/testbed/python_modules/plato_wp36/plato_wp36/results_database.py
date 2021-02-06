@@ -459,8 +459,14 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
 
         # Look up JSON data structure containing the result of this run
         if result_filename is not None:
-            json_input_path = os.path.join(settings['dataPath'], "scratch", result_filename)
-            json_output_path = os.path.join(settings['dataPath'], "json_out", result_filename)
+            input_directory = os.path.join(settings['dataPath'], "scratch")
+            output_directory = os.path.join(settings['dataPath'], "json_out")
+
+            json_input_path = os.path.join(input_directory, result_filename)
+            json_output_path = os.path.join(output_directory, result_filename)
+
+            # Make sure that target directory exists
+            os.system("mkdir -p '{}'".format(output_directory))
 
             # Move into target location
             shutil.move(json_input_path, json_output_path)
