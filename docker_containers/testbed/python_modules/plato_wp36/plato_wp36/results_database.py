@@ -483,6 +483,7 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
 
         # Attempt to store results in database
         if len(result) < 1e6:
+            logging.info("Logging JSON result <{}>".format(result))
             c.execute("""
 UPDATE IGNORE eas_results SET results=%s WHERE run_id=%s;
 """, (result, uid))
