@@ -1,9 +1,9 @@
 #!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# verify_lcs.py
+# verify_lcsg_lcs.py
 
 """
-Check that the input lightcurves are sampled at a fixed time step
+Check that the input LCSG lightcurves are sampled at a fixed time step
 """
 
 import glob
@@ -13,7 +13,7 @@ import os
 import argparse
 from plato_wp36 import lc_reader_lcsg, settings
 
-lightcurves_path = "csvs/bright/plato_bright*"
+lightcurves_path = "lightcurves_v2/csvs/bright/plato_bright*"
 
 lightcurve_list = glob.glob(
     os.path.join(settings.settings['lcPath'], lightcurves_path)

@@ -393,7 +393,7 @@ CREATE TABLE eas_results (
 INSERT INTO eas_run_times
 (job_id, code_id, server_id, target_id, task_id, lc_length, timestamp, run_time_wall_clock, run_time_cpu)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """, (job_id, code_id, server_id, target_id, task_id, lc_length / 86400, timestamp,
+        """, (job_id, code_id, server_id, target_id, task_id, lc_length, timestamp,
               run_time_wall_clock, run_time_cpu))
         db.commit()
         db.close()

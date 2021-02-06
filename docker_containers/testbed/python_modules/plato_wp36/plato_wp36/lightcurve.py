@@ -403,7 +403,7 @@ class LightcurveArbitraryRaster:
 
         # Return total error count
         if verbose and error_count > 0:
-            logging.info("Lightcurve had gaps at {}/{} time points.".format(error_count, len(times)))
+            logging.info("Lightcurve had gaps at {}/{} time points.".format(error_count, len(self.times)))
 
         # Return the verdict on this lightcurve
         return error_count
@@ -457,7 +457,7 @@ class LightcurveArbitraryRaster:
 
         # Return total error count
         if verbose and error_count > 0:
-            logging.info("Lightcurve had gaps at {}/{} time points.".format(error_count, len(times)))
+            logging.info("Lightcurve had gaps at {}/{} time points.".format(error_count, len(self.times)))
 
         # Return the verdict on this lightcurve
         return error_count
