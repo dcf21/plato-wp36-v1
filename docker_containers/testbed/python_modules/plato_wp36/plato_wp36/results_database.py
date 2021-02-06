@@ -91,7 +91,7 @@ CREATE TABLE eas_results (
     task_id INTEGER NOT NULL,
     lc_length REAL NOT NULL,
     timestamp REAL NOT NULL,
-    results JSON,
+    results LONGTEXT,
     result_filename VARCHAR(1024),
     FOREIGN KEY (job_id) REFERENCES eas_jobs (job_id),
     FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
@@ -483,7 +483,7 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
 
         # Attempt to store results in database
         if len(result) < 1e6:
-            logging.info("Logging JSON result <{}>".format(result))
+            # logging.info("Logging JSON result <{}>".format(result))
             c.execute("""
 UPDATE IGNORE eas_results SET results=%s WHERE run_id=%s;
 """, (result, uid))
