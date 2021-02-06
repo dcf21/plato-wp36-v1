@@ -7,7 +7,7 @@
         "lc_directory": "test_output",
         "lc_filename": "test_multiplication_1.gz",
         "lc_specs": {
-          "duration": 15,
+          "duration": 55,
           "enable_transit": 0
         }
       },
@@ -16,10 +16,10 @@
         "lc_directory": "test_output",
         "lc_filename": "test_multiplication_2.gz",
         "lc_specs": {
-          "duration": 15,
-          "planet_radius": 0.1,
-          "orbital_period": 1,
-          "semi_major_axis": 0.01,
+          "duration": 55,
+          "planet_radius": 1,
+          "orbital_period": 10,
+          "semi_major_axis": 0.1,
           "orbital_angle": 0
         }
       },
@@ -42,7 +42,7 @@
       {
         "task": "transit_search",
         "lc_source": "archive",
-        "lc_duration": 15,
+        "lc_duration": 55,
         "tda_name": "tls",
         "lc_directory": "test_output",
         "lc_filename": "test_multiplication_output.gz"

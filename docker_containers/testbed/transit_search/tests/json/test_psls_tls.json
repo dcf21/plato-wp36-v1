@@ -7,10 +7,10 @@
         "lc_directory": "test_output",
         "lc_filename": "test_psls_tls.gz",
         "lc_specs": {
-          "duration": 55,
-          "planet_radius": 1,
-          "orbital_period": 10,
-          "semi_major_axis": 0.1,
+          "duration": 15,
+          "planet_radius": 0.1,
+          "orbital_period": 1,
+          "semi_major_axis": 0.01,
           "orbital_angle": 0
         }
       },
@@ -23,7 +23,7 @@
       {
         "task": "transit_search",
         "lc_source": "archive",
-        "lc_duration": 55,
+        "lc_duration": 15,
         "tda_name": "tls",
         "lc_directory": "test_output",
         "lc_filename": "test_psls_tls.gz"

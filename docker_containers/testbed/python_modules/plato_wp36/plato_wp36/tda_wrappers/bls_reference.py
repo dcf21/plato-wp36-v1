@@ -35,23 +35,10 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
                               minimum_n_transit=2,
                               frequency_factor=2.0)
 
-    # Clean up results: Astropy Quantity objects are not serialisable
-    results = dict(results)
+    results = {}
 
-    for keyword in results:
-        if isinstance(results[keyword], u.Quantity):
-            value_quantity = results[keyword]
-            value_numeric = value_quantity.value
-            value_unit = str(value_quantity.unit)
-
-            if isinstance(value_numeric, np.ndarray):
-                value_numeric = list(value_numeric)
-
-            results[keyword] = [value_numeric, value_unit]
-
-        elif isinstance(results[keyword], np.ndarray):
-            value_numeric = list(results[keyword])
-            results[keyword] = value_numeric
+    # Extended results to save to disk
+    results_extended = results
 
     # Return results
-    return {}, results
+    return results, results_extended

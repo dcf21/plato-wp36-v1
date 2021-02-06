@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for item in json/*
+for item in json/*.json
 do
   mkfifo stderr
   cat stderr | sed 's/\(.*\)/[01;31m\1[00m/' &

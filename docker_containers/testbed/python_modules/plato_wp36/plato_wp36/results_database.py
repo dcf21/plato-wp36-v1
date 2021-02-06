@@ -215,21 +215,21 @@ CREATE TABLE eas_results (
         db, c = connector.connect_db()
 
         # Look up the ID for this TDA code (with protection against race conditions)
-        c.execute("SELECT job_id FROM eas_jobs WHERE name=%s;", (code_name,))
+        c.execute("SELECT job_id FROM eas_jobs WHERE name=%s;", (job_name,))
         tmp = c.fetchall()
 
         # If it doesn't exist, create a new ID
         if len(tmp) == 0:
-            c.execute("INSERT IGNORE INTO eas_jobs (name) VALUES (%s);", (code_name,))
+            c.execute("INSERT IGNORE INTO eas_jobs (name) VALUES (%s);", (job_name,))
             db.commit()
-            c.execute("SELECT job_id FROM eas_jobs WHERE name=%s;", (code_name,))
+            c.execute("SELECT job_id FROM eas_jobs WHERE name=%s;", (job_name,))
             tmp = c.fetchall()
 
         # Extract UID from the data returned by the SQL query
-        code_id = tmp[0]["code_id"]
+        job_id = tmp[0]["job_id"]
         db.commit()
         db.close()
-        return code_id
+        return job_id
 
     def get_code_id(self, code_name):
         """
