@@ -69,7 +69,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     sigma_min = minimum_period / lc_time_step_days  # time steps
 
     # Initialise empty results structure
-    results = []
+    results_extended = []
 
     # Logging
     logging.info("QATS testing {:d} transit lengths".format(len(durations)))
@@ -97,10 +97,10 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
             logging.info("QATS returned error text <{}>".format(err))
 
             # Store output
-            results.append(output.decode('utf-8'))
+            results_extended.append(output.decode('utf-8'))
 
     # Extended results to save to disk
-    results_extended = results
+    results = {}
 
     # Clean up temporary directory
     os.system("rm -Rf {}".format(tmp_dir))

@@ -482,10 +482,10 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         uid = db.insert_id()
 
         # Attempt to store results in database
-        if len(result_json) < 1e6:
+        if len(result) < 1e6:
             c.execute("""
 UPDATE IGNORE eas_results SET results=%s WHERE run_id=%s;
-""", (uid, result_json))
+""", (result, uid))
 
         # Commit this record
         db.commit()
