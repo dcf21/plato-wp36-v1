@@ -27,11 +27,11 @@ SELECT
     lc_length, timestamp, results, result_filename,
     j.name AS job, tc.name AS tda, s.hostname AS host, t1.name AS target, t2.name AS task
 FROM eas_results x
-INNER JOIN eas_jobs j ON j.job_id=x.job_in
+INNER JOIN eas_jobs j ON j.job_id=x.job_id
 INNER JOIN eas_tda_codes tc ON tc.code_id=x.code_id
 INNER JOIN eas_servers s ON s.server_id=x.server_id
 INNER JOIN eas_targets t1 ON t1.target_id=x.target_id
-INNER JOIN eas_tasks t2 IN t2.task_id=x.task_id
+INNER JOIN eas_tasks t2 ON t2.task_id=x.task_id
 ORDER BY x.timestamp;
 """)
     results_list = c.fetchall()
@@ -39,9 +39,9 @@ ORDER BY x.timestamp;
     # Loop over results
     for item in results_list:
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} | {}  | {}  | {}  | {}  | {}  | {}  | {}\n".format(
+        output.write("{} |{:22s}|{:18s}|{:32s}|{:18s}|{:6.1f}|{}|{}\n".format(
             time_string,
-            item['job'], item['task'], item['hostname'],
+            item['job'], item['task'], item['host'],
             item['target'], item['lc_length'],
             item['results'], item['result_filename']
         ))
