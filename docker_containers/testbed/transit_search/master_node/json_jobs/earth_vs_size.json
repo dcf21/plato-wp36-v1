@@ -1,11 +1,11 @@
 {
-  "test_name": "earth_vs_snr",
+  "test_name": "earth_vs_size",
   "iterations": [
     {
-      "name": "nsr",
+      "name": "size",
       "log_range": [
-        "73/5",
-        "73*5",
+        "0.089114866/4",
+        "0.089114866*4",
         "10"
       ]
     }
@@ -19,11 +19,10 @@
         "lc_filename": "evs_${index}.gz",
         "lc_specs": {
           "duration": 730,
-          "planet_radius": 0.089114866,
+          "planet_radius": "${size}",
           "orbital_period": 240,
           "semi_major_axis": 1,
-          "orbital_angle": 0,
-          "nsr": "${nsr}"
+          "orbital_angle": 0
         }
       },
       {
@@ -31,7 +30,7 @@
         "job_name": "earth_vs_snr",
         "lc_source": "archive",
         "lc_directory": "test_output",
-        "lc_filename": "evs_${index}.gz"
+        "lc_filename": "evsize_${index}.gz"
       },
       {
         "task": "transit_search",
@@ -40,7 +39,7 @@
         "lc_duration": 730,
         "tda_name": "tls",
         "lc_directory": "test_output",
-        "lc_filename": "evs_${index}.gz",
+        "lc_filename": "evsize_${index}.gz",
         "search_settings": {}
       }
     ]

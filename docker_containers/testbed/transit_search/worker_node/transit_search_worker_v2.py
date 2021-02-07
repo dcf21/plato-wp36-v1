@@ -10,12 +10,13 @@ https://stackoverflow.com/questions/14572020/handling-long-running-tasks-in-pika
 https://github.com/pika/pika/blob/0.12.0/examples/basic_consumer_threaded.py
 """
 
-import argparse
-import logging
-import os
 import functools
 import json
+import logging
+import os
+import time
 
+import argparse
 import pika
 from plato_wp36 import settings, task_runner
 
@@ -72,9 +73,10 @@ def run_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", queu
         # Fetch next message from queue
         message = receive(broker=broker, queue=queue)
 
-        # If no message received quit
+        # If no message received then wait for work
         if message is None:
-            return
+            time.sleep(10)
+            continue
 
         # Run requested job
         do_work(body=message)

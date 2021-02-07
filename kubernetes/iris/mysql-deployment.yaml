@@ -5,7 +5,7 @@ metadata:
   namespace: plato
 spec:
   ports:
-  - port: 3306
+    - port: 3306
   selector:
     app: mysql
   clusterIP: None
@@ -28,19 +28,19 @@ spec:
       namespace: plato
     spec:
       containers:
-      - image: mysql:8.0
-        name: mysql
-        env:
-          # Use secret in real usage
-        - name: MYSQL_ROOT_PASSWORD
-          value: plato
-        ports:
-        - containerPort: 3306
+        - image: mysql:8.0
           name: mysql
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
+          env:
+            # Use secret in real usage
+            - name: MYSQL_ROOT_PASSWORD
+              value: plato
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
       volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pvc
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc

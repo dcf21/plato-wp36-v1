@@ -14,18 +14,18 @@ spec:
         app: log-results
     spec:
       containers:
-      - image: plato/eas_all_tdas:v1
-        name: plato
-        command: ['/plato_eas/datadir_local/virtualenv/bin/python3']
-        args: ['/plato_eas/docker_containers/testbed/transit_search/data_comms_daemon/results_output_daemon.py']
-        env:
-          # Use secret in real usage
-        - name: dummy
-          value: plato
-        volumeMounts:
-        - name: plato-persistent-storage
-          mountPath: /plato_eas/datadir_output
+        - image: plato/eas_all_tdas:v1
+          name: plato
+          command: [ '/plato_eas/datadir_local/virtualenv/bin/python3' ]
+          args: [ '/plato_eas/docker_containers/testbed/transit_search/data_comms_daemon/results_output_daemon.py' ]
+          env:
+            # Use secret in real usage
+            - name: dummy
+              value: plato
+          volumeMounts:
+            - name: plato-persistent-storage
+              mountPath: /plato_eas/datadir_output
       volumes:
-      - name: plato-persistent-storage
-        persistentVolumeClaim:
-          claimName: datadir-pv-claim
+        - name: plato-persistent-storage
+          persistentVolumeClaim:
+            claimName: datadir-pv-claim

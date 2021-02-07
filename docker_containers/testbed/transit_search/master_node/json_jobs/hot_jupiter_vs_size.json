@@ -1,11 +1,11 @@
 {
-  "test_name": "earth_vs_snr",
+  "test_name": "hot_jupiter_vs_size",
   "iterations": [
     {
-      "name": "nsr",
+      "name": "size",
       "log_range": [
-        "73/5",
-        "73*5",
+        "0.02",
+        "0.5",
         "10"
       ]
     }
@@ -18,12 +18,11 @@
         "lc_directory": "test_output",
         "lc_filename": "evs_${index}.gz",
         "lc_specs": {
-          "duration": 730,
-          "planet_radius": 0.089114866,
-          "orbital_period": 240,
-          "semi_major_axis": 1,
-          "orbital_angle": 0,
-          "nsr": "${nsr}"
+          "duration": 90,
+          "planet_radius": "${size}",
+          "orbital_period": 4,
+          "semi_major_axis": 0.05,
+          "orbital_angle": 0
         }
       },
       {
@@ -31,16 +30,16 @@
         "job_name": "earth_vs_snr",
         "lc_source": "archive",
         "lc_directory": "test_output",
-        "lc_filename": "evs_${index}.gz"
+        "lc_filename": "hjvsize_${index}.gz"
       },
       {
         "task": "transit_search",
         "job_name": "earth_vs_snr_${index}",
         "lc_source": "archive",
-        "lc_duration": 730,
+        "lc_duration": 90,
         "tda_name": "tls",
         "lc_directory": "test_output",
-        "lc_filename": "evs_${index}.gz",
+        "lc_filename": "hjvsize_${index}.gz",
         "search_settings": {}
       }
     ]
