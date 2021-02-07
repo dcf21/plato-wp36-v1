@@ -17,6 +17,7 @@
     [
       {
         "task": "psls_synthesise",
+        "job_name": "bls_timing_long_periods",
         "lc_directory": "test_output",
         "lc_filename": "btlp_${index}.gz",
         "lc_specs": {
@@ -29,6 +30,7 @@
       },
       {
         "task": "transit_search",
+        "job_name": "bls_timing_long_periods",
         "lc_source": "archive",
         "lc_duration": "${lc_length}",
         "tda_name": "bls_reference",
