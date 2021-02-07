@@ -15,7 +15,7 @@ spec:
         app: log-runtimes
     spec:
       containers:
-      - image: dcf21/plato_eas:v1
+      - image: dcf21/plato_eas:latest
         name: plato
         command: ['/plato_eas/datadir_local/virtualenv/bin/python3']
         args: ['/plato_eas/docker_containers/testbed/transit_search/data_comms_daemon/run_times_output_daemon.py']

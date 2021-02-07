@@ -4,6 +4,7 @@ metadata:
   name: plato
   namespace: plato
 spec:
+  replicas: 4
   selector:
     matchLabels:
       app: plato
@@ -15,7 +16,7 @@ spec:
         app: plato
     spec:
       containers:
-      - image: dcf21/plato_eas:v1
+      - image: dcf21/plato_eas:latest
         name: plato
         command: ['sleep']
         args: ['3600000']
