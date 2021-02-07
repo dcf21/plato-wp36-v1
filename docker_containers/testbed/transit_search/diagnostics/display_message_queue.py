@@ -6,11 +6,11 @@
 Display the contents of the RabbitMQ message queues
 """
 
-import pika
-import argparse
-import os
 import logging
+import os
 
+import argparse
+import pika
 from plato_wp36 import settings
 
 

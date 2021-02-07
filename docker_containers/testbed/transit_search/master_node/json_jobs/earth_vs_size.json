@@ -14,7 +14,7 @@
     [
       {
         "task": "psls_synthesise",
-        "job_name": "earth_vs_snr",
+        "job_name": "earth_vs_size_${index}",
         "lc_directory": "test_output",
         "lc_filename": "evsize_${index}.gz",
         "lc_specs": {
@@ -27,14 +27,14 @@
       },
       {
         "task": "verify_lc",
-        "job_name": "earth_vs_snr",
+        "job_name": "earth_vs_size_${index}",
         "lc_source": "archive",
         "lc_directory": "test_output",
         "lc_filename": "evsize_${index}.gz"
       },
       {
         "task": "transit_search",
-        "job_name": "earth_vs_snr_${index}",
+        "job_name": "earth_vs_size_${index}",
         "lc_source": "archive",
         "lc_duration": 730,
         "tda_name": "tls",

@@ -41,9 +41,17 @@ def timings_to_csv():
 
         # Loop over tasks
         for task in task_list:
+            # Check whether we have any results to report
+            c.execute("SELECT COUNT(*) FROM eas_run_times WHERE job_id = %s AND task_id = %s;",
+                      (job['job_id'], task['task_id'])
+                      )
+            if c.fetchone()['COUNT(*)'] < 1:
+                continue
 
             # Loop over timing metrics
             for metric in ["run_time_wall_clock", "run_time_cpu"]:
+
+                # Output heading for timings of a particular task
                 output.write("\n\n{}  --  {} ({})\n\n".format(job['name'], task['name'], metric))
 
                 # Print column headings
@@ -51,6 +59,13 @@ def timings_to_csv():
 
                 # Loop over TDA codes
                 for code in code_list:
+                    # Check whether we have any results to report
+                    c.execute("SELECT COUNT(*) FROM eas_run_times WHERE job_id = %s AND task_id = %s AND code_id = %s;",
+                              (job['job_id'], task['task_id'], code['code_id'])
+                              )
+                    if c.fetchone()['COUNT(*)'] < 1:
+                        continue
+
                     # Print rows of table
                     output.write(code['name'])
 
@@ -69,7 +84,11 @@ WHERE job_id = %s AND
                         for item in c.fetchall():
                             timings_sum += item['value']
                             timings_count += 1
-                        output.write(",{:.1f}".format(timings_sum / timings_count))
+                        if timings_count >= 1:
+                            output_value = "{:.1f}".format(timings_sum / timings_count)
+                        else:
+                            output_value = "x"
+                        output.write(",{}".format(output_value))
 
                     # New line
                     output.write("\n")

@@ -44,6 +44,12 @@ def results_to_csv():
 
             # Loop over TDA codes
             for code in code_list:
+                # Check whether we have any results to report
+                c.execute("SELECT COUNT(*) FROM eas_results WHERE job_id = %s AND task_id = %s AND code_id = %s;",
+                          (job['job_id'], task['task_id'], code['code_id'])
+                          )
+                if c.fetchone()['COUNT(*)'] < 1:
+                    continue
 
                 # Loop over lightcurve lengths
                 for lc_length in lc_lengths:
