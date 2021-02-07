@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# fetch_tda_list.py
 
 """
 Module for fetching the list of transit detection algorithms available inside the current Docker

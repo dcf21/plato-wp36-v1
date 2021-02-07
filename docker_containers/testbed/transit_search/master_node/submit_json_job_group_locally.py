@@ -17,6 +17,7 @@ from string import Template
 import argparse
 import numpy as np
 from plato_wp36 import settings, task_runner
+from plato_wp36.constants import *
 
 
 def do_work(job_name, body):

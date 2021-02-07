@@ -17,6 +17,7 @@ import argparse
 import numpy as np
 import pika
 from plato_wp36 import settings
+from plato_wp36.constants import *
 
 
 def run_task_list(job_name, task_list, iterations,
