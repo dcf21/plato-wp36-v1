@@ -45,7 +45,8 @@
         "lc_duration": 15,
         "tda_name": "tls",
         "lc_directory": "test_output",
-        "lc_filename": "test_multiplication_output.gz"
+        "lc_filename": "test_multiplication_output.gz",
+        "search_settings": {}
       }
     ]
   ]

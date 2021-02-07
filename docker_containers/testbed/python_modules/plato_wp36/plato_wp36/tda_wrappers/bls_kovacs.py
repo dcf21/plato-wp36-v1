@@ -6,7 +6,7 @@ import bls
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 
-def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
+def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float, search_settings: dict):
     """
     Perform a transit search on a light curve, using the bls_kovacs code.
 
@@ -18,6 +18,10 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
         The duration of the lightcurve, in units of days.
     :type lc_duration:
         float
+    :param search_settings:
+        Dictionary of settings which control how we search for transits.
+    :type search_settings:
+        dict
     :return:
         dict containing the results of the transit search.
     """
@@ -40,13 +44,13 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     qma = 0.2
 
     # Minimum transit period, days
-    minimum_period = 0.5
+    minimum_period = float(search_settings.get('period_min', 0.5))
     fmax = 1 / minimum_period
 
     # Maximum transit period, seconds
     # Arithmetic here based on <https://docs.astropy.org/en/stable/api/astropy.timeseries.BoxLeastSquares.html#astropy.timeseries.BoxLeastSquares.autoperiod>
     minimum_n_transits = 2
-    maximum_period = lc_duration / minimum_n_transits
+    maximum_period = float(search_settings.get('period_max', lc_duration / minimum_n_transits))
     fmin = 1 / maximum_period
 
     # Frequency spacing

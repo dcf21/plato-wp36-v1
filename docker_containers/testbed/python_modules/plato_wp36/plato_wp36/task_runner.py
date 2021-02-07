@@ -16,11 +16,11 @@ from eas_psls_wrapper.psls_wrapper import PslsWrapper
 
 from .lc_reader_lcsg import read_lcsg_lightcurve
 from .lightcurve import LightcurveArbitraryRaster
+from .quality_control import quality_control
 from .results_logger import ResultsToRabbitMQ
 from .run_time_logger import RunTimesToRabbitMQ
 from .task_timer import TaskTimer
 from .tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans, qats, tls
-from .quality_control import quality_control
 
 
 class TaskRunner:
@@ -279,7 +279,7 @@ class TaskRunner:
         # Close connection to message queue
         time_log.close()
 
-    def transit_search(self, job_name, lc_duration, tda_name, lc_filename, lc_directory, lc_source):
+    def transit_search(self, job_name, lc_duration, tda_name, lc_filename, lc_directory, lc_source, search_settings):
         """
         Perform the task of running a lightcurve through a transit-detection algorithm.
 
@@ -297,7 +297,7 @@ class TaskRunner:
             str
         :param lc_filename:
             The filename of the lightcurve to search for transits (within our local lightcurve archive).
-        :type lc_filename
+        :type lc_filename:
             str
         :param lc_directory:
             The name of the directory inside the lightcurve archive where this lightcurve can be found.
@@ -308,6 +308,10 @@ class TaskRunner:
             by the testbench code (archive), or the lightcurve stitching group.
         :type lc_source:
             str
+        :param search_settings:
+            Dictionary of settings which control how we search for transits.
+        :type search_settings:
+            dict
         """
         logging.info("Running <{lc_filename}> through <{tda_name}> with duration {lc_days:.1f}.".format(
             lc_filename=lc_filename,
@@ -343,19 +347,26 @@ class TaskRunner:
         with TaskTimer(job_name=job_name, tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
                        lc_length=lc_duration, time_logger=time_log):
             if tda_name == 'bls_reference':
-                output, output_extended = bls_reference.process_lightcurve(lc, lc_duration)
+                output, output_extended = bls_reference.process_lightcurve(lc=lc, lc_duration=lc_duration,
+                                                                           search_settings=search_settings)
             elif tda_name == 'bls_kovacs':
-                output, output_extended = bls_kovacs.process_lightcurve(lc, lc_duration)
+                output, output_extended = bls_kovacs.process_lightcurve(lc=lc, lc_duration=lc_duration,
+                                                                        search_settings=search_settings)
             elif tda_name == 'dst_v26':
-                output, output_extended = dst_v26.process_lightcurve(lc, lc_duration)
+                output, output_extended = dst_v26.process_lightcurve(lc=lc, lc_duration=lc_duration,
+                                                                     search_settings=search_settings)
             elif tda_name == 'dst_v29':
-                output, output_extended = dst_v29.process_lightcurve(lc, lc_duration)
+                output, output_extended = dst_v29.process_lightcurve(lc=lc, lc_duration=lc_duration,
+                                                                     search_settings=search_settings)
             elif tda_name == 'exotrans':
-                output, output_extended = exotrans.process_lightcurve(lc, lc_duration)
+                output, output_extended = exotrans.process_lightcurve(lc=lc, lc_duration=lc_duration,
+                                                                      search_settings=search_settings)
             elif tda_name == 'qats':
-                output, output_extended = qats.process_lightcurve(lc, lc_duration)
+                output, output_extended = qats.process_lightcurve(lc=lc, lc_duration=lc_duration,
+                                                                  search_settings=search_settings)
             elif tda_name == 'tls':
-                output, output_extended = tls.process_lightcurve(lc, lc_duration)
+                output, output_extended = tls.process_lightcurve(lc=lc, lc_duration=lc_duration,
+                                                                 search_settings=search_settings)
             else:
                 assert False, "Unknown transit detection code <{}>".format(tda_name)
 
@@ -409,10 +420,11 @@ class TaskRunner:
                 self.transit_search(
                     job_name=job_description['job_name'],
                     lc_source=job_description['lc_source'],
-                    lc_duration=job_description['lc_duration'],
+                    lc_duration=float(job_description['lc_duration']),
                     lc_directory=job_description['lc_directory'],
                     tda_name=job_description['tda_name'],
-                    lc_filename=job_description['lc_filename']
+                    lc_filename=job_description['lc_filename'],
+                    search_settings=job_description['search_settings']
                 )
 
             # Synthesise lightcurve with PSLS

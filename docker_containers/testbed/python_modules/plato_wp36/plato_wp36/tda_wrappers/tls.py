@@ -9,7 +9,7 @@ from transitleastsquares import transitleastsquares
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 
-def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
+def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float, search_settings: dict):
     """
     Perform a transit search on a light curve, using the bls_kovacs code.
 
@@ -21,6 +21,10 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
         The duration of the lightcurve, in units of days.
     :type lc_duration:
         float
+    :param search_settings:
+        Dictionary of settings which control how we search for transits.
+    :type search_settings:
+        dict
     :return:
         dict containing the results of the transit search.
     """
@@ -32,9 +36,17 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     flux_normalised = flux / np.mean(flux)
     logging.info("Lightcurve metadata: {}".format(lc.metadata))
 
+    # Create a list of settings to pass to TLS
+    tls_settings = {}
+
+    if 'period_min' in search_settings:
+        tls_settings['period_min'] = float(search_settings['period_min'])  # Minimum trial period, days
+    if 'period_max' in search_settings:
+        tls_settings['period_max'] = float(search_settings['period_max'])  # Maximum trial period, days
+
     # Run this lightcurve through Transit Least Squares
     model = transitleastsquares(time, flux_normalised)
-    results = model.power()
+    results = model.power(**tls_settings)
 
     # Clean up results: Astropy Quantity objects are not serialisable
     # results = dict(results)

@@ -1,0 +1,49 @@
+{
+  "test_name": "tls_timing_full_span",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "7",
+        "10",
+        "14",
+        "21",
+        "28",
+        "1.5 * 28",
+        "2 * 28",
+        "2.5 * 28",
+        "3 * 28",
+        "4 * 28",
+        "6 * 28",
+        "9 * 28",
+        "365.25",
+        "2 * 365.25"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "lc_directory": "test_output",
+        "lc_filename": "ttfs_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "ttfs_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}

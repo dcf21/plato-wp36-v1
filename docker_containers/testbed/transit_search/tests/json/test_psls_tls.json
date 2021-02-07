@@ -26,7 +26,8 @@
         "lc_duration": 15,
         "tda_name": "tls",
         "lc_directory": "test_output",
-        "lc_filename": "test_psls_tls.gz"
+        "lc_filename": "test_psls_tls.gz",
+        "search_settings": {}
       }
     ]
   ]

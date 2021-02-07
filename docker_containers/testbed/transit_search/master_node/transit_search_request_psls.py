@@ -63,10 +63,10 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                         'lc_directory': lightcurves_directory,
                         'lc_filename': lc_info['filename'],
                         'lc_specs': {
-                            'duration': 730,  # days
-                            'planet_radius': 1,  # Jupiter radii
-                            'orbital_period': 365,  # days
-                            'semi_major_axis': 1,  # AU
+                            'duration': lc_duration,  # days
+                            'planet_radius': 0.1,  # Jupiter radii
+                            'orbital_period': 1,  # days
+                            'semi_major_axis': 0.01,  # AU
                             'orbital_angle': 0  # degrees
                         }
                     },
@@ -86,7 +86,8 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                         'lc_duration': lc_duration,
                         'tda_name': tda_name,
                         'lc_directory': lightcurves_directory,
-                        'lc_filename': lc_info['filename']
+                        'lc_filename': lc_info['filename'],
+                        "search_settings": {}
                     }
                 ]
 

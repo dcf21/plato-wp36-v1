@@ -7,7 +7,7 @@ from astropy.timeseries import BoxLeastSquares
 from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 
-def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
+def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float, search_settings: dict):
     """
     Perform a transit search on a light curve, using the bls_reference code.
 
@@ -19,6 +19,10 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
         The duration of the lightcurve, in units of days.
     :type lc_duration:
         float
+    :param search_settings:
+        Dictionary of settings which control how we search for transits.
+    :type search_settings:
+        dict
     :return:
         dict containing the results of the transit search.
     """
@@ -26,12 +30,16 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float):
     t = lc.times * u.day
     y_filt = lc.fluxes
 
+    # Work out what period range we are scanning
+    minimum_period = float(search_settings.get('period_min', 0.5 * u.day))
+    maximum_period = float(search_settings.get('period_max', lc_duration / 2 * u.day))
+
     # Run this lightcurve through the astropy implementation of BLS
     durations = np.linspace(0.05, 0.2, 10) * u.day
     model = BoxLeastSquares(t, y_filt)
     results = model.autopower(durations,
-                              minimum_period=0.5 * u.day,
-                              maximum_period=lc_duration / 2 * u.day,
+                              minimum_period=minimum_period,
+                              maximum_period=maximum_period,
                               minimum_n_transit=2,
                               frequency_factor=2.0)
 

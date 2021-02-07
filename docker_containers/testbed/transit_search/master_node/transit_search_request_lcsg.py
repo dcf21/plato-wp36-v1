@@ -7,12 +7,12 @@ Populate message queue with speed test tasks with all available TDAs, using LCSG
 """
 
 import glob
+import json
 import logging
 import os
-import pika
-import json
 
 import argparse
+import pika
 from plato_wp36 import fetch_tda_list, settings
 
 # List of all the lightcurve lengths we are to test
@@ -81,7 +81,8 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                         'lc_duration': lc_duration,
                         'tda_name': tda_name,
                         'lc_directory': lightcurves_directory,
-                        'lc_filename': lc_filename
+                        'lc_filename': lc_filename,
+                        "search_settings": {}
                     }
                 ]
 
