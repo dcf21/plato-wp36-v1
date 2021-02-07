@@ -61,10 +61,10 @@ def run_task_list(job_name, task_list, iterations,
 
     # Loop over tasks
     for message in task_descriptions:
-        json_message = json.dumps(message)
-
-        logging.info("Sending message <{}>".format(json_message))
-        channel.basic_publish(exchange='', routing_key=queue, body=json_message)
+        for task in message:
+            json_message = json.dumps(task)
+            logging.info("Sending message <{}>".format(json_message))
+            channel.basic_publish(exchange='', routing_key=queue, body=json_message)
 
 
 if __name__ == "__main__":
