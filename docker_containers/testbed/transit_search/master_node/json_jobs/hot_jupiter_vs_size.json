@@ -16,7 +16,7 @@
         "task": "psls_synthesise",
         "job_name": "earth_vs_snr",
         "lc_directory": "test_output",
-        "lc_filename": "evs_${index}.gz",
+        "lc_filename": "hjvsize_${index}.gz",
         "lc_specs": {
           "duration": 90,
           "planet_radius": "${size}",

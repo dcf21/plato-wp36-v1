@@ -17,6 +17,10 @@ spec:
       containers:
         - image: dcf21/plato_eas:latest
           name: plato
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "250m"
           command: [ '/plato_eas/datadir_local/virtualenv/bin/python3' ]
           args: [ '/plato_eas/docker_containers/testbed/transit_search/data_comms_daemon/results_output_daemon.py' ]
           env:
@@ -24,9 +28,14 @@ spec:
             - name: dummy
               value: plato
           volumeMounts:
-            - name: plato-persistent-storage
+            - name: output-persistent-storage
               mountPath: /plato_eas/datadir_output
+            - name: input-persistent-storage
+              mountPath: /plato_eas/datadir_input
       volumes:
-        - name: plato-persistent-storage
+        - name: output-persistent-storage
           persistentVolumeClaim:
             claimName: output-pvc
+        - name: input-persistent-storage
+          persistentVolumeClaim:
+            claimName: input-pvc

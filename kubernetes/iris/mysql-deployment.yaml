@@ -30,6 +30,10 @@ spec:
       containers:
         - image: mysql:8.0
           name: mysql
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "250m"
           env:
             # Use secret in real usage
             - name: MYSQL_ROOT_PASSWORD
