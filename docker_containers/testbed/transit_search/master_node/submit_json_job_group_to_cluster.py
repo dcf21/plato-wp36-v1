@@ -48,7 +48,7 @@ def run_task_list(job_name, task_list, iterations,
             format_tokens[setting['name']] = grid_point[index]
 
         task_descriptions.append(
-            template.substitute(**format_tokens)
+            json.loads(template.substitute(**format_tokens))
         )
 
     # Now submit tasks to the message queue

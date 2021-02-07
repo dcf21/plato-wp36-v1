@@ -66,7 +66,7 @@ def run_task_list(job_name, task_list, iterations):
             format_tokens[setting['name']] = grid_point[index]
 
         task_descriptions.append(
-            template.substitute(**format_tokens)
+            json.loads(template.substitute(**format_tokens))
         )
 
     # Status update
@@ -74,8 +74,9 @@ def run_task_list(job_name, task_list, iterations):
 
     # Run each task in turn
     for message in task_descriptions:
-        # Run requested job
-        do_work(job_name=job_name, body=message)
+        for task in message:
+            # Run requested job
+            do_work(job_name=job_name, body=task)
 
 
 if __name__ == "__main__":
