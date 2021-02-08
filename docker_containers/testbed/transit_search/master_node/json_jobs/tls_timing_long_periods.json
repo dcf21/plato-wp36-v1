@@ -37,7 +37,7 @@
         "lc_directory": "test_output",
         "lc_filename": "ttlp_${index}.gz",
         "search_settings": {
-          "min_period": 90
+          "period_min": 90
         }
       }
     ]

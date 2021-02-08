@@ -31,8 +31,8 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float, search
     y_filt = lc.fluxes
 
     # Work out what period range we are scanning
-    minimum_period = float(search_settings.get('period_min', 0.5 * u.day))
-    maximum_period = float(search_settings.get('period_max', lc_duration / 2 * u.day))
+    minimum_period = float(search_settings.get('period_min', 0.5)) * u.day
+    maximum_period = float(search_settings.get('period_max', lc_duration / 2)) * u.day
 
     # Run this lightcurve through the astropy implementation of BLS
     durations = np.linspace(0.05, 0.2, 10) * u.day
