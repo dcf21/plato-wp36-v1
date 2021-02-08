@@ -7,12 +7,12 @@
         "lc_directory": "test_output",
         "lc_filename": "test_psls_tls_null.gz",
         "lc_specs": {
+          "enable_transit": 0,
           "duration": 15,
           "planet_radius": 0.1,
           "orbital_period": 1,
           "semi_major_axis": 0.01,
-          "orbital_angle": 0,
-          "nsr": 1000
+          "orbital_angle": 0
         }
       },
       {

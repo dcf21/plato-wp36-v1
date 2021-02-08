@@ -14,9 +14,9 @@
     [
       {
         "task": "psls_synthesise",
-        "job_name": "hot_jupiter_vs_size_${index}",
+        "job_name": "hot_jupiter_vs_size_psls_${index}",
         "lc_directory": "test_output",
-        "lc_filename": "hjvsize_${index}.gz",
+        "lc_filename": "hjvsize1_${index}.gz",
         "lc_specs": {
           "duration": 90,
           "planet_radius": "${size}",
@@ -27,19 +27,50 @@
       },
       {
         "task": "verify_lc",
-        "job_name": "hot_jupiter_vs_size_${index}",
+        "job_name": "hot_jupiter_vs_size_psls_${index}",
         "lc_source": "archive",
         "lc_directory": "test_output",
-        "lc_filename": "hjvsize_${index}.gz"
+        "lc_filename": "hjvsize1_${index}.gz"
       },
       {
         "task": "transit_search",
-        "job_name": "hot_jupiter_vs_size_${index}",
+        "job_name": "hot_jupiter_vs_size_psls_${index}",
         "lc_source": "archive",
         "lc_duration": 90,
         "tda_name": "tls",
         "lc_directory": "test_output",
-        "lc_filename": "hjvsize_${index}.gz",
+        "lc_filename": "hjvsize1_${index}.gz",
+        "search_settings": {}
+      },
+      {
+        "task": "batman_synthesise",
+        "job_name": "hot_jupiter_vs_size_batman_${index}",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize2_${index}.gz",
+        "lc_specs": {
+          "duration": 90,
+          "planet_radius": "${size}",
+          "orbital_period": 4,
+          "semi_major_axis": 0.05,
+          "orbital_angle": 0,
+          "noise": 0.000315
+        }
+      },
+      {
+        "task": "verify_lc",
+        "job_name": "hot_jupiter_vs_size_batman_${index}",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize2_${index}.gz"
+      },
+      {
+        "task": "transit_search",
+        "job_name": "hot_jupiter_vs_size_batman_${index}",
+        "lc_source": "archive",
+        "lc_duration": 90,
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize2_${index}.gz",
         "search_settings": {}
       }
     ]

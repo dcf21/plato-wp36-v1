@@ -1,5 +1,5 @@
 {
-  "test_name": "tls_timing_long_periods",
+  "test_name": "bls_timing_long_periods",
   "iterations": [
     {
       "name": "lc_length",

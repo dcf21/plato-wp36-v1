@@ -1,5 +1,5 @@
 {
-  "test_name": "tls_timing_full_span",
+  "test_name": "bls_timing_full_span",
   "iterations": [
     {
       "name": "lc_length",
