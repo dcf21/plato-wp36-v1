@@ -5,12 +5,9 @@
 Class for synthesising lightcurves using Batman.
 """
 
-import gzip
-import os
-
 import batman
 import numpy as np
-from plato_wp36 import settings, lightcurve
+from plato_wp36 import lightcurve
 
 sun_radius = 695500e3  # metres
 earth_radius = 6371e3  # metres
@@ -51,21 +48,21 @@ class BatmanWrapper:
         # Create dictionary of settings
         self.settings = defaults.copy()
         if duration is not None:
-            self.settings['duration'] = duration
+            self.settings['duration'] = float(duration)
         if eccentricity is not None:
-            self.settings['eccentricity'] = eccentricity
+            self.settings['eccentricity'] = float(eccentricity)
         if t0 is not None:
-            self.settings['t0'] = t0
+            self.settings['t0'] = float(t0)
         if planet_radius is not None:
-            self.settings['planet_radius'] = planet_radius
+            self.settings['planet_radius'] = float(planet_radius)
         if orbital_period is not None:
-            self.settings['orbital_period'] = orbital_period
+            self.settings['orbital_period'] = float(orbital_period)
         if semi_major_axis is not None:
-            self.settings['semi_major_axis'] = semi_major_axis
+            self.settings['semi_major_axis'] = float(semi_major_axis)
         if orbital_period is not None:
-            self.settings['orbital_angle'] = orbital_angle
+            self.settings['orbital_angle'] = float(orbital_angle)
         if noise is not None:
-            self.settings['noise'] = noise
+            self.settings['noise'] = float(noise)
 
         self.active = True
 
@@ -91,21 +88,21 @@ class BatmanWrapper:
 
         # Create dictionary of settings
         if duration is not None:
-            self.settings['duration'] = duration
+            self.settings['duration'] = float(duration)
         if eccentricity is not None:
-            self.settings['eccentricity'] = eccentricity
+            self.settings['eccentricity'] = float(eccentricity)
         if t0 is not None:
-            self.settings['t0'] = t0
+            self.settings['t0'] = float(t0)
         if planet_radius is not None:
-            self.settings['planet_radius'] = planet_radius
+            self.settings['planet_radius'] = float(planet_radius)
         if orbital_period is not None:
-            self.settings['orbital_period'] = orbital_period
+            self.settings['orbital_period'] = float(orbital_period)
         if semi_major_axis is not None:
-            self.settings['semi_major_axis'] = semi_major_axis
+            self.settings['semi_major_axis'] = float(semi_major_axis)
         if orbital_period is not None:
-            self.settings['orbital_angle'] = orbital_angle
+            self.settings['orbital_angle'] = float(orbital_angle)
         if noise is not None:
-            self.settings['noise'] = noise
+            self.settings['noise'] = float(noise)
 
     def synthesise(self, filename, gzipped=True, directory="batman_output"):
         """
