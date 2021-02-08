@@ -1,0 +1,2937 @@
+**** ../master_node/json_jobs/bls_timing_full_span.json ****
+{
+  "test_name": "tls_timing_full_span",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "7 * day",
+        "10 * day",
+        "14 * day",
+        "21 * day",
+        "28 * day",
+        "1.5 * month",
+        "2 * month",
+        "2.5 * month",
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "bls_timing_full_span",
+        "lc_directory": "test_output",
+        "lc_filename": "btfs_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "bls_timing_full_span",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "bls_reference",
+        "lc_directory": "test_output",
+        "lc_filename": "btfs_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/bls_timing_long_periods.json ****
+{
+  "test_name": "tls_timing_long_periods",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "bls_timing_long_periods",
+        "lc_directory": "test_output",
+        "lc_filename": "btlp_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "bls_timing_long_periods",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "bls_reference",
+        "lc_directory": "test_output",
+        "lc_filename": "btlp_${index}.gz",
+        "search_settings": {
+          "min_period": 90
+        }
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/earth_vs_size.json ****
+{
+  "test_name": "earth_vs_size",
+  "iterations": [
+    {
+      "name": "size",
+      "log_range": [
+        "0.089114866/4",
+        "0.089114866*4",
+        "10"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "earth_vs_size_${index}",
+        "lc_directory": "test_output",
+        "lc_filename": "evsize_${index}.gz",
+        "lc_specs": {
+          "duration": 730,
+          "planet_radius": "${size}",
+          "orbital_period": 240,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "verify_lc",
+        "job_name": "earth_vs_size_${index}",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "evsize_${index}.gz"
+      },
+      {
+        "task": "transit_search",
+        "job_name": "earth_vs_size_${index}",
+        "lc_source": "archive",
+        "lc_duration": 730,
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "evsize_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/earth_vs_snr.json ****
+{
+  "test_name": "earth_vs_snr",
+  "iterations": [
+    {
+      "name": "nsr",
+      "log_range": [
+        "73/5",
+        "73*5",
+        "10"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "earth_vs_snr_${index}",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz",
+        "lc_specs": {
+          "duration": 730,
+          "planet_radius": 0.089114866,
+          "orbital_period": 240,
+          "semi_major_axis": 1,
+          "orbital_angle": 0,
+          "nsr": "${nsr}"
+        }
+      },
+      {
+        "task": "verify_lc",
+        "job_name": "earth_vs_snr_${index}",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz"
+      },
+      {
+        "task": "transit_search",
+        "job_name": "earth_vs_snr_${index}",
+        "lc_source": "archive",
+        "lc_duration": 730,
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/hot_jupiter_vs_size.json ****
+{
+  "test_name": "hot_jupiter_vs_size",
+  "iterations": [
+    {
+      "name": "size",
+      "log_range": [
+        "0.04",
+        "0.2",
+        "30"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "hot_jupiter_vs_size_${index}",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize_${index}.gz",
+        "lc_specs": {
+          "duration": 90,
+          "planet_radius": "${size}",
+          "orbital_period": 4,
+          "semi_major_axis": 0.05,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "verify_lc",
+        "job_name": "hot_jupiter_vs_size_${index}",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize_${index}.gz"
+      },
+      {
+        "task": "transit_search",
+        "job_name": "hot_jupiter_vs_size_${index}",
+        "lc_source": "archive",
+        "lc_duration": 90,
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/tls_timing_full_span.json ****
+{
+  "test_name": "tls_timing_full_span",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "7 * day",
+        "10 * day",
+        "14 * day",
+        "21 * day",
+        "28 * day",
+        "1.5 * month",
+        "2 * month",
+        "2.5 * month",
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "tls_timing_full_span",
+        "lc_directory": "test_output",
+        "lc_filename": "ttfs_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "tls_timing_full_span",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "ttfs_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/tls_timing_long_periods.json ****
+{
+  "test_name": "tls_timing_long_periods",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "tls_timing_long_periods",
+        "lc_directory": "test_output",
+        "lc_filename": "ttlp_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "tls_timing_long_periods",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "ttlp_${index}.gz",
+        "search_settings": {
+          "min_period": 90
+        }
+      }
+    ]
+  ]
+}
+[08/02/2021 14:57:51] INFO:timings_list.py:Produce the list of all the run times in the MySQL database
+2021-02-07 21:02:26 |hot_jupiter_vs_size_000000|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000000.gz |   0.0|    26.20|     4.44
+2021-02-07 21:02:28 |hot_jupiter_vs_size_000001|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000001.gz |   0.0|    26.86|     4.31
+2021-02-07 21:02:30 |hot_jupiter_vs_size_000002|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000002.gz |   0.0|    27.30|     4.60
+2021-02-07 21:02:32 |hot_jupiter_vs_size_000003|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000003.gz |   0.0|    27.56|     4.35
+2021-02-07 21:02:52 |hot_jupiter_vs_size_000000|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000000.gz |   0.0|     0.89|     0.88
+2021-02-07 21:02:53 |hot_jupiter_vs_size_000000|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000000.gz |   0.0|     0.70|     0.66
+2021-02-07 21:02:54 |hot_jupiter_vs_size_000000|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000000.gz |  90.0|     0.92|     0.91
+2021-02-07 21:02:55 |hot_jupiter_vs_size_000001|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000001.gz |   0.0|     0.88|     0.88
+2021-02-07 21:02:55 |hot_jupiter_vs_size_000000|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000000.gz |  90.0|   384.13|   302.35
+2021-02-07 21:02:56 |hot_jupiter_vs_size_000001|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000001.gz |   0.0|     0.68|     0.65
+2021-02-07 21:02:56 |hot_jupiter_vs_size_000001|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000001.gz |  90.0|     0.88|     0.87
+2021-02-07 21:02:57 |hot_jupiter_vs_size_000001|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000001.gz |  90.0|   372.12|   308.83
+2021-02-07 21:02:58 |hot_jupiter_vs_size_000002|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000002.gz |   0.0|     0.89|     0.88
+2021-02-07 21:02:58 |hot_jupiter_vs_size_000002|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000002.gz |   0.0|     0.75|     0.69
+2021-02-07 21:02:59 |hot_jupiter_vs_size_000002|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000002.gz |  90.0|     0.92|     0.92
+2021-02-07 21:03:00 |hot_jupiter_vs_size_000003|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000003.gz |   0.0|     0.88|     0.88
+2021-02-07 21:03:01 |hot_jupiter_vs_size_000003|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000003.gz |   0.0|     0.69|     0.65
+2021-02-07 21:03:01 |hot_jupiter_vs_size_000002|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000002.gz |  90.0|   382.72|   308.88
+2021-02-07 21:03:02 |hot_jupiter_vs_size_000003|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000003.gz |  90.0|     0.89|     0.89
+2021-02-07 21:03:03 |hot_jupiter_vs_size_000003|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000003.gz |  90.0|   373.03|   309.45
+2021-02-07 21:09:10 |hot_jupiter_vs_size_000004|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000004.gz |   0.0|    26.09|     4.26
+2021-02-07 21:09:16 |hot_jupiter_vs_size_000005|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000005.gz |   0.0|    26.35|     4.25
+2021-02-07 21:09:19 |hot_jupiter_vs_size_000006|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000006.gz |   0.0|    27.34|     4.36
+2021-02-07 21:09:24 |hot_jupiter_vs_size_000007|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000007.gz |   0.0|    28.22|     4.42
+2021-02-07 21:09:36 |hot_jupiter_vs_size_000004|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000004.gz |   0.0|     0.89|     0.88
+2021-02-07 21:09:37 |hot_jupiter_vs_size_000004|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000004.gz |   0.0|     0.68|     0.65
+2021-02-07 21:09:37 |hot_jupiter_vs_size_000004|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000004.gz |  90.0|     0.88|     0.87
+2021-02-07 21:09:38 |hot_jupiter_vs_size_000004|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000004.gz |  90.0|   258.30|   156.43
+2021-02-07 21:09:43 |hot_jupiter_vs_size_000005|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000005.gz |   0.0|     0.87|     0.86
+2021-02-07 21:09:44 |hot_jupiter_vs_size_000005|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000005.gz |   0.0|     0.72|     0.69
+2021-02-07 21:09:45 |hot_jupiter_vs_size_000005|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000005.gz |  90.0|     0.87|     0.86
+2021-02-07 21:09:46 |hot_jupiter_vs_size_000005|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000005.gz |  90.0|   255.07|   160.39
+2021-02-07 21:09:47 |hot_jupiter_vs_size_000006|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000006.gz |   0.0|     0.85|     0.84
+2021-02-07 21:09:48 |hot_jupiter_vs_size_000006|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000006.gz |   0.0|     0.71|     0.67
+2021-02-07 21:09:49 |hot_jupiter_vs_size_000006|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000006.gz |  90.0|     0.88|     0.87
+2021-02-07 21:09:50 |hot_jupiter_vs_size_000006|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000006.gz |  90.0|   336.48|   139.59
+2021-02-07 21:09:52 |hot_jupiter_vs_size_000007|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000007.gz |   0.0|     0.87|     0.87
+2021-02-07 21:09:53 |hot_jupiter_vs_size_000007|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000007.gz |   0.0|     0.76|     0.71
+2021-02-07 21:09:54 |hot_jupiter_vs_size_000007|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000007.gz |  90.0|     0.89|     0.89
+2021-02-07 21:09:55 |hot_jupiter_vs_size_000007|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000007.gz |  90.0|   305.01|   147.41
+2021-02-07 21:13:58 |hot_jupiter_vs_size_000008|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000008.gz |   0.0|    26.61|     4.35
+2021-02-07 21:14:01 |hot_jupiter_vs_size_000009|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000009.gz |   0.0|    26.59|     4.35
+2021-02-07 21:14:25 |hot_jupiter_vs_size_000008|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000008.gz |   0.0|     0.85|     0.84
+2021-02-07 21:14:26 |hot_jupiter_vs_size_000008|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000008.gz |   0.0|     0.70|     0.67
+2021-02-07 21:14:27 |hot_jupiter_vs_size_000008|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000008.gz |  90.0|     0.89|     0.88
+2021-02-07 21:14:29 |hot_jupiter_vs_size_000009|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000009.gz |   0.0|     0.87|     0.87
+2021-02-07 21:14:29 |hot_jupiter_vs_size_000008|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000008.gz |  90.0|   257.70|   155.11
+2021-02-07 21:14:30 |hot_jupiter_vs_size_000009|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000009.gz |   0.0|     0.72|     0.69
+2021-02-07 21:14:31 |hot_jupiter_vs_size_000009|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000009.gz |  90.0|     0.87|     0.86
+2021-02-07 21:14:32 |hot_jupiter_vs_size_000009|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000009.gz |  90.0|   260.09|   164.55
+2021-02-07 21:15:00 |hot_jupiter_vs_size_000010|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000010.gz |   0.0|    26.76|     4.41
+2021-02-07 21:15:26 |hot_jupiter_vs_size_000011|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000011.gz |   0.0|    28.50|     4.57
+2021-02-07 21:15:27 |hot_jupiter_vs_size_000010|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000010.gz |   0.0|     0.87|     0.87
+2021-02-07 21:15:28 |hot_jupiter_vs_size_000010|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000010.gz |   0.0|     0.70|     0.67
+2021-02-07 21:15:29 |hot_jupiter_vs_size_000010|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000010.gz |  90.0|     0.87|     0.87
+2021-02-07 21:15:30 |hot_jupiter_vs_size_000010|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000010.gz |  90.0|   307.56|   142.92
+2021-02-07 21:15:55 |hot_jupiter_vs_size_000011|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000011.gz |   0.0|     0.90|     0.89
+2021-02-07 21:15:56 |hot_jupiter_vs_size_000011|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000011.gz |   0.0|     0.78|     0.71
+2021-02-07 21:15:57 |hot_jupiter_vs_size_000011|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000011.gz |  90.0|     0.89|     0.89
+2021-02-07 21:15:59 |hot_jupiter_vs_size_000011|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000011.gz |  90.0|   338.89|   141.21
+2021-02-07 21:18:48 |hot_jupiter_vs_size_000012|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000012.gz |   0.0|    26.04|     4.39
+2021-02-07 21:18:53 |hot_jupiter_vs_size_000013|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000013.gz |   0.0|    26.84|     4.39
+2021-02-07 21:19:14 |hot_jupiter_vs_size_000012|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000012.gz |   0.0|     0.85|     0.84
+2021-02-07 21:19:15 |hot_jupiter_vs_size_000012|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000012.gz |   0.0|     0.69|     0.66
+2021-02-07 21:19:16 |hot_jupiter_vs_size_000012|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000012.gz |  90.0|     0.87|     0.87
+2021-02-07 21:19:18 |hot_jupiter_vs_size_000012|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000012.gz |  90.0|   258.83|   155.58
+2021-02-07 21:19:20 |hot_jupiter_vs_size_000013|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000013.gz |   0.0|     0.86|     0.86
+2021-02-07 21:19:21 |hot_jupiter_vs_size_000013|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000013.gz |   0.0|     0.72|     0.69
+2021-02-07 21:19:22 |hot_jupiter_vs_size_000013|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000013.gz |  90.0|     0.88|     0.87
+2021-02-07 21:19:24 |hot_jupiter_vs_size_000013|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000013.gz |  90.0|   259.00|   161.94
+2021-02-07 21:20:38 |hot_jupiter_vs_size_000014|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000014.gz |   0.0|    27.15|     4.34
+2021-02-07 21:21:05 |hot_jupiter_vs_size_000014|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000014.gz |   0.0|     0.89|     0.88
+2021-02-07 21:21:06 |hot_jupiter_vs_size_000014|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000014.gz |   0.0|     0.74|     0.71
+2021-02-07 21:21:07 |hot_jupiter_vs_size_000014|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000014.gz |  90.0|     0.88|     0.87
+2021-02-07 21:21:08 |hot_jupiter_vs_size_000014|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000014.gz |  90.0|   309.06|   141.16
+2021-02-07 21:21:39 |hot_jupiter_vs_size_000015|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000015.gz |   0.0|    26.81|     4.40
+2021-02-07 21:22:06 |hot_jupiter_vs_size_000015|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000015.gz |   0.0|     0.86|     0.86
+2021-02-07 21:22:07 |hot_jupiter_vs_size_000015|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000015.gz |   0.0|     0.70|     0.67
+2021-02-07 21:22:08 |hot_jupiter_vs_size_000015|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000015.gz |  90.0|     0.89|     0.88
+2021-02-07 21:22:09 |hot_jupiter_vs_size_000015|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000015.gz |  90.0|   336.53|   137.76
+2021-02-07 21:23:38 |hot_jupiter_vs_size_000016|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000016.gz |   0.0|    28.28|     4.36
+2021-02-07 21:23:45 |hot_jupiter_vs_size_000017|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000017.gz |   0.0|    26.19|     4.39
+2021-02-07 21:24:07 |hot_jupiter_vs_size_000016|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000016.gz |   0.0|     0.85|     0.84
+2021-02-07 21:24:08 |hot_jupiter_vs_size_000016|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000016.gz |   0.0|     0.71|     0.67
+2021-02-07 21:24:09 |hot_jupiter_vs_size_000016|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000016.gz |  90.0|     0.86|     0.86
+2021-02-07 21:24:11 |hot_jupiter_vs_size_000016|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000016.gz |  90.0|   263.92|   157.90
+2021-02-07 21:24:11 |hot_jupiter_vs_size_000017|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000017.gz |   0.0|     0.87|     0.87
+2021-02-07 21:24:13 |hot_jupiter_vs_size_000017|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000017.gz |   0.0|     0.70|     0.67
+2021-02-07 21:24:14 |hot_jupiter_vs_size_000017|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000017.gz |  90.0|     0.89|     0.88
+2021-02-07 21:24:15 |hot_jupiter_vs_size_000017|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000017.gz |  90.0|   261.14|   159.69
+2021-02-07 21:26:17 |hot_jupiter_vs_size_000018|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000018.gz |   0.0|    27.11|     4.38
+2021-02-07 21:26:44 |hot_jupiter_vs_size_000018|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000018.gz |   0.0|     0.87|     0.87
+2021-02-07 21:26:45 |hot_jupiter_vs_size_000018|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000018.gz |   0.0|     0.73|     0.69
+2021-02-07 21:26:46 |hot_jupiter_vs_size_000018|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000018.gz |  90.0|     0.93|     0.92
+2021-02-07 21:26:47 |hot_jupiter_vs_size_000018|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000018.gz |  90.0|   315.51|   148.01
+2021-02-07 21:27:48 |hot_jupiter_vs_size_000019|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000019.gz |   0.0|    26.91|     4.46
+2021-02-07 21:28:17 |hot_jupiter_vs_size_000019|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000019.gz |   0.0|     0.87|     0.87
+2021-02-07 21:28:18 |hot_jupiter_vs_size_000019|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000019.gz |   0.0|     0.71|     0.67
+2021-02-07 21:28:19 |hot_jupiter_vs_size_000019|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000019.gz |  90.0|     0.87|     0.86
+2021-02-07 21:28:20 |hot_jupiter_vs_size_000019|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000019.gz |  90.0|   339.03|   141.25
+2021-02-07 21:28:36 |hot_jupiter_vs_size_000020|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000020.gz |   0.0|    28.12|     4.30
+2021-02-07 21:28:38 |hot_jupiter_vs_size_000021|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000021.gz |   0.0|    27.47|     4.25
+2021-02-07 21:29:05 |hot_jupiter_vs_size_000020|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000020.gz |   0.0|     0.86|     0.85
+2021-02-07 21:29:05 |hot_jupiter_vs_size_000021|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000021.gz |   0.0|     0.86|     0.85
+2021-02-07 21:29:06 |hot_jupiter_vs_size_000020|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000020.gz |   0.0|     0.77|     0.65
+2021-02-07 21:29:07 |hot_jupiter_vs_size_000021|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000021.gz |   0.0|     0.71|     0.66
+2021-02-07 21:29:08 |hot_jupiter_vs_size_000020|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000020.gz |  90.0|     0.87|     0.86
+2021-02-07 21:29:08 |hot_jupiter_vs_size_000021|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000021.gz |  90.0|     0.88|     0.87
+2021-02-07 21:29:09 |hot_jupiter_vs_size_000020|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000020.gz |  90.0|   267.72|   156.22
+2021-02-07 21:29:09 |hot_jupiter_vs_size_000021|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000021.gz |  90.0|   264.33|   158.97
+2021-02-07 21:32:03 |hot_jupiter_vs_size_000022|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000022.gz |   0.0|    26.78|     4.39
+2021-02-07 21:32:30 |hot_jupiter_vs_size_000022|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000022.gz |   0.0|     0.91|     0.90
+2021-02-07 21:32:31 |hot_jupiter_vs_size_000022|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000022.gz |   0.0|     0.79|     0.74
+2021-02-07 21:32:32 |hot_jupiter_vs_size_000022|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000022.gz |  90.0|     0.90|     0.90
+2021-02-07 21:32:33 |hot_jupiter_vs_size_000022|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000022.gz |  90.0|   315.45|   148.52
+2021-02-07 21:33:35 |hot_jupiter_vs_size_000023|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000023.gz |   0.0|    26.58|     4.42
+2021-02-07 21:33:37 |hot_jupiter_vs_size_000024|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000024.gz |   0.0|    26.04|     4.33
+2021-02-07 21:33:59 |hot_jupiter_vs_size_000025|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000025.gz |   0.0|    26.80|     4.39
+2021-02-07 21:34:02 |hot_jupiter_vs_size_000023|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000023.gz |   0.0|     0.88|     0.87
+2021-02-07 21:34:03 |hot_jupiter_vs_size_000023|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000023.gz |   0.0|     0.75|     0.72
+2021-02-07 21:34:04 |hot_jupiter_vs_size_000023|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000023.gz |  90.0|     0.90|     0.89
+2021-02-07 21:34:04 |hot_jupiter_vs_size_000024|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000024.gz |   0.0|     0.87|     0.86
+2021-02-07 21:34:05 |hot_jupiter_vs_size_000023|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000023.gz |  90.0|   267.98|   156.28
+2021-02-07 21:34:05 |hot_jupiter_vs_size_000024|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000024.gz |   0.0|     0.73|     0.70
+2021-02-07 21:34:06 |hot_jupiter_vs_size_000024|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000024.gz |  90.0|     0.88|     0.88
+2021-02-07 21:34:07 |hot_jupiter_vs_size_000024|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000024.gz |  90.0|   273.67|   155.08
+2021-02-07 21:34:27 |hot_jupiter_vs_size_000025|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000025.gz |   0.0|     0.88|     0.87
+2021-02-07 21:34:29 |hot_jupiter_vs_size_000025|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000025.gz |   0.0|     0.74|     0.70
+2021-02-07 21:34:30 |hot_jupiter_vs_size_000025|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000025.gz |  90.0|     0.90|     0.89
+2021-02-07 21:34:31 |hot_jupiter_vs_size_000025|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000025.gz |  90.0|   348.78|   142.69
+2021-02-07 21:37:49 |hot_jupiter_vs_size_000026|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000026.gz |   0.0|    28.71|     4.37
+2021-02-07 21:38:18 |hot_jupiter_vs_size_000026|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000026.gz |   0.0|     0.88|     0.86
+2021-02-07 21:38:19 |hot_jupiter_vs_size_000026|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000026.gz |   0.0|     0.72|     0.67
+2021-02-07 21:38:19 |hot_jupiter_vs_size_000026|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000026.gz |  90.0|     0.87|     0.86
+2021-02-07 21:38:20 |hot_jupiter_vs_size_000026|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000026.gz |  90.0|   323.04|   148.68
+2021-02-07 21:38:34 |hot_jupiter_vs_size_000027|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000027.gz |   0.0|    26.67|     4.41
+2021-02-07 21:38:41 |hot_jupiter_vs_size_000028|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000028.gz |   0.0|    26.22|     4.32
+2021-02-07 21:39:02 |hot_jupiter_vs_size_000027|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000027.gz |   0.0|     0.88|     0.87
+2021-02-07 21:39:03 |hot_jupiter_vs_size_000027|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000027.gz |   0.0|     0.75|     0.70
+2021-02-07 21:39:04 |hot_jupiter_vs_size_000027|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000027.gz |  90.0|     0.86|     0.86
+2021-02-07 21:39:05 |hot_jupiter_vs_size_000027|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000027.gz |  90.0|   276.83|   152.42
+2021-02-07 21:39:08 |hot_jupiter_vs_size_000028|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000028.gz |   0.0|     0.87|     0.86
+2021-02-07 21:39:09 |hot_jupiter_vs_size_000028|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000028.gz |   0.0|     0.76|     0.67
+2021-02-07 21:39:11 |hot_jupiter_vs_size_000028|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000028.gz |  90.0|     0.88|     0.87
+2021-02-07 21:39:12 |hot_jupiter_vs_size_000028|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000028.gz |  90.0|   281.77|   151.12
+2021-02-07 21:40:21 |hot_jupiter_vs_size_000029|psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000029.gz |   0.0|    27.52|     4.58
+2021-02-07 21:40:48 |hot_jupiter_vs_size_000029|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000029.gz |   0.0|     0.88|     0.87
+2021-02-07 21:40:50 |hot_jupiter_vs_size_000029|verify            |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000029.gz |   0.0|     0.80|     0.70
+2021-02-07 21:40:50 |hot_jupiter_vs_size_000029|load_lc           |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000029.gz |  90.0|     0.89|     0.89
+2021-02-07 21:40:52 |hot_jupiter_vs_size_000029|transit_detection |log-runtimes-7944c7cbb7-t4stx   |hjvsize_000029.gz |  90.0|   354.66|   141.19
+2021-02-07 21:43:43 |earth_vs_size_000000  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000000.gz  |   0.0|   211.59|    35.38
+2021-02-07 21:43:44 |earth_vs_size_000001  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000001.gz  |   0.0|   216.36|    35.85
+2021-02-07 21:43:54 |earth_vs_size_000002  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000002.gz  |   0.0|   208.84|    35.26
+2021-02-07 21:46:47 |earth_vs_size_000003  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000003.gz  |   0.0|   213.33|    36.44
+2021-02-07 21:47:15 |earth_vs_size_000000  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000000.gz  |   0.0|     7.24|     7.18
+2021-02-07 21:47:20 |earth_vs_size_000001  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000001.gz  |   0.0|     7.37|     7.31
+2021-02-07 21:47:22 |earth_vs_size_000000  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000000.gz  |   0.0|     5.73|     5.68
+2021-02-07 21:47:23 |earth_vs_size_000002  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000002.gz  |   0.0|     7.17|     7.12
+2021-02-07 21:47:28 |earth_vs_size_000000  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000000.gz  | 730.0|     7.36|     7.31
+2021-02-07 21:47:28 |earth_vs_size_000001  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000001.gz  |   0.0|     5.95|     5.89
+2021-02-07 21:47:30 |earth_vs_size_000002  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000002.gz  |   0.0|     5.54|     5.48
+2021-02-07 21:47:34 |earth_vs_size_000001  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000001.gz  | 730.0|     7.51|     7.42
+2021-02-07 21:47:35 |earth_vs_size_000000  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000000.gz  | 730.0| 26671.23| 17730.47
+2021-02-07 21:47:36 |earth_vs_size_000002  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000002.gz  | 730.0|     7.36|     7.30
+2021-02-07 21:47:41 |earth_vs_size_000001  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000001.gz  | 730.0| 26845.39| 17161.53
+2021-02-07 21:47:43 |earth_vs_size_000002  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000002.gz  | 730.0| 26717.96| 17754.86
+2021-02-07 21:50:20 |earth_vs_size_000003  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000003.gz  |   0.0|     7.10|     7.05
+2021-02-07 21:50:27 |earth_vs_size_000003  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000003.gz  |   0.0|     5.46|     5.40
+2021-02-07 21:50:33 |earth_vs_size_000003  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000003.gz  | 730.0|     7.28|     7.23
+2021-02-07 21:50:40 |earth_vs_size_000003  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000003.gz  | 730.0| 27094.26| 17967.63
+2021-02-08 05:12:07 |earth_vs_size_000004  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000004.gz  |   0.0|   214.26|    34.55
+2021-02-08 05:13:01 |earth_vs_size_000005  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000005.gz  |   0.0|   209.55|    34.24
+2021-02-08 05:15:07 |earth_vs_size_000006  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000006.gz  |   0.0|   214.31|    35.55
+2021-02-08 05:15:42 |earth_vs_size_000004  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000004.gz  |   0.0|     6.93|     6.88
+2021-02-08 05:15:49 |earth_vs_size_000004  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000004.gz  |   0.0|     5.61|     5.55
+2021-02-08 05:15:54 |earth_vs_size_000004  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000004.gz  | 730.0|     7.36|     7.31
+2021-02-08 05:16:02 |earth_vs_size_000004  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000004.gz  | 730.0| 26743.62| 17813.59
+2021-02-08 05:16:31 |earth_vs_size_000005  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000005.gz  |   0.0|     7.08|     7.01
+2021-02-08 05:16:38 |earth_vs_size_000005  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000005.gz  |   0.0|     5.33|     5.25
+2021-02-08 05:16:43 |earth_vs_size_000005  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000005.gz  | 730.0|     7.14|     7.10
+2021-02-08 05:16:51 |earth_vs_size_000005  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000005.gz  | 730.0| 26736.53| 17750.12
+2021-02-08 05:18:41 |earth_vs_size_000006  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000006.gz  |   0.0|     7.64|     7.58
+2021-02-08 05:18:49 |earth_vs_size_000006  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000006.gz  |   0.0|     5.85|     5.80
+2021-02-08 05:18:55 |earth_vs_size_000006  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000006.gz  | 730.0|     7.56|     7.51
+2021-02-08 05:19:03 |earth_vs_size_000006  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000006.gz  | 730.0| 27461.84| 18033.90
+2021-02-08 05:22:15 |earth_vs_size_000007  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000007.gz  |   0.0|   217.24|    35.04
+2021-02-08 05:25:53 |earth_vs_size_000007  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000007.gz  |   0.0|     7.00|     6.95
+2021-02-08 05:26:00 |earth_vs_size_000007  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000007.gz  |   0.0|     5.54|     5.49
+2021-02-08 05:26:06 |earth_vs_size_000007  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000007.gz  | 730.0|     7.02|     6.99
+2021-02-08 05:26:13 |earth_vs_size_000007  |transit_detection |log-runtimes-7944c7cbb7-t4stx   |evsize_000007.gz  | 730.0| 27057.11| 18066.86
+2021-02-08 12:41:46 |earth_vs_size_000008  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000008.gz  |   0.0|   210.25|    34.21
+2021-02-08 12:42:30 |earth_vs_size_000009  |psls_synthesis    |log-runtimes-7944c7cbb7-t4stx   |evsize_000009.gz  |   0.0|   207.59|    34.52
+2021-02-08 12:45:17 |earth_vs_size_000008  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000008.gz  |   0.0|     7.06|     7.01
+2021-02-08 12:45:24 |earth_vs_size_000008  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000008.gz  |   0.0|     5.46|     5.32
+2021-02-08 12:45:30 |earth_vs_size_000008  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000008.gz  | 730.0|     7.20|     7.15
+2021-02-08 12:45:58 |earth_vs_size_000009  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000009.gz  |   0.0|     7.33|     7.28
+2021-02-08 12:46:05 |earth_vs_size_000009  |verify            |log-runtimes-7944c7cbb7-t4stx   |evsize_000009.gz  |   0.0|     5.80|     5.74
+2021-02-08 12:46:11 |earth_vs_size_000009  |load_lc           |log-runtimes-7944c7cbb7-t4stx   |evsize_000009.gz  | 730.0|     7.25|     7.20
+[08/02/2021 14:57:51] INFO:results_list.py:Produce the list of all the results in the MySQL database
+2021-02-07 21:02:54 |hot_jupiter_vs_size_000000|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000000.gz |  90.0|{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995967212320541, "duration": 1.4458769569417962, "sde": 10.73822288315199, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000000_transit_detection_tls_hjvsize_000000.gz_000000.0.json.gz
+2021-02-07 21:02:56 |hot_jupiter_vs_size_000001|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000001.gz |  90.0|{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998865069881226, "duration": 1.4458769569417964, "sde": 9.510057510857507, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000001_transit_detection_tls_hjvsize_000001.gz_000000.0.json.gz
+2021-02-07 21:02:59 |hot_jupiter_vs_size_000002|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000002.gz |  90.0|{"period": 23.24138105610859, "transit_count": 4, "depth": 0.9998583470821851, "duration": 0.7952323263179882, "sde": 6.18714621008825, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000002_transit_detection_tls_hjvsize_000002.gz_000000.0.json.gz
+2021-02-07 21:03:02 |hot_jupiter_vs_size_000003|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000003.gz |  90.0|{"period": 44.55455560908995, "transit_count": 2, "depth": 0.9999292098285074, "duration": 1.4458769569417964, "sde": 6.9627654393998295, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000003_transit_detection_tls_hjvsize_000003.gz_000000.0.json.gz
+2021-02-07 21:09:37 |hot_jupiter_vs_size_000004|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000004.gz |  90.0|{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998867697743424, "duration": 1.4458769569417964, "sde": 9.447660527689754, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000004_transit_detection_tls_hjvsize_000004.gz_000000.0.json.gz
+2021-02-07 21:09:45 |hot_jupiter_vs_size_000005|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000005.gz |  90.0|{"period": 44.55455560908995, "transit_count": 2, "depth": 0.9999294162456817, "duration": 1.4458769569417964, "sde": 6.742222636246715, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000005_transit_detection_tls_hjvsize_000005.gz_000000.0.json.gz
+2021-02-07 21:09:49 |hot_jupiter_vs_size_000006|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000006.gz |  90.0|{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995972844437568, "duration": 1.4458769569417962, "sde": 10.450436751307562, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000006_transit_detection_tls_hjvsize_000006.gz_000000.0.json.gz
+2021-02-07 21:09:54 |hot_jupiter_vs_size_000007|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000007.gz |  90.0|{"period": 23.24138105610859, "transit_count": 4, "depth": 0.9998577773471918, "duration": 0.7952323263179882, "sde": 6.369255034702447, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000007_transit_detection_tls_hjvsize_000007.gz_000000.0.json.gz
+2021-02-07 21:14:27 |hot_jupiter_vs_size_000008|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000008.gz |  90.0|{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998872884211986, "duration": 1.4458769569417964, "sde": 9.35279826543198, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000008_transit_detection_tls_hjvsize_000008.gz_000000.0.json.gz
+2021-02-07 21:14:31 |hot_jupiter_vs_size_000009|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000009.gz |  90.0|{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9999430080391231, "duration": 0.12572843103841708, "sde": 9.857453087202598, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000009_transit_detection_tls_hjvsize_000009.gz_000000.0.json.gz
+2021-02-07 21:15:29 |hot_jupiter_vs_size_000010|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000010.gz |  90.0|{"period": 23.24138105610859, "transit_count": 4, "depth": 0.999857248807095, "duration": 0.7952323263179882, "sde": 6.484019498750919, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000010_transit_detection_tls_hjvsize_000010.gz_000000.0.json.gz
+2021-02-07 21:15:57 |hot_jupiter_vs_size_000011|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000011.gz |  90.0|{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995981438177219, "duration": 1.4458769569417962, "sde": 9.907116206215926, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000011_transit_detection_tls_hjvsize_000011.gz_000000.0.json.gz
+2021-02-07 21:19:16 |hot_jupiter_vs_size_000012|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000012.gz |  90.0|{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998880969097482, "duration": 1.4458769569417964, "sde": 8.821693685566837, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000012_transit_detection_tls_hjvsize_000012.gz_000000.0.json.gz
+2021-02-07 21:19:22 |hot_jupiter_vs_size_000013|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000013.gz |  90.0|{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9999158360410199, "duration": 0.13830127414225882, "sde": 16.869737101219684, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000013_transit_detection_tls_hjvsize_000013.gz_000000.0.json.gz
+2021-02-07 21:21:07 |hot_jupiter_vs_size_000014|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000014.gz |  90.0|{"period": 23.24138105610859, "transit_count": 4, "depth": 0.9998565781720886, "duration": 0.7952323263179882, "sde": 6.587751543002163, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000014_transit_detection_tls_hjvsize_000014.gz_000000.0.json.gz
+2021-02-07 21:22:08 |hot_jupiter_vs_size_000015|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000015.gz |  90.0|{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995992715244723, "duration": 1.4458769569417962, "sde": 9.08091558099581, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000015_transit_detection_tls_hjvsize_000015.gz_000000.0.json.gz
+2021-02-07 21:24:09 |hot_jupiter_vs_size_000016|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000016.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9999004529096378, "duration": 0.12572843103841708, "sde": 17.178894800964937, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000016_transit_detection_tls_hjvsize_000016.gz_000000.0.json.gz
+2021-02-07 21:24:14 |hot_jupiter_vs_size_000017|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000017.gz |  90.0|{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9998778556722163, "duration": 0.13830127414225882, "sde": 21.896665224871004, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000017_transit_detection_tls_hjvsize_000017.gz_000000.0.json.gz
+2021-02-07 21:26:46 |hot_jupiter_vs_size_000018|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000018.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9998691077239489, "duration": 0.13830127414225882, "sde": 14.585716690390273, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000018_transit_detection_tls_hjvsize_000018.gz_000000.0.json.gz
+2021-02-07 21:28:19 |hot_jupiter_vs_size_000019|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000019.gz |  90.0|{"period": 23.148752417987264, "transit_count": 4, "depth": 0.9997490316495005, "duration": 0.7229384784708983, "sde": 8.213435150082095, "outcome": "FAIL", "target_period": 4.0}|hot_jupiter_vs_size_000019_transit_detection_tls_hjvsize_000019.gz_000000.0.json.gz
+2021-02-07 21:29:08 |hot_jupiter_vs_size_000020|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000020.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9998434824553644, "duration": 0.12572843103841708, "sde": 24.17995804817449, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000020_transit_detection_tls_hjvsize_000020.gz_000000.0.json.gz
+2021-02-07 21:29:08 |hot_jupiter_vs_size_000021|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000021.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9998187972189502, "duration": 0.13830127414225882, "sde": 24.050626287639307, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000021_transit_detection_tls_hjvsize_000021.gz_000000.0.json.gz
+2021-02-07 21:32:32 |hot_jupiter_vs_size_000022|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000022.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9997979537918327, "duration": 0.13830127414225882, "sde": 23.338178735331187, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000022_transit_detection_tls_hjvsize_000022.gz_000000.0.json.gz
+2021-02-07 21:34:04 |hot_jupiter_vs_size_000023|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000023.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9997775704831575, "duration": 0.13830127414225882, "sde": 24.685392194812195, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000023_transit_detection_tls_hjvsize_000023.gz_000000.0.json.gz
+2021-02-07 21:34:06 |hot_jupiter_vs_size_000024|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000024.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.999754674939694, "duration": 0.12572843103841708, "sde": 26.056791445028466, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000024_transit_detection_tls_hjvsize_000024.gz_000000.0.json.gz
+2021-02-07 21:34:30 |hot_jupiter_vs_size_000025|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000025.gz |  90.0|{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9997445740151576, "duration": 0.12572843103841708, "sde": 20.105594430056392, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000025_transit_detection_tls_hjvsize_000025.gz_000000.0.json.gz
+2021-02-07 21:38:19 |hot_jupiter_vs_size_000026|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000026.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996870423402117, "duration": 0.12572843103841708, "sde": 26.279695699955038, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000026_transit_detection_tls_hjvsize_000026.gz_000000.0.json.gz
+2021-02-07 21:39:04 |hot_jupiter_vs_size_000027|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000027.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996618362607381, "duration": 0.13830127414225882, "sde": 25.6864791256164, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000027_transit_detection_tls_hjvsize_000027.gz_000000.0.json.gz
+2021-02-07 21:39:11 |hot_jupiter_vs_size_000028|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000028.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996410953508996, "duration": 0.13830127414225882, "sde": 26.803343782671046, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000028_transit_detection_tls_hjvsize_000028.gz_000000.0.json.gz
+2021-02-07 21:40:50 |hot_jupiter_vs_size_000029|transit_detection |log-results-769947d5c6-nmt69    |hjvsize_000029.gz |  90.0|{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996173418443293, "duration": 0.13830127414225882, "sde": 24.34517591823146, "outcome": "PASS", "target_period": 4.0}|hot_jupiter_vs_size_000029_transit_detection_tls_hjvsize_000029.gz_000000.0.json.gz
+2021-02-07 21:47:28 |earth_vs_size_000000  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000000.gz  | 730.0|{"period": 91.1866006175679, "transit_count": 8, "depth": 0.9998957364088423, "duration": 1.415296174440093, "sde": 10.255023113026255, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000000_transit_detection_tls_evsize_000000.gz_000000.0.json.gz
+2021-02-07 21:47:34 |earth_vs_size_000001  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000001.gz  | 730.0|{"period": 90.00649998239166, "transit_count": 8, "depth": 0.999709506475834, "duration": 1.4152961744400931, "sde": 17.304867598286886, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000001_transit_detection_tls_evsize_000001.gz_000000.0.json.gz
+2021-02-07 21:47:36 |earth_vs_size_000002  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000002.gz  | 730.0|{"period": 89.60381478436946, "transit_count": 8, "depth": 0.9997576667605926, "duration": 1.4152961744400934, "sde": 15.563762046125113, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000002_transit_detection_tls_evsize_000002.gz_000000.0.json.gz
+2021-02-07 21:50:33 |earth_vs_size_000003  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000003.gz  | 730.0|{"period": 18.001142743613816, "transit_count": 41, "depth": 0.9998203312006589, "duration": 0.2761553511102621, "sde": 17.271641667744294, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000003_transit_detection_tls_evsize_000003.gz_000000.0.json.gz
+2021-02-08 05:15:54 |earth_vs_size_000004  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000004.gz  | 730.0|{"period": 91.1866006175679, "transit_count": 8, "depth": 0.9998958320953527, "duration": 1.415296174440093, "sde": 10.197092448845636, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000004_transit_detection_tls_evsize_000004.gz_000000.0.json.gz
+2021-02-08 05:16:43 |earth_vs_size_000005  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000005.gz  | 730.0|{"period": 89.60381478436946, "transit_count": 8, "depth": 0.9997578298977219, "duration": 1.4152961744400934, "sde": 15.440772160085876, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000005_transit_detection_tls_evsize_000005.gz_000000.0.json.gz
+2021-02-08 05:18:55 |earth_vs_size_000006  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000006.gz  | 730.0|{"period": 90.00649998239166, "transit_count": 8, "depth": 0.9997098485429169, "duration": 1.4152961744400931, "sde": 16.96288486128881, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000006_transit_detection_tls_evsize_000006.gz_000000.0.json.gz
+2021-02-08 05:26:06 |earth_vs_size_000007  |transit_detection |log-results-769947d5c6-nmt69    |evsize_000007.gz  | 730.0|{"period": 29.999804227990655, "transit_count": 25, "depth": 0.9997745667781137, "duration": 0.45289477582082976, "sde": 18.56915739902433, "outcome": "FAIL", "target_period": 240.0}|earth_vs_size_000007_transit_detection_tls_evsize_000007.gz_000000.0.json.gz
+[08/02/2021 14:57:51] INFO:timings_to_csv.py:Dump all of the run times from the MySQL database into a CSV file
+
+
+earth_vs_size_000000  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.2,x,x
+tls,x,x,7.4
+
+
+earth_vs_size_000000  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.2,x,x
+tls,x,x,7.3
+
+
+earth_vs_size_000000  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,211.6,x,x
+
+
+earth_vs_size_000000  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,35.4,x,x
+
+
+earth_vs_size_000000  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,26671.2
+
+
+earth_vs_size_000000  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,17730.5
+
+
+earth_vs_size_000000  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.7,x,x
+
+
+earth_vs_size_000000  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.7,x,x
+
+
+earth_vs_size_000001  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.4,x,x
+tls,x,x,7.5
+
+
+earth_vs_size_000001  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.3,x,x
+tls,x,x,7.4
+
+
+earth_vs_size_000001  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,216.4,x,x
+
+
+earth_vs_size_000001  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,35.8,x,x
+
+
+earth_vs_size_000001  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,26845.4
+
+
+earth_vs_size_000001  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,17161.5
+
+
+earth_vs_size_000001  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,6.0,x,x
+
+
+earth_vs_size_000001  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.9,x,x
+
+
+earth_vs_size_000002  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.2,x,x
+tls,x,x,7.4
+
+
+earth_vs_size_000002  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.1,x,x
+tls,x,x,7.3
+
+
+earth_vs_size_000002  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,208.8,x,x
+
+
+earth_vs_size_000002  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,35.3,x,x
+
+
+earth_vs_size_000002  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,26718.0
+
+
+earth_vs_size_000002  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,17754.9
+
+
+earth_vs_size_000002  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.5,x,x
+
+
+earth_vs_size_000002  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.5,x,x
+
+
+earth_vs_size_000003  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.1,x,x
+tls,x,x,7.3
+
+
+earth_vs_size_000003  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.1,x,x
+tls,x,x,7.2
+
+
+earth_vs_size_000003  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,213.3,x,x
+
+
+earth_vs_size_000003  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,36.4,x,x
+
+
+earth_vs_size_000003  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,27094.3
+
+
+earth_vs_size_000003  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,17967.6
+
+
+earth_vs_size_000003  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.5,x,x
+
+
+earth_vs_size_000003  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.4,x,x
+
+
+earth_vs_size_000004  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,6.9,x,x
+tls,x,x,7.4
+
+
+earth_vs_size_000004  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,6.9,x,x
+tls,x,x,7.3
+
+
+earth_vs_size_000004  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,214.3,x,x
+
+
+earth_vs_size_000004  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,34.6,x,x
+
+
+earth_vs_size_000004  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,26743.6
+
+
+earth_vs_size_000004  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,17813.6
+
+
+earth_vs_size_000004  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.6,x,x
+
+
+earth_vs_size_000004  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.5,x,x
+
+
+earth_vs_size_000005  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.1,x,x
+tls,x,x,7.1
+
+
+earth_vs_size_000005  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.0,x,x
+tls,x,x,7.1
+
+
+earth_vs_size_000005  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,209.6,x,x
+
+
+earth_vs_size_000005  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,34.2,x,x
+
+
+earth_vs_size_000005  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,26736.5
+
+
+earth_vs_size_000005  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,17750.1
+
+
+earth_vs_size_000005  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.3,x,x
+
+
+earth_vs_size_000005  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.3,x,x
+
+
+earth_vs_size_000006  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.6,x,x
+tls,x,x,7.6
+
+
+earth_vs_size_000006  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.6,x,x
+tls,x,x,7.5
+
+
+earth_vs_size_000006  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,214.3,x,x
+
+
+earth_vs_size_000006  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,35.6,x,x
+
+
+earth_vs_size_000006  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,27461.8
+
+
+earth_vs_size_000006  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,18033.9
+
+
+earth_vs_size_000006  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.9,x,x
+
+
+earth_vs_size_000006  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.8,x,x
+
+
+earth_vs_size_000007  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.0,x,x
+tls,x,x,7.0
+
+
+earth_vs_size_000007  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.0,x,x
+tls,x,x,7.0
+
+
+earth_vs_size_000007  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,217.2,x,x
+
+
+earth_vs_size_000007  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,35.0,x,x
+
+
+earth_vs_size_000007  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,x,27057.1
+
+
+earth_vs_size_000007  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,x,18066.9
+
+
+earth_vs_size_000007  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.5,x,x
+
+
+earth_vs_size_000007  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.5,x,x
+
+
+earth_vs_size_000008  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.1,x,x
+tls,x,x,7.2
+
+
+earth_vs_size_000008  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.0,x,x
+tls,x,x,7.1
+
+
+earth_vs_size_000008  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,210.2,x,x
+
+
+earth_vs_size_000008  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,34.2,x,x
+
+
+earth_vs_size_000008  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.5,x,x
+
+
+earth_vs_size_000008  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.3,x,x
+
+
+earth_vs_size_000009  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,7.3,x,x
+tls,x,x,7.2
+
+
+earth_vs_size_000009  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,7.3,x,x
+tls,x,x,7.2
+
+
+earth_vs_size_000009  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,207.6,x,x
+
+
+earth_vs_size_000009  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,34.5,x,x
+
+
+earth_vs_size_000009  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,5.8,x,x
+
+
+earth_vs_size_000009  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,5.7,x,x
+
+
+hot_jupiter_vs_size_000000  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000000  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000000  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.2,x,x
+
+
+hot_jupiter_vs_size_000000  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000000  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,384.1,x
+
+
+hot_jupiter_vs_size_000000  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,302.4,x
+
+
+hot_jupiter_vs_size_000000  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000000  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000001  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000001  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000001  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.9,x,x
+
+
+hot_jupiter_vs_size_000001  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.3,x,x
+
+
+hot_jupiter_vs_size_000001  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,372.1,x
+
+
+hot_jupiter_vs_size_000001  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,308.8,x
+
+
+hot_jupiter_vs_size_000001  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000001  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000002  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000002  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000002  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,27.3,x,x
+
+
+hot_jupiter_vs_size_000002  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.6,x,x
+
+
+hot_jupiter_vs_size_000002  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,382.7,x
+
+
+hot_jupiter_vs_size_000002  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,308.9,x
+
+
+hot_jupiter_vs_size_000002  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000002  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000003  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000003  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000003  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,27.6,x,x
+
+
+hot_jupiter_vs_size_000003  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000003  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,373.0,x
+
+
+hot_jupiter_vs_size_000003  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,309.5,x
+
+
+hot_jupiter_vs_size_000003  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000003  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000004  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000004  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000004  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.1,x,x
+
+
+hot_jupiter_vs_size_000004  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.3,x,x
+
+
+hot_jupiter_vs_size_000004  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,258.3,x
+
+
+hot_jupiter_vs_size_000004  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,156.4,x
+
+
+hot_jupiter_vs_size_000004  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000004  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.6,x,x
+
+
+hot_jupiter_vs_size_000005  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000005  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000005  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.4,x,x
+
+
+hot_jupiter_vs_size_000005  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.3,x,x
+
+
+hot_jupiter_vs_size_000005  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,255.1,x
+
+
+hot_jupiter_vs_size_000005  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,160.4,x
+
+
+hot_jupiter_vs_size_000005  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000005  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000006  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000006  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.8,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000006  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,27.3,x,x
+
+
+hot_jupiter_vs_size_000006  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000006  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,336.5,x
+
+
+hot_jupiter_vs_size_000006  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,139.6,x
+
+
+hot_jupiter_vs_size_000006  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000006  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000007  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000007  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000007  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,28.2,x,x
+
+
+hot_jupiter_vs_size_000007  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000007  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,305.0,x
+
+
+hot_jupiter_vs_size_000007  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,147.4,x
+
+
+hot_jupiter_vs_size_000007  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+
+
+hot_jupiter_vs_size_000007  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000008  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000008  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.8,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000008  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.6,x,x
+
+
+hot_jupiter_vs_size_000008  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000008  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,257.7,x
+
+
+hot_jupiter_vs_size_000008  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,155.1,x
+
+
+hot_jupiter_vs_size_000008  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000008  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000009  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000009  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000009  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.6,x,x
+
+
+hot_jupiter_vs_size_000009  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000009  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,260.1,x
+
+
+hot_jupiter_vs_size_000009  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,164.5,x
+
+
+hot_jupiter_vs_size_000009  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000009  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000010  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000010  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000010  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.8,x,x
+
+
+hot_jupiter_vs_size_000010  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000010  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,307.6,x
+
+
+hot_jupiter_vs_size_000010  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,142.9,x
+
+
+hot_jupiter_vs_size_000010  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000010  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000011  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000011  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000011  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,28.5,x,x
+
+
+hot_jupiter_vs_size_000011  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.6,x,x
+
+
+hot_jupiter_vs_size_000011  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,338.9,x
+
+
+hot_jupiter_vs_size_000011  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,141.2,x
+
+
+hot_jupiter_vs_size_000011  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+
+
+hot_jupiter_vs_size_000011  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000012  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000012  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.8,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000012  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.0,x,x
+
+
+hot_jupiter_vs_size_000012  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000012  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,258.8,x
+
+
+hot_jupiter_vs_size_000012  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,155.6,x
+
+
+hot_jupiter_vs_size_000012  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000012  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000013  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000013  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000013  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.8,x,x
+
+
+hot_jupiter_vs_size_000013  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000013  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,259.0,x
+
+
+hot_jupiter_vs_size_000013  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,161.9,x
+
+
+hot_jupiter_vs_size_000013  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000013  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000014  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000014  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000014  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,27.1,x,x
+
+
+hot_jupiter_vs_size_000014  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.3,x,x
+
+
+hot_jupiter_vs_size_000014  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,309.1,x
+
+
+hot_jupiter_vs_size_000014  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,141.2,x
+
+
+hot_jupiter_vs_size_000014  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000014  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000015  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000015  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000015  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.8,x,x
+
+
+hot_jupiter_vs_size_000015  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000015  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,336.5,x
+
+
+hot_jupiter_vs_size_000015  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,137.8,x
+
+
+hot_jupiter_vs_size_000015  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000015  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000016  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000016  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.8,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000016  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,28.3,x,x
+
+
+hot_jupiter_vs_size_000016  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000016  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,263.9,x
+
+
+hot_jupiter_vs_size_000016  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,157.9,x
+
+
+hot_jupiter_vs_size_000016  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000016  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000017  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000017  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000017  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.2,x,x
+
+
+hot_jupiter_vs_size_000017  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000017  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,261.1,x
+
+
+hot_jupiter_vs_size_000017  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,159.7,x
+
+
+hot_jupiter_vs_size_000017  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000017  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000018  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000018  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000018  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,27.1,x,x
+
+
+hot_jupiter_vs_size_000018  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000018  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,315.5,x
+
+
+hot_jupiter_vs_size_000018  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,148.0,x
+
+
+hot_jupiter_vs_size_000018  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000018  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000019  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000019  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000019  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.9,x,x
+
+
+hot_jupiter_vs_size_000019  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.5,x,x
+
+
+hot_jupiter_vs_size_000019  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,339.0,x
+
+
+hot_jupiter_vs_size_000019  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,141.3,x
+
+
+hot_jupiter_vs_size_000019  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000019  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000020  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000020  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000020  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,28.1,x,x
+
+
+hot_jupiter_vs_size_000020  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.3,x,x
+
+
+hot_jupiter_vs_size_000020  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,267.7,x
+
+
+hot_jupiter_vs_size_000020  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,156.2,x
+
+
+hot_jupiter_vs_size_000020  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+
+
+hot_jupiter_vs_size_000020  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.6,x,x
+
+
+hot_jupiter_vs_size_000021  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000021  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000021  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,27.5,x,x
+
+
+hot_jupiter_vs_size_000021  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.2,x,x
+
+
+hot_jupiter_vs_size_000021  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,264.3,x
+
+
+hot_jupiter_vs_size_000021  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,159.0,x
+
+
+hot_jupiter_vs_size_000021  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000021  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000022  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000022  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000022  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.8,x,x
+
+
+hot_jupiter_vs_size_000022  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000022  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,315.4,x
+
+
+hot_jupiter_vs_size_000022  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,148.5,x
+
+
+hot_jupiter_vs_size_000022  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+
+
+hot_jupiter_vs_size_000022  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000023  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000023  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000023  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.6,x,x
+
+
+hot_jupiter_vs_size_000023  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000023  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,268.0,x
+
+
+hot_jupiter_vs_size_000023  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,156.3,x
+
+
+hot_jupiter_vs_size_000023  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+
+
+hot_jupiter_vs_size_000023  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000024  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000024  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000024  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.0,x,x
+
+
+hot_jupiter_vs_size_000024  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.3,x,x
+
+
+hot_jupiter_vs_size_000024  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,273.7,x
+
+
+hot_jupiter_vs_size_000024  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,155.1,x
+
+
+hot_jupiter_vs_size_000024  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000024  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000025  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000025  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000025  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.8,x,x
+
+
+hot_jupiter_vs_size_000025  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000025  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,348.8,x
+
+
+hot_jupiter_vs_size_000025  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,142.7,x
+
+
+hot_jupiter_vs_size_000025  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000025  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000026  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000026  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000026  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,28.7,x,x
+
+
+hot_jupiter_vs_size_000026  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000026  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,323.0,x
+
+
+hot_jupiter_vs_size_000026  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,148.7,x
+
+
+hot_jupiter_vs_size_000026  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000026  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000027  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000027  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000027  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.7,x,x
+
+
+hot_jupiter_vs_size_000027  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.4,x,x
+
+
+hot_jupiter_vs_size_000027  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,276.8,x
+
+
+hot_jupiter_vs_size_000027  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,152.4,x
+
+
+hot_jupiter_vs_size_000027  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000027  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000028  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000028  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000028  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,26.2,x,x
+
+
+hot_jupiter_vs_size_000028  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.3,x,x
+
+
+hot_jupiter_vs_size_000028  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,281.8,x
+
+
+hot_jupiter_vs_size_000028  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,151.1,x
+
+
+hot_jupiter_vs_size_000028  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+
+
+hot_jupiter_vs_size_000028  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+
+
+hot_jupiter_vs_size_000029  --  load_lc (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000029  --  load_lc (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.9,x,x
+tls,x,0.9,x
+
+
+hot_jupiter_vs_size_000029  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,27.5,x,x
+
+
+hot_jupiter_vs_size_000029  --  psls_synthesis (run_time_cpu)
+
+,0.0,90.0,730.0
+,4.6,x,x
+
+
+hot_jupiter_vs_size_000029  --  transit_detection (run_time_wall_clock)
+
+,0.0,90.0,730.0
+tls,x,354.7,x
+
+
+hot_jupiter_vs_size_000029  --  transit_detection (run_time_cpu)
+
+,0.0,90.0,730.0
+tls,x,141.2,x
+
+
+hot_jupiter_vs_size_000029  --  verify (run_time_wall_clock)
+
+,0.0,90.0,730.0
+,0.8,x,x
+
+
+hot_jupiter_vs_size_000029  --  verify (run_time_cpu)
+
+,0.0,90.0,730.0
+,0.7,x,x
+[08/02/2021 14:57:52] INFO:results_to_csv.py:Dump all of the results of transit-detection runs from the MySQL database into a CSV file
+
+
+earth_vs_size_000000  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000000  --  transit_detection -- tls -- 730.0
+
+{"period": 91.1866006175679, "transit_count": 8, "depth": 0.9998957364088423, "duration": 1.415296174440093, "sde": 10.255023113026255, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+earth_vs_size_000001  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000001  --  transit_detection -- tls -- 730.0
+
+{"period": 90.00649998239166, "transit_count": 8, "depth": 0.999709506475834, "duration": 1.4152961744400931, "sde": 17.304867598286886, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+earth_vs_size_000002  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000002  --  transit_detection -- tls -- 730.0
+
+{"period": 89.60381478436946, "transit_count": 8, "depth": 0.9997576667605926, "duration": 1.4152961744400934, "sde": 15.563762046125113, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+earth_vs_size_000003  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000003  --  transit_detection -- tls -- 730.0
+
+{"period": 18.001142743613816, "transit_count": 41, "depth": 0.9998203312006589, "duration": 0.2761553511102621, "sde": 17.271641667744294, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+earth_vs_size_000004  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000004  --  transit_detection -- tls -- 730.0
+
+{"period": 91.1866006175679, "transit_count": 8, "depth": 0.9998958320953527, "duration": 1.415296174440093, "sde": 10.197092448845636, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+earth_vs_size_000005  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000005  --  transit_detection -- tls -- 730.0
+
+{"period": 89.60381478436946, "transit_count": 8, "depth": 0.9997578298977219, "duration": 1.4152961744400934, "sde": 15.440772160085876, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+earth_vs_size_000006  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000006  --  transit_detection -- tls -- 730.0
+
+{"period": 90.00649998239166, "transit_count": 8, "depth": 0.9997098485429169, "duration": 1.4152961744400931, "sde": 16.96288486128881, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+earth_vs_size_000007  --  transit_detection -- tls -- 90.0
+
+
+
+earth_vs_size_000007  --  transit_detection -- tls -- 730.0
+
+{"period": 29.999804227990655, "transit_count": 25, "depth": 0.9997745667781137, "duration": 0.45289477582082976, "sde": 18.56915739902433, "outcome": "FAIL", "target_period": 240.0}
+
+
+
+hot_jupiter_vs_size_000000  --  transit_detection -- tls -- 90.0
+
+{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995967212320541, "duration": 1.4458769569417962, "sde": 10.73822288315199, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000000  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000001  --  transit_detection -- tls -- 90.0
+
+{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998865069881226, "duration": 1.4458769569417964, "sde": 9.510057510857507, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000001  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000002  --  transit_detection -- tls -- 90.0
+
+{"period": 23.24138105610859, "transit_count": 4, "depth": 0.9998583470821851, "duration": 0.7952323263179882, "sde": 6.18714621008825, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000002  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000003  --  transit_detection -- tls -- 90.0
+
+{"period": 44.55455560908995, "transit_count": 2, "depth": 0.9999292098285074, "duration": 1.4458769569417964, "sde": 6.9627654393998295, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000003  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000004  --  transit_detection -- tls -- 90.0
+
+{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998867697743424, "duration": 1.4458769569417964, "sde": 9.447660527689754, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000004  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000005  --  transit_detection -- tls -- 90.0
+
+{"period": 44.55455560908995, "transit_count": 2, "depth": 0.9999294162456817, "duration": 1.4458769569417964, "sde": 6.742222636246715, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000005  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000006  --  transit_detection -- tls -- 90.0
+
+{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995972844437568, "duration": 1.4458769569417962, "sde": 10.450436751307562, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000006  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000007  --  transit_detection -- tls -- 90.0
+
+{"period": 23.24138105610859, "transit_count": 4, "depth": 0.9998577773471918, "duration": 0.7952323263179882, "sde": 6.369255034702447, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000007  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000008  --  transit_detection -- tls -- 90.0
+
+{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998872884211986, "duration": 1.4458769569417964, "sde": 9.35279826543198, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000008  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000009  --  transit_detection -- tls -- 90.0
+
+{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9999430080391231, "duration": 0.12572843103841708, "sde": 9.857453087202598, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000009  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000010  --  transit_detection -- tls -- 90.0
+
+{"period": 23.24138105610859, "transit_count": 4, "depth": 0.999857248807095, "duration": 0.7952323263179882, "sde": 6.484019498750919, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000010  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000011  --  transit_detection -- tls -- 90.0
+
+{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995981438177219, "duration": 1.4458769569417962, "sde": 9.907116206215926, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000011  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000012  --  transit_detection -- tls -- 90.0
+
+{"period": 35.6213988722901, "transit_count": 2, "depth": 0.9998880969097482, "duration": 1.4458769569417964, "sde": 8.821693685566837, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000012  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000013  --  transit_detection -- tls -- 90.0
+
+{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9999158360410199, "duration": 0.13830127414225882, "sde": 16.869737101219684, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000013  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000014  --  transit_detection -- tls -- 90.0
+
+{"period": 23.24138105610859, "transit_count": 4, "depth": 0.9998565781720886, "duration": 0.7952323263179882, "sde": 6.587751543002163, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000014  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000015  --  transit_detection -- tls -- 90.0
+
+{"period": 43.89755598984745, "transit_count": 2, "depth": 0.9995992715244723, "duration": 1.4458769569417962, "sde": 9.08091558099581, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000015  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000016  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9999004529096378, "duration": 0.12572843103841708, "sde": 17.178894800964937, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000016  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000017  --  transit_detection -- tls -- 90.0
+
+{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9998778556722163, "duration": 0.13830127414225882, "sde": 21.896665224871004, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000017  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000018  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9998691077239489, "duration": 0.13830127414225882, "sde": 14.585716690390273, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000018  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000019  --  transit_detection -- tls -- 90.0
+
+{"period": 23.148752417987264, "transit_count": 4, "depth": 0.9997490316495005, "duration": 0.7229384784708983, "sde": 8.213435150082095, "outcome": "FAIL", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000019  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000020  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9998434824553644, "duration": 0.12572843103841708, "sde": 24.17995804817449, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000020  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000021  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9998187972189502, "duration": 0.13830127414225882, "sde": 24.050626287639307, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000021  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000022  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9997979537918327, "duration": 0.13830127414225882, "sde": 23.338178735331187, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000022  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000023  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9997775704831575, "duration": 0.13830127414225882, "sde": 24.685392194812195, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000023  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000024  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.999754674939694, "duration": 0.12572843103841708, "sde": 26.056791445028466, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000024  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000025  --  transit_detection -- tls -- 90.0
+
+{"period": 4.000950441874253, "transit_count": 23, "depth": 0.9997445740151576, "duration": 0.12572843103841708, "sde": 20.105594430056392, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000025  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000026  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996870423402117, "duration": 0.12572843103841708, "sde": 26.279695699955038, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000026  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000027  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996618362607381, "duration": 0.13830127414225882, "sde": 25.6864791256164, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000027  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000028  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996410953508996, "duration": 0.13830127414225882, "sde": 26.803343782671046, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000028  --  transit_detection -- tls -- 730.0
+
+
+
+
+hot_jupiter_vs_size_000029  --  transit_detection -- tls -- 90.0
+
+{"period": 3.999172145317743, "transit_count": 23, "depth": 0.9996173418443293, "duration": 0.13830127414225882, "sde": 24.34517591823146, "outcome": "PASS", "target_period": 4.0}
+
+
+hot_jupiter_vs_size_000029  --  transit_detection -- tls -- 730.0
+
+

@@ -1,0 +1,618 @@
+**** ../master_node/json_jobs/bls_timing_full_span.json ****
+{
+  "test_name": "tls_timing_full_span",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "7 * day",
+        "10 * day",
+        "14 * day",
+        "21 * day",
+        "28 * day",
+        "1.5 * month",
+        "2 * month",
+        "2.5 * month",
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "bls_timing_full_span",
+        "lc_directory": "test_output",
+        "lc_filename": "btfs_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "bls_timing_full_span",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "bls_reference",
+        "lc_directory": "test_output",
+        "lc_filename": "btfs_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/bls_timing_long_periods.json ****
+{
+  "test_name": "tls_timing_long_periods",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "bls_timing_long_periods",
+        "lc_directory": "test_output",
+        "lc_filename": "btlp_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "bls_timing_long_periods",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "bls_reference",
+        "lc_directory": "test_output",
+        "lc_filename": "btlp_${index}.gz",
+        "search_settings": {
+          "min_period": 90
+        }
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/earth_vs_size.json ****
+{
+  "test_name": "earth_vs_size",
+  "iterations": [
+    {
+      "name": "size",
+      "log_range": [
+        "0.089114866/4",
+        "0.089114866*4",
+        "10"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "earth_vs_snr",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz",
+        "lc_specs": {
+          "duration": 730,
+          "planet_radius": "${size}",
+          "orbital_period": 240,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "verify_lc",
+        "job_name": "earth_vs_snr",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "evsize_${index}.gz"
+      },
+      {
+        "task": "transit_search",
+        "job_name": "earth_vs_snr_${index}",
+        "lc_source": "archive",
+        "lc_duration": 730,
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "evsize_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/earth_vs_snr.json ****
+{
+  "test_name": "earth_vs_snr",
+  "iterations": [
+    {
+      "name": "nsr",
+      "log_range": [
+        "73/5",
+        "73*5",
+        "10"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "earth_vs_snr",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz",
+        "lc_specs": {
+          "duration": 730,
+          "planet_radius": 0.089114866,
+          "orbital_period": 240,
+          "semi_major_axis": 1,
+          "orbital_angle": 0,
+          "nsr": "${nsr}"
+        }
+      },
+      {
+        "task": "verify_lc",
+        "job_name": "earth_vs_snr",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz"
+      },
+      {
+        "task": "transit_search",
+        "job_name": "earth_vs_snr_${index}",
+        "lc_source": "archive",
+        "lc_duration": 730,
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/hot_jupiter_vs_size.json ****
+{
+  "test_name": "hot_jupiter_vs_size",
+  "iterations": [
+    {
+      "name": "size",
+      "log_range": [
+        "0.02",
+        "0.5",
+        "10"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "earth_vs_snr",
+        "lc_directory": "test_output",
+        "lc_filename": "evs_${index}.gz",
+        "lc_specs": {
+          "duration": 90,
+          "planet_radius": "${size}",
+          "orbital_period": 4,
+          "semi_major_axis": 0.05,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "verify_lc",
+        "job_name": "earth_vs_snr",
+        "lc_source": "archive",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize_${index}.gz"
+      },
+      {
+        "task": "transit_search",
+        "job_name": "earth_vs_snr_${index}",
+        "lc_source": "archive",
+        "lc_duration": 90,
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "hjvsize_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/tls_timing_full_span.json ****
+{
+  "test_name": "tls_timing_full_span",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "7 * day",
+        "10 * day",
+        "14 * day",
+        "21 * day",
+        "28 * day",
+        "1.5 * month",
+        "2 * month",
+        "2.5 * month",
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "tls_timing_full_span",
+        "lc_directory": "test_output",
+        "lc_filename": "ttfs_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "tls_timing_full_span",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "ttfs_${index}.gz",
+        "search_settings": {}
+      }
+    ]
+  ]
+}
+**** ../master_node/json_jobs/tls_timing_long_periods.json ****
+{
+  "test_name": "tls_timing_long_periods",
+  "iterations": [
+    {
+      "name": "lc_length",
+      "values": [
+        "3 * month",
+        "4 * month",
+        "6 * month",
+        "9 * month",
+        "year",
+        "2 * year"
+      ]
+    }
+  ],
+  "task_list": [
+    [
+      {
+        "task": "psls_synthesise",
+        "job_name": "tls_timing_long_periods",
+        "lc_directory": "test_output",
+        "lc_filename": "ttlp_${index}.gz",
+        "lc_specs": {
+          "duration": "${lc_length}",
+          "planet_radius": 0.089114866,
+          "orbital_period": 365,
+          "semi_major_axis": 1,
+          "orbital_angle": 0
+        }
+      },
+      {
+        "task": "transit_search",
+        "job_name": "tls_timing_long_periods",
+        "lc_source": "archive",
+        "lc_duration": "${lc_length}",
+        "tda_name": "tls",
+        "lc_directory": "test_output",
+        "lc_filename": "ttlp_${index}.gz",
+        "search_settings": {
+          "min_period": 90
+        }
+      }
+    ]
+  ]
+}
+[08/02/2021 15:23:16] INFO:timings_list.py:Produce the list of all the run times in the MySQL database
+2021-02-07 17:45:49 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000000.gz    |   0.0|     3.23|     0.32
+2021-02-07 17:45:52 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000000.gz    |   7.0|     0.05|     0.05
+2021-02-07 17:45:52 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000000.gz    |   7.0|     4.87|     1.63
+2021-02-07 17:45:57 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000001.gz    |   0.0|     3.79|     0.38
+2021-02-07 17:46:01 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000001.gz    |  10.0|     0.07|     0.07
+2021-02-07 17:46:01 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000001.gz    |  10.0|     8.37|     3.11
+2021-02-07 17:46:09 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000002.gz    |   0.0|     4.74|     0.52
+2021-02-07 17:46:14 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000002.gz    |  14.0|     0.10|     0.10
+2021-02-07 17:46:14 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000002.gz    |  14.0|    14.19|     7.06
+2021-02-07 17:46:29 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000003.gz    |   0.0|     6.31|     0.79
+2021-02-07 17:46:35 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000003.gz    |  21.0|     0.16|     0.15
+2021-02-07 17:46:35 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000003.gz    |  21.0|    30.76|    11.49
+2021-02-07 17:47:06 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000004.gz    |   0.0|     7.82|     1.04
+2021-02-07 17:47:14 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000004.gz    |  28.0|     0.21|     0.20
+2021-02-07 17:47:14 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000004.gz    |  28.0|    51.51|    16.53
+2021-02-07 17:48:05 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000005.gz    |   0.0|    10.85|     1.59
+2021-02-07 17:48:16 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000005.gz    |  42.0|     0.32|     0.31
+2021-02-07 17:48:17 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000005.gz    |  42.0|   125.84|    65.60
+2021-02-07 17:50:23 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000006.gz    |   0.0|    14.37|     2.08
+2021-02-07 17:50:37 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000006.gz    |  56.0|     0.41|     0.41
+2021-02-07 17:50:37 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000006.gz    |  56.0|   237.68|   127.62
+2021-02-07 17:54:35 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000007.gz    |   0.0|    17.52|     2.65
+2021-02-07 17:54:53 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000007.gz    |  70.0|     0.52|     0.51
+2021-02-07 17:54:53 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000007.gz    |  70.0|   387.59|   199.29
+2021-02-07 18:01:21 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000008.gz    |   0.0|    20.97|     3.14
+2021-02-07 18:01:42 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000008.gz    |  84.0|     0.61|     0.60
+2021-02-07 18:01:42 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000008.gz    |  84.0|   559.51|   189.25
+2021-02-07 18:11:02 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000009.gz    |   0.0|    28.14|     4.14
+2021-02-07 18:11:30 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000009.gz    | 112.0|     0.82|     0.80
+2021-02-07 18:11:31 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000009.gz    | 112.0|  1036.69|   324.46
+2021-02-07 18:28:48 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000010.gz    |   0.0|    43.56|     6.26
+2021-02-07 18:29:31 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000010.gz    | 168.0|     1.23|     1.21
+2021-02-07 18:29:32 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000010.gz    | 168.0|  2423.25|  1262.12
+2021-02-07 19:09:56 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000011.gz    |   0.0|    53.18|     9.34
+2021-02-07 19:10:49 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000011.gz    | 252.0|     1.85|     1.82
+2021-02-07 19:10:51 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000011.gz    | 252.0|  5648.14|  2420.81
+2021-02-07 20:44:59 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000012.gz    |   0.0|    71.38|    13.56
+2021-02-07 20:46:10 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000012.gz    | 365.2|     2.71|     2.66
+2021-02-07 20:46:13 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000012.gz    | 365.2| 11714.19|  4012.27
+2021-02-08 00:01:27 |tls_timing_full_span  |psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttfs_000013.gz    |   0.0|   140.35|    26.95
+2021-02-08 00:03:48 |tls_timing_full_span  |load_lc           |log-runtimes-f689979c7-wnj49    |ttfs_000013.gz    | 730.5|     5.35|     5.25
+2021-02-08 00:03:53 |tls_timing_full_span  |transit_detection |log-runtimes-f689979c7-wnj49    |ttfs_000013.gz    | 730.5| 50739.75| 17200.89
+2021-02-08 14:09:33 |tls_timing_long_periods|psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttlp_000000.gz    |   0.0|    20.60|     3.15
+2021-02-08 14:09:53 |tls_timing_long_periods|load_lc           |log-runtimes-f689979c7-wnj49    |ttlp_000000.gz    |  84.0|     0.62|     0.61
+2021-02-08 14:09:54 |tls_timing_long_periods|transit_detection |log-runtimes-f689979c7-wnj49    |ttlp_000000.gz    |  84.0|   560.67|   188.55
+2021-02-08 14:19:15 |tls_timing_long_periods|psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttlp_000001.gz    |   0.0|    28.57|     4.18
+2021-02-08 14:19:43 |tls_timing_long_periods|load_lc           |log-runtimes-f689979c7-wnj49    |ttlp_000001.gz    | 112.0|     0.82|     0.81
+2021-02-08 14:19:44 |tls_timing_long_periods|transit_detection |log-runtimes-f689979c7-wnj49    |ttlp_000001.gz    | 112.0|  1038.86|   326.55
+2021-02-08 14:37:03 |tls_timing_long_periods|psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttlp_000002.gz    |   0.0|    41.40|     6.22
+2021-02-08 14:37:44 |tls_timing_long_periods|load_lc           |log-runtimes-f689979c7-wnj49    |ttlp_000002.gz    | 168.0|     1.25|     1.23
+2021-02-08 14:37:46 |tls_timing_long_periods|transit_detection |log-runtimes-f689979c7-wnj49    |ttlp_000002.gz    | 168.0|  2401.86|   768.76
+2021-02-08 15:17:48 |tls_timing_long_periods|psls_synthesis    |log-runtimes-f689979c7-wnj49    |ttlp_000003.gz    |   0.0|    53.25|     9.36
+2021-02-08 15:18:41 |tls_timing_long_periods|load_lc           |log-runtimes-f689979c7-wnj49    |ttlp_000003.gz    | 252.0|     1.85|     1.82
+[08/02/2021 15:23:16] INFO:results_list.py:Produce the list of all the results in the MySQL database
+2021-02-07 17:45:52 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000000.gz    |   7.0|{"period": 3.4618642396076287, "transit_count": 2, "depth": 0.9999399347996302, "duration": 0.4199826388889008, "sde": 3.7322639176868817, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000000.gz_000000.0.json.gz
+2021-02-07 17:46:01 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000001.gz    |  10.0|{"period": 3.231522650498709, "transit_count": 3, "depth": 0.9999459048447833, "duration": 0.2161792651146571, "sde": 3.4361399382867868, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000001.gz_000000.0.json.gz
+2021-02-07 17:46:14 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000002.gz    |  14.0|{"period": 6.999855324074066, "transit_count": 2, "depth": 0.999941849333594, "duration": 0.777601909766205, "sde": 6.525116910491659, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000002.gz_000000.0.json.gz
+2021-02-07 17:46:35 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000003.gz    |  21.0|{"period": 8.568910839896738, "transit_count": 3, "depth": 0.9999260789020743, "duration": 0.334971634364839, "sde": 8.17205980660543, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000003.gz_000000.0.json.gz
+2021-02-07 17:47:14 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000004.gz    |  28.0|{"period": 2.9120025944919883, "transit_count": 10, "depth": 0.9999545676024926, "duration": 0.33599652777701383, "sde": 6.645793641882666, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000004.gz_000000.0.json.gz
+2021-02-07 17:48:16 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000005.gz    |  42.0|{"period": 4.364444561764131, "transit_count": 10, "depth": 0.999958452485068, "duration": 0.2467302576672391, "sde": 5.908242613311284, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000005.gz_000000.0.json.gz
+2021-02-07 17:50:37 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000006.gz    |  56.0|{"period": 17.464893513987974, "transit_count": 3, "depth": 0.9999070354153218, "duration": 0.4645140519717537, "sde": 6.465802249218056, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000006.gz_000000.0.json.gz
+2021-02-07 17:54:53 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000007.gz    |  70.0|{"period": 26.656931121937717, "transit_count": 2, "depth": 0.9999115628289692, "duration": 1.4626566794228726, "sde": 6.119325754648998, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000007.gz_000000.0.json.gz
+2021-02-07 18:01:42 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000008.gz    |  84.0|{"period": 30.12271762331901, "transit_count": 2, "depth": 0.99991133131514, "duration": 1.413004555545036, "sde": 7.812629502693146, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000008.gz_000000.0.json.gz
+2021-02-07 18:11:30 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000009.gz    | 112.0|{"period": 19.409446253235444, "transit_count": 6, "depth": 0.9999261601909918, "duration": 0.5184043982297021, "sde": 7.544451856622061, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000009.gz_000000.0.json.gz
+2021-02-07 18:29:31 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000010.gz    | 168.0|{"period": 41.02395715838264, "transit_count": 4, "depth": 0.9998897489463331, "duration": 0.8901376025921404, "sde": 9.6266564183184, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000010.gz_000000.0.json.gz
+2021-02-07 19:10:49 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000011.gz    | 252.0|{"period": 53.82714209330249, "transit_count": 4, "depth": 0.9998854168786984, "duration": 1.1208487251688646, "sde": 9.490286981021688, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000011.gz_000000.0.json.gz
+2021-02-07 20:46:10 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000012.gz    | 365.2|{"period": 79.94704546901377, "transit_count": 5, "depth": 0.9998339665471975, "duration": 1.2278697655630362, "sde": 11.225893599262028, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000012.gz_000000.0.json.gz
+2021-02-08 00:03:48 |tls_timing_full_span  |transit_detection |log-results-857d7576d6-s9zs8    |ttfs_000013.gz    | 730.5|{"period": 181.5041985557393, "transit_count": 4, "depth": 0.999805897220371, "duration": 2.831238455606713, "sde": 17.669803445114525, "outcome": "FAIL", "target_period": 365.0}|tls_timing_full_span_transit_detection_tls_ttfs_000013.gz_000000.0.json.gz
+2021-02-08 14:09:53 |tls_timing_long_periods|transit_detection |log-results-857d7576d6-s9zs8    |ttlp_000000.gz    |  84.0|{"period": 30.12271762331901, "transit_count": 2, "depth": 0.99991133131514, "duration": 1.413004555545036, "sde": 7.812629502693146, "outcome": "FAIL", "target_period": 365.0}|tls_timing_long_periods_transit_detection_tls_ttlp_000000.gz_000000.0.json.gz
+2021-02-08 14:19:43 |tls_timing_long_periods|transit_detection |log-results-857d7576d6-s9zs8    |ttlp_000001.gz    | 112.0|{"period": 19.409446253235444, "transit_count": 6, "depth": 0.9999261601909918, "duration": 0.5184043982297021, "sde": 7.544451856622061, "outcome": "FAIL", "target_period": 365.0}|tls_timing_long_periods_transit_detection_tls_ttlp_000001.gz_000000.0.json.gz
+2021-02-08 14:37:44 |tls_timing_long_periods|transit_detection |log-results-857d7576d6-s9zs8    |ttlp_000002.gz    | 168.0|{"period": 41.02395715838264, "transit_count": 4, "depth": 0.9998897489463331, "duration": 0.8901376025921404, "sde": 9.6266564183184, "outcome": "FAIL", "target_period": 365.0}|tls_timing_long_periods_transit_detection_tls_ttlp_000002.gz_000000.0.json.gz
+[08/02/2021 15:23:16] INFO:timings_to_csv.py:Dump all of the run times from the MySQL database into a CSV file
+
+
+tls_timing_full_span  --  load_lc (run_time_wall_clock)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,0.1,0.1,0.1,0.2,0.2,0.3,0.4,0.5,0.6,0.8,1.2,1.9,2.7,5.4
+
+
+tls_timing_full_span  --  load_lc (run_time_cpu)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,0.1,0.1,0.1,0.2,0.2,0.3,0.4,0.5,0.6,0.8,1.2,1.8,2.7,5.2
+
+
+tls_timing_full_span  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+,30.4,x,x,x,x,x,x,x,x,x,x,x,x,x,x
+
+
+tls_timing_full_span  --  psls_synthesis (run_time_cpu)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+,5.2,x,x,x,x,x,x,x,x,x,x,x,x,x,x
+
+
+tls_timing_full_span  --  transit_detection (run_time_wall_clock)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,4.9,8.4,14.2,30.8,51.5,125.8,237.7,387.6,559.5,1036.7,2423.2,5648.1,11714.2,50739.8
+
+
+tls_timing_full_span  --  transit_detection (run_time_cpu)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,1.6,3.1,7.1,11.5,16.5,65.6,127.6,199.3,189.3,324.5,1262.1,2420.8,4012.3,17200.9
+
+
+tls_timing_long_periods  --  load_lc (run_time_wall_clock)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,x,x,x,x,x,x,x,x,0.6,0.8,1.3,1.9,x,x
+
+
+tls_timing_long_periods  --  load_lc (run_time_cpu)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,x,x,x,x,x,x,x,x,0.6,0.8,1.2,1.8,x,x
+
+
+tls_timing_long_periods  --  psls_synthesis (run_time_wall_clock)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+,36.0,x,x,x,x,x,x,x,x,x,x,x,x,x,x
+
+
+tls_timing_long_periods  --  psls_synthesis (run_time_cpu)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+,5.7,x,x,x,x,x,x,x,x,x,x,x,x,x,x
+
+
+tls_timing_long_periods  --  transit_detection (run_time_wall_clock)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,x,x,x,x,x,x,x,x,560.7,1038.9,2401.9,x,x,x
+
+
+tls_timing_long_periods  --  transit_detection (run_time_cpu)
+
+,0.0,7.0,10.0,14.0,21.0,28.0,42.0,56.0,70.0,84.0,112.0,168.0,252.0,365.25,730.5
+tls,x,x,x,x,x,x,x,x,x,188.5,326.6,768.8,x,x,x
+[08/02/2021 15:23:16] INFO:results_to_csv.py:Dump all of the results of transit-detection runs from the MySQL database into a CSV file
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 7.0
+
+{"period": 3.4618642396076287, "transit_count": 2, "depth": 0.9999399347996302, "duration": 0.4199826388889008, "sde": 3.7322639176868817, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 10.0
+
+{"period": 3.231522650498709, "transit_count": 3, "depth": 0.9999459048447833, "duration": 0.2161792651146571, "sde": 3.4361399382867868, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 14.0
+
+{"period": 6.999855324074066, "transit_count": 2, "depth": 0.999941849333594, "duration": 0.777601909766205, "sde": 6.525116910491659, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 21.0
+
+{"period": 8.568910839896738, "transit_count": 3, "depth": 0.9999260789020743, "duration": 0.334971634364839, "sde": 8.17205980660543, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 28.0
+
+{"period": 2.9120025944919883, "transit_count": 10, "depth": 0.9999545676024926, "duration": 0.33599652777701383, "sde": 6.645793641882666, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 42.0
+
+{"period": 4.364444561764131, "transit_count": 10, "depth": 0.999958452485068, "duration": 0.2467302576672391, "sde": 5.908242613311284, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 56.0
+
+{"period": 17.464893513987974, "transit_count": 3, "depth": 0.9999070354153218, "duration": 0.4645140519717537, "sde": 6.465802249218056, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 70.0
+
+{"period": 26.656931121937717, "transit_count": 2, "depth": 0.9999115628289692, "duration": 1.4626566794228726, "sde": 6.119325754648998, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 84.0
+
+{"period": 30.12271762331901, "transit_count": 2, "depth": 0.99991133131514, "duration": 1.413004555545036, "sde": 7.812629502693146, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 112.0
+
+{"period": 19.409446253235444, "transit_count": 6, "depth": 0.9999261601909918, "duration": 0.5184043982297021, "sde": 7.544451856622061, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 168.0
+
+{"period": 41.02395715838264, "transit_count": 4, "depth": 0.9998897489463331, "duration": 0.8901376025921404, "sde": 9.6266564183184, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 252.0
+
+{"period": 53.82714209330249, "transit_count": 4, "depth": 0.9998854168786984, "duration": 1.1208487251688646, "sde": 9.490286981021688, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 365.25
+
+{"period": 79.94704546901377, "transit_count": 5, "depth": 0.9998339665471975, "duration": 1.2278697655630362, "sde": 11.225893599262028, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_full_span  --  transit_detection -- tls -- 730.5
+
+{"period": 181.5041985557393, "transit_count": 4, "depth": 0.999805897220371, "duration": 2.831238455606713, "sde": 17.669803445114525, "outcome": "FAIL", "target_period": 365.0}
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 7.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 10.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 14.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 21.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 28.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 42.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 56.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 70.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 84.0
+
+{"period": 30.12271762331901, "transit_count": 2, "depth": 0.99991133131514, "duration": 1.413004555545036, "sde": 7.812629502693146, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 112.0
+
+{"period": 19.409446253235444, "transit_count": 6, "depth": 0.9999261601909918, "duration": 0.5184043982297021, "sde": 7.544451856622061, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 168.0
+
+{"period": 41.02395715838264, "transit_count": 4, "depth": 0.9998897489463331, "duration": 0.8901376025921404, "sde": 9.6266564183184, "outcome": "FAIL", "target_period": 365.0}
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 252.0
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 365.25
+
+
+
+tls_timing_long_periods  --  transit_detection -- tls -- 730.5
+
+

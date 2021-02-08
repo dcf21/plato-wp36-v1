@@ -1,1 +1,1 @@
-Store log files here
+Store log files from tests we have run here
