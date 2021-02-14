@@ -1,9 +1,8 @@
-#!../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
 # task_runner.py
 
 """
-Run lightcurve processing tasks, as defined within request objects.
+Run lightcurve processing tasks, as defined within a list of request objects.
 """
 
 import logging
@@ -25,7 +24,7 @@ from .tda_wrappers import bls_reference, bls_kovacs, dst_v26, dst_v29, exotrans,
 
 class TaskRunner:
     """
-    Run lightcurve processing tasks, as defined within request objects.
+    Within a worker node, run a sequence of lightcurve processing tasks, as defined within a list of tasks.
     """
 
     def __init__(self, results_target="rabbitmq"):
@@ -37,15 +36,28 @@ class TaskRunner:
         :type results_target:
             str
         """
+
+        # Destination for results from this task running. Either <rabbitmq> or <logging>
         self.results_target = results_target
 
-    def psls_synthesise(self, job_name, lc_filename, lc_directory, lc_specs):
+        # List of all the lightcurves this task runner has written. Each a dictionary of <lc_filename> and
+        # <lc_directory>
+        self.lightcurves_written = []
+
+        # In memory storage for lightcurve objects, by name
+        self.lightcurves_in_memory = {}
+
+    def psls_synthesise(self, job_name, lc_target, lc_filename, lc_directory, lc_specs):
         """
         Perform the task of synthesising a lightcurve using PSLS.
 
         :param job_name:
             Specify the name of the job that these tasks is part of.
         :type job_name:
+            str
+        :param lc_target:
+            Specify whether this lightcurve is to be stored in <memory> or <archive>
+        :type lc_target:
             str
         :param lc_filename:
             Filename to give the lightcurve we synthesise.
@@ -70,21 +82,34 @@ class TaskRunner:
         with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='psls_synthesis', time_logger=time_log):
             synthesiser = PslsWrapper()
             synthesiser.configure(**lc_specs)
-            synthesiser.synthesise(directory=lc_directory,
-                                   filename=lc_filename,
-                                   gzipped=True)
+            lc_object = synthesiser.synthesise()
             synthesiser.close()
+
+        # Write output
+        if lc_target == "archive":
+            with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='write_lc', time_logger=time_log):
+                lc.to_file(directory=lc_directory, filename=lc_filename)
+                self.lightcurves_written.append({
+                    'filename': lc_filename,
+                    'directory': lc_directory
+                })
+        else:
+            self.lightcurves_in_memory[lc_filename] = lc_object
 
         # Close connection to message queue
         time_log.close()
 
-    def batman_synthesise(self, job_name, lc_filename, lc_directory, lc_specs):
+    def batman_synthesise(self, job_name, lc_target, lc_filename, lc_directory, lc_specs):
         """
         Perform the task of synthesising a lightcurve using batman.
 
         :param job_name:
             Specify the name of the job that these tasks is part of.
         :type job_name:
+            str
+        :param lc_target:
+            Specify whether this lightcurve is to be stored in <memory> or <archive>
+        :type lc_target:
             str
         :param lc_filename:
             Filename to give the lightcurve we synthesise.
@@ -109,29 +134,33 @@ class TaskRunner:
         with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='load_lc', time_logger=time_log):
             synthesiser = BatmanWrapper()
             synthesiser.configure(**lc_specs)
-            synthesiser.synthesise(directory=lc_directory,
-                                   filename=lc_filename,
-                                   gzipped=True)
+            lc_object = synthesiser.synthesise()
             synthesiser.close()
+
+        # Write output
+        if lc_target == "archive":
+            with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='write_lc', time_logger=time_log):
+                lc.to_file(directory=lc_directory, filename=lc_filename)
+                self.lightcurves_written.append({
+                    'filename': lc_filename,
+                    'directory': lc_directory
+                })
+        else:
+            self.lightcurves_in_memory[lc_filename] = lc_object
 
         # Close connection to message queue
         time_log.close()
 
-    def lightcurves_multiply(self, job_name, lc_source,
-                             input_1_filename, input_1_directory,
-                             input_2_filename, input_2_directory,
-                             output_filename, output_directory):
+    def lightcurves_multiply(self, job_name,
+                             input_1_filename, input_1_directory, input_1_source,
+                             input_2_filename, input_2_directory, input_2_source,
+                             output_filename, output_directory, output_target):
         """
         Perform the task of multiplying two lightcurves together.
 
         :param job_name:
             Specify the name of the job that these tasks is part of.
         :type job_name:
-            str
-        :param lc_source:
-            The name of the format this lightcurve is in. Either <archive> or <lcsg>, for default formats used either
-            by the testbench code (archive), or the lightcurve stitching group.
-        :type lc_source:
             str
 
         :param input_1_filename:
@@ -142,6 +171,10 @@ class TaskRunner:
             Directory for the first lightcurve to multiply.
         :type input_1_directory:
             str
+        :param input_1_source:
+            Specify whether this lightcurve is stored in <memory>, <archive>, or <lcsg>
+        :type input_1_source:
+            str
 
         :param input_2_filename:
             Filename for the second lightcurve to multiply.
@@ -150,6 +183,10 @@ class TaskRunner:
         :param input_2_directory:
             Directory for the second lightcurve to multiply.
         :type input_2_directory:
+            str
+        :param input_2_source:
+            Specify whether this lightcurve is stored in <memory>, <archive>, or <lcsg>
+        :type input_2_source:
             str
 
         :param output_filename:
@@ -160,35 +197,53 @@ class TaskRunner:
             Directory for storing the output of our multiplication.
         :type output_directory:
             str
+        :param output_target:
+            Specify whether this lightcurve is to be stored in <memory> or <archive>
+        :type output_target:
+            str
         """
         logging.info("Multiplying lightcurves")
 
         # Open connections to transit results and run times to output message queues
         time_log = RunTimesToRabbitMQ(results_target=self.results_target)
 
-        # Work out which lightcurve reader to use
-        if lc_source == 'lcsg':
-            lc_reader = read_lcsg_lightcurve
-        elif lc_source == 'archive':
-            lc_reader = LightcurveArbitraryRaster.from_file
-        else:
-            raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
-
         # Load lightcurve 1
-        with TaskTimer(job_name=job_name,
-                       target_name=input_1_filename, task_name='load_lc', time_logger=time_log):
-            lc_1 = lc_reader(
-                filename=input_1_filename,
-                directory=input_1_directory
-            )
+        if input_1_source == 'memory':
+            lc_1 = self.lightcurves_in_memory[input_1_filename]
+        else:
+            if input_1_source == 'lcsg':
+                lc_reader = read_lcsg_lightcurve
+            elif input_1_source == 'archive':
+                lc_reader = LightcurveArbitraryRaster.from_file
+            else:
+                raise ValueError("Unknown lightcurve source <{}>".format(input_1_source))
+
+            # Load lightcurve 1
+            with TaskTimer(job_name=job_name,
+                           target_name=input_1_filename, task_name='load_lc', time_logger=time_log):
+                lc_1 = lc_reader(
+                    filename=input_1_filename,
+                    directory=input_1_directory
+                )
 
         # Load lightcurve 2
-        with TaskTimer(job_name=job_name,
-                       target_name=input_2_filename, task_name='load_lc', time_logger=time_log):
-            lc_2 = lc_reader(
-                filename=input_2_filename,
-                directory=input_2_directory
-            )
+        if input_2_source == 'memory':
+            lc_2 = self.lightcurves_in_memory[input_2_filename]
+        else:
+            if input_2_source == 'lcsg':
+                lc_reader = read_lcsg_lightcurve
+            elif input_2_source == 'archive':
+                lc_reader = LightcurveArbitraryRaster.from_file
+            else:
+                raise ValueError("Unknown lightcurve source <{}>".format(input_2_source))
+
+            # Load lightcurve 2
+            with TaskTimer(job_name=job_name,
+                           target_name=input_2_filename, task_name='load_lc', time_logger=time_log):
+                lc_2 = lc_reader(
+                    filename=input_2_filename,
+                    directory=input_2_directory
+                )
 
         # Multiply lightcurves together
         with TaskTimer(job_name=job_name,
@@ -196,10 +251,19 @@ class TaskRunner:
             result = lc_1 * lc_2
 
         # Store result
-        with TaskTimer(job_name=job_name,
-                       target_name=output_filename, task_name='write_output', time_logger=time_log):
-            result.to_file(directory=output_directory,
-                           filename=output_filename)
+        if output_target == 'archive':
+            with TaskTimer(job_name=job_name,
+                           target_name=output_filename, task_name='write_output', time_logger=time_log):
+                result.to_file(directory=output_directory,
+                               filename=output_filename)
+                self.lightcurves_written.append({
+                    'filename': output_filename,
+                    'directory': output_directory
+                })
+        elif output_target == "memory":
+            self.lightcurves_in_memory[output_filename] = result
+        else:
+            raise ValueError("Unknown lightcurve target <{}>".format(output_target))
 
         # Close connection to message queue
         time_log.close()
@@ -212,6 +276,10 @@ class TaskRunner:
             Specify the name of the job that these tasks is part of.
         :type job_name:
             str
+        :param lc_target:
+            Specify whether this lightcurve is stored in <memory> or <archive>
+        :type lc_target:
+            str
         :param lc_filename:
             The filename of the lightcurve to search for transits (within our local lightcurve archive).
         :type lc_filename
@@ -221,8 +289,7 @@ class TaskRunner:
         :type lc_directory:
             str
         :param lc_source:
-            The name of the format this lightcurve is in. Either <archive> or <lcsg>, for default formats used either
-            by the testbench code (archive), or the lightcurve stitching group.
+            Specify whether this lightcurve is stored in <memory>, <archive>, or <lcsg>
         :type lc_source:
             str
         """
@@ -231,20 +298,23 @@ class TaskRunner:
         # Open connections to transit results and run times to output message queues
         time_log = RunTimesToRabbitMQ(results_target=self.results_target)
 
-        # Work out which lightcurve reader to use
-        if lc_source == 'lcsg':
-            lc_reader = read_lcsg_lightcurve
-        elif lc_source == 'archive':
-            lc_reader = LightcurveArbitraryRaster.from_file
+        # Read input lightcurve
+        if lc_source == 'memory':
+            lc = self.lightcurves_in_memory[lc_filename]
         else:
-            raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
+            if lc_source == 'lcsg':
+                lc_reader = read_lcsg_lightcurve
+            elif lc_source == 'archive':
+                lc_reader = LightcurveArbitraryRaster.from_file
+            else:
+                raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
 
-        # Load lightcurve
-        with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='load_lc', time_logger=time_log):
-            lc = lc_reader(
-                filename=lc_filename,
-                directory=lc_directory
-            )
+            # Load lightcurve
+            with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='load_lc', time_logger=time_log):
+                lc = lc_reader(
+                    filename=lc_filename,
+                    directory=lc_directory
+                )
 
         # Verify lightcurve
         with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='verify', time_logger=time_log):
@@ -279,7 +349,8 @@ class TaskRunner:
         # Close connection to message queue
         time_log.close()
 
-    def transit_search(self, job_name, lc_duration, tda_name, lc_filename, lc_directory, lc_source, search_settings):
+    def transit_search(self, job_name, lc_duration, tda_name,
+                       lc_filename, lc_directory, lc_source, search_settings):
         """
         Perform the task of running a lightcurve through a transit-detection algorithm.
 
@@ -304,8 +375,7 @@ class TaskRunner:
         :type lc_directory:
             str
         :param lc_source:
-            The name of the format this lightcurve is in. Either <archive> or <lcsg>, for default formats used either
-            by the testbench code (archive), or the lightcurve stitching group.
+            Specify whether this lightcurve is stored in <memory>, <archive>, or <lcsg>
         :type lc_source:
             str
         :param search_settings:
@@ -322,26 +392,27 @@ class TaskRunner:
         # Record start time
         start_time = time.time()
 
-        # Work out which lightcurve reader to use
-        if lc_source == 'lcsg':
-            lc_reader = read_lcsg_lightcurve
-        elif lc_source == 'archive':
-            lc_reader = LightcurveArbitraryRaster.from_file
-        else:
-            raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
-
         # Open connections to transit results and run times to RabbitMQ message queues
         time_log = RunTimesToRabbitMQ(results_target=self.results_target)
         result_log = ResultsToRabbitMQ(results_target=self.results_target)
 
-        # Load lightcurve
-        with TaskTimer(job_name=job_name, tda_code=tda_name, target_name=lc_filename, task_name='load_lc',
-                       lc_length=lc_duration, time_logger=time_log):
-            lc = lc_reader(
-                filename=lc_filename,
-                directory=lc_directory,
-                cut_off_time=lc_duration
-            )
+        # Read input lightcurve
+        if lc_source == 'memory':
+            lc = self.lightcurves_in_memory[lc_filename]
+        else:
+            if lc_source == 'lcsg':
+                lc_reader = read_lcsg_lightcurve
+            elif lc_source == 'archive':
+                lc_reader = LightcurveArbitraryRaster.from_file
+            else:
+                raise ValueError("Unknown lightcurve source <{}>".format(lc_source))
+
+            # Load lightcurve
+            with TaskTimer(job_name=job_name, target_name=lc_filename, task_name='load_lc', time_logger=time_log):
+                lc = lc_reader(
+                    filename=lc_filename,
+                    directory=lc_directory
+                )
 
         # Process lightcurve
         with TaskTimer(job_name=job_name, tda_code=tda_name, target_name=lc_filename, task_name='transit_detection',
@@ -407,64 +478,69 @@ class TaskRunner:
             # Check that task description is a dictionary
             assert isinstance(job_description, dict)
 
-            # If job name is not specified in the job description, we specify it here
-            if 'job_name' not in job_description:
-                job_description['job_name'] = job_name
-
             # Null task
             if job_description['task'] == 'null':
                 logging.info("Running null task")
 
+            # Error task
+            elif job_description['task'] == 'error':
+                logging.info("Running error task")
+                assert False, "Running error task"
+
             # Transit search
             elif job_description['task'] == 'transit_search':
                 self.transit_search(
-                    job_name=job_description['job_name'],
-                    lc_source=job_description['lc_source'],
-                    lc_duration=float(job_description['lc_duration']),
-                    lc_directory=job_description['lc_directory'],
-                    tda_name=job_description['tda_name'],
-                    lc_filename=job_description['lc_filename'],
-                    search_settings=job_description['search_settings']
+                    job_name=job_description.get('job_name', job_name),
+                    lc_source=job_description.get('lc_source', 'memory'),
+                    lc_duration=float(job_description.get('lc_duration', 730)),
+                    lc_directory=job_description.get('lc_directory', 'test_output'),
+                    tda_name=job_description.get('tda_name', 'tls'),
+                    lc_filename=job_description.get('lc_filename', 'lightcurve'),
+                    search_settings=job_description.get('search_settings', {})
                 )
 
             # Synthesise lightcurve with PSLS
             elif job_description['task'] == 'psls_synthesise':
                 self.psls_synthesise(
-                    job_name=job_description['job_name'],
-                    lc_filename=job_description['lc_filename'],
-                    lc_directory=job_description['lc_directory'],
-                    lc_specs=job_description['lc_specs']
+                    job_name=job_description.get('job_name', job_name),
+                    lc_target=job_description.get('lc_target', 'memory'),
+                    lc_filename=job_description.get('lc_filename', 'lightcurve'),
+                    lc_directory=job_description.get('lc_directory', 'test_output'),
+                    lc_specs=job_description.get('lc_specs', {})
                 )
 
             # Synthesise lightcurve with Batman
             elif job_description['task'] == 'batman_synthesise':
                 self.batman_synthesise(
-                    job_name=job_description['job_name'],
-                    lc_filename=job_description['lc_filename'],
-                    lc_directory=job_description['lc_directory'],
-                    lc_specs=job_description['lc_specs']
+                    job_name=job_description.get('job_name', job_name),
+                    lc_target=job_description.get('lc_target', 'memory'),
+                    lc_filename=job_description.get('lc_filename', 'lightcurve'),
+                    lc_directory=job_description.get('lc_directory', 'test_output'),
+                    lc_specs=job_description.get('lc_specs', {})
                 )
 
             # Multiply two lightcurves together
             elif job_description['task'] == 'multiplication':
                 self.lightcurves_multiply(
-                    job_name=job_description['job_name'],
-                    lc_source=job_description['lc_source'],
+                    job_name=job_description.get('job_name', job_name),
                     input_1_filename=job_description['input_1_filename'],
-                    input_1_directory=job_description['input_1_directory'],
+                    input_1_directory=job_description.get('input_1_directory', 'test_output'),
+                    input_1_source=job_description.get('input_1_target', 'memory'),
                     input_2_filename=job_description['input_2_filename'],
-                    input_2_directory=job_description['input_2_directory'],
+                    input_2_directory=job_description.get('input_2_directory', 'test_output'),
+                    input_2_source=job_description.get('input_2_target', 'memory'),
                     output_filename=job_description['output_filename'],
-                    output_directory=job_description['output_directory']
+                    output_directory=job_description.get('output_directory', 'test_output'),
+                    output_target=job_description.get('output_target', 'memory')
                 )
 
             # Verify lightcurve
             elif job_description['task'] == 'verify_lc':
                 self.verify_lightcurve(
-                    job_name=job_description['job_name'],
+                    job_name=job_description.get('job_name', job_name),
                     lc_filename=job_description['lc_filename'],
-                    lc_directory=job_description['lc_directory'],
-                    lc_source=job_description['lc_source']
+                    lc_directory=job_description.get('lc_directory', 'test_output'),
+                    lc_source=job_description.get('lc_source', 'memory')
                 )
 
             # Unknown task

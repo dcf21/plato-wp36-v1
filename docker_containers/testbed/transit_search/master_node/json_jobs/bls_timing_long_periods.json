@@ -1,5 +1,5 @@
 {
-  "test_name": "bls_timing_long_periods",
+  "job_name": "bls_timing_long_periods",
   "iterations": [
     {
       "name": "lc_length",
@@ -14,32 +14,30 @@
     }
   ],
   "task_list": [
-    [
-      {
-        "task": "psls_synthesise",
-        "job_name": "bls_timing_long_periods",
-        "lc_directory": "test_output",
-        "lc_filename": "btlp_${index}.gz",
-        "lc_specs": {
-          "duration": "${lc_length}",
-          "planet_radius": 0.089114866,
-          "orbital_period": 365,
-          "semi_major_axis": 1,
-          "orbital_angle": 0
-        }
-      },
-      {
-        "task": "transit_search",
-        "job_name": "bls_timing_long_periods",
-        "lc_source": "archive",
-        "lc_duration": "${lc_length}",
-        "tda_name": "bls_reference",
-        "lc_directory": "test_output",
-        "lc_filename": "btlp_${index}.gz",
-        "search_settings": {
-          "period_min": 90
-        }
+    {
+      "task": "psls_synthesise",
+      "job_name": "bls_timing_long_periods",
+      "lc_directory": "test_output",
+      "lc_filename": "btlp_${index}.gz",
+      "lc_specs": {
+        "duration": "${lc_length}",
+        "planet_radius": 0.089114866,
+        "orbital_period": 365,
+        "semi_major_axis": 1,
+        "orbital_angle": 0
       }
-    ]
+    },
+    {
+      "task": "transit_search",
+      "job_name": "bls_timing_long_periods",
+      "lc_source": "archive",
+      "lc_duration": "${lc_length}",
+      "tda_name": "bls_reference",
+      "lc_directory": "test_output",
+      "lc_filename": "btlp_${index}.gz",
+      "search_settings": {
+        "period_min": 90
+      }
+    }
   ]
 }

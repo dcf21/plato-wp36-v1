@@ -1,10 +1,8 @@
 {
-  "test_name": "test_null_task",
+  "job_name": "test_null_task",
   "task_list": [
-    [
-      {
-        "task": "null"
-      }
-    ]
+    {
+      "task": "null"
+    }
   ]
 }

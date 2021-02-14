@@ -1,5 +1,5 @@
 {
-  "test_name": "tls_timing_full_span",
+  "job_name": "tls_timing_full_span",
   "iterations": [
     {
       "name": "lc_length",
@@ -22,30 +22,28 @@
     }
   ],
   "task_list": [
-    [
-      {
-        "task": "psls_synthesise",
-        "job_name": "tls_timing_full_span",
-        "lc_directory": "test_output",
-        "lc_filename": "ttfs_${index}.gz",
-        "lc_specs": {
-          "duration": "${lc_length}",
-          "planet_radius": 0.089114866,
-          "orbital_period": 365,
-          "semi_major_axis": 1,
-          "orbital_angle": 0
-        }
-      },
-      {
-        "task": "transit_search",
-        "job_name": "tls_timing_full_span",
-        "lc_source": "archive",
-        "lc_duration": "${lc_length}",
-        "tda_name": "tls",
-        "lc_directory": "test_output",
-        "lc_filename": "ttfs_${index}.gz",
-        "search_settings": {}
+    {
+      "task": "psls_synthesise",
+      "job_name": "tls_timing_full_span",
+      "lc_directory": "test_output",
+      "lc_filename": "ttfs_${index}.gz",
+      "lc_specs": {
+        "duration": "${lc_length}",
+        "planet_radius": 0.089114866,
+        "orbital_period": 365,
+        "semi_major_axis": 1,
+        "orbital_angle": 0
       }
-    ]
+    },
+    {
+      "task": "transit_search",
+      "job_name": "tls_timing_full_span",
+      "lc_source": "archive",
+      "lc_duration": "${lc_length}",
+      "tda_name": "tls",
+      "lc_directory": "test_output",
+      "lc_filename": "ttfs_${index}.gz",
+      "search_settings": {}
+    }
   ]
 }

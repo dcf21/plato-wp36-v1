@@ -104,7 +104,7 @@ class BatmanWrapper:
         if noise is not None:
             self.settings['noise'] = float(noise)
 
-    def synthesise(self, filename, gzipped=True, directory="batman_output"):
+    def synthesise(self):
         """
         Synthesise a lightcurve using Batman
         """
@@ -161,7 +161,5 @@ class BatmanWrapper:
             metadata=self.settings
         )
 
-        lc.to_file(directory=directory, filename=filename)
-
         # Finished
-        return
+        return lc

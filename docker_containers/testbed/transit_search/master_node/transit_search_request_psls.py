@@ -55,7 +55,7 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
         for tda_name in available_tdas:
             # Loop over lightcurves
             for lc_info in lightcurve_specs:
-                job_description = [
+                task_list = [
                     # 1) Synthesise LC using PSLS
                     {
                         'task': 'psls_synthesise',
@@ -91,7 +91,10 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                     }
                 ]
 
-                json_message = json.dumps(job_description)
+                json_message = json.dumps({
+                    'job_name': job_name,
+                    'task_list': task_list
+                })
 
                 logging.info("Sending message <{}>".format(json_message))
                 channel.basic_publish(exchange='', routing_key=queue, body=json_message)

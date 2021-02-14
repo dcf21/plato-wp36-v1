@@ -1,9 +1,9 @@
 #!../../../../datadir_local/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
-# results_list.py
+# errors_list.py
 
 """
-Produce the list of all the results in the MySQL database
+Produce the list of all the error messages in the MySQL database
 """
 
 import logging
@@ -21,7 +21,7 @@ def results_list():
     connector = connect_db.DatabaseConnector()
     db, c = connector.connect_db()
 
-    # Fetch list of results
+    # Fetch list of error messages
     c.execute("""
 SELECT
     lc_length, timestamp, results, result_filename,
@@ -32,18 +32,18 @@ INNER JOIN eas_tda_codes tc ON tc.code_id=x.code_id
 INNER JOIN eas_servers s ON s.server_id=x.server_id
 INNER JOIN eas_targets t1 ON t1.target_id=x.target_id
 INNER JOIN eas_tasks t2 ON t2.task_id=x.task_id
+WHERE j.name="error_message"
 ORDER BY x.timestamp;
 """)
     results_list = c.fetchall()
 
-    # Loop over results
+    # Loop over error messages
     for item in results_list:
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} |{:22s}|{:18s}|{:32s}|{:18s}|{:6.1f}|{}|{}\n".format(
+        output.write("{} | {:22s}\n{}\n\n".format(
             time_string,
-            item['job'], item['task'], item['host'],
-            item['target'], item['lc_length'],
-            item['results'], item['result_filename']
+            item['host'],
+            item['results']
         ))
 
 

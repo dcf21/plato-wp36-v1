@@ -12,15 +12,18 @@ https://stackoverflow.com/questions/14572020/handling-long-running-tasks-in-pika
 https://github.com/pika/pika/blob/0.12.0/examples/basic_consumer_threaded.py
 """
 
-import argparse
-import logging
-import pika
-import os
 import functools
 import json
+import logging
+import os
 import threading
+import time
+import traceback
 
+import argparse
+import pika
 from plato_wp36 import settings, task_runner
+from plato_wp36.results_logger import ResultsToRabbitMQ
 
 
 def acknowledge_message(channel, delivery_tag):
@@ -35,11 +38,24 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
     Perform a list of tasks sent to us via a RabbitMQ message
     """
     # Extract list of the jobs we are to do
-    task_list = json.loads(body)
+    job_descriptor = json.loads(body)
+
+    # Define results target
+    results_target = "rabbitmq"
 
     # Do each task in list
-    worker = task_runner.TaskRunner(results_target="rabbitmq")
-    worker.do_work(task_list=task_list)
+    worker = task_runner.TaskRunner(results_target=results_target)
+    try:
+        worker.do_work(job_name=job_descriptor['job_name'],
+                       task_list=job_descriptor['task_list'])
+    except:
+        error_message = traceback.format_exc()
+        result_log = ResultsToRabbitMQ(results_target=results_target)
+
+        # File result to message queue
+        result_log.record_result(job_name=job_descriptor['job_name'],
+                                 task_name='error', timestamp=time.time(),
+                                 result=error_message)
 
     # Acknowledge the message we've just processed
     if connection is not None:

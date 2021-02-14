@@ -1,0 +1,8 @@
+{
+  "job_name": "test_error",
+  "task_list": [
+    {
+      "task": "error"
+    }
+  ]
+}

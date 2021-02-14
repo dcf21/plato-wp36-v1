@@ -111,7 +111,7 @@ class PslsWrapper:
         if nsr is not None:
             self.settings['nsr'] = nsr
 
-    def synthesise(self, filename, gzipped=True, directory="psls_output"):
+    def synthesise(self):
         """
         Synthesise a lightcurve using PSLS
         """
@@ -184,14 +184,6 @@ class PslsWrapper:
             metadata=self.settings
         )
 
-        lc.to_file(directory=directory, filename=filename)
-
-        # Target path for this lightcurve
-        target_path = os.path.join(settings.settings['lcPath'], directory, filename)
-
-        # Copy PSLS output into lightcurve archive
-        os.system("mv {}.txt '{}.psls_out'".format(psls_output, target_path))
-
         # Make sure there aren't any old data files lying around
         os.system("rm -Rf *.modes *.yaml *.dat")
 
@@ -199,4 +191,4 @@ class PslsWrapper:
         os.chdir(cwd)
 
         # Finished
-        return
+        return lc

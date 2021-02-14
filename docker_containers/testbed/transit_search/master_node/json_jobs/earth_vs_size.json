@@ -1,5 +1,5 @@
 {
-  "test_name": "earth_vs_size",
+  "job_name": "earth_vs_size",
   "iterations": [
     {
       "name": "size",
@@ -11,68 +11,66 @@
     }
   ],
   "task_list": [
-    [
-      {
-        "task": "psls_synthesise",
-        "job_name": "earth_vs_size_psls_${index}",
-        "lc_directory": "test_output",
-        "lc_filename": "evsize1_${index}.gz",
-        "lc_specs": {
-          "duration": 730,
-          "planet_radius": "${size}",
-          "orbital_period": 240,
-          "semi_major_axis": 1,
-          "orbital_angle": 0
-        }
-      },
-      {
-        "task": "verify_lc",
-        "job_name": "earth_vs_size_psls_${index}",
-        "lc_source": "archive",
-        "lc_directory": "test_output",
-        "lc_filename": "evsize1_${index}.gz"
-      },
-      {
-        "task": "transit_search",
-        "job_name": "earth_vs_size_psls_${index}",
-        "lc_source": "archive",
-        "lc_duration": 730,
-        "tda_name": "tls",
-        "lc_directory": "test_output",
-        "lc_filename": "evsize1_${index}.gz",
-        "search_settings": {}
-      },
-      {
-        "task": "batman_synthesise",
-        "job_name": "earth_vs_size_batman_${index}",
-        "lc_directory": "test_output",
-        "lc_filename": "evsize2_${index}.gz",
-        "lc_specs": {
-          "duration": 730,
-          "planet_radius": "${size}",
-          "orbital_period": 240,
-          "semi_major_axis": 1,
-          "orbital_angle": 0,
-          "noise": 0.000315
-        }
-      },
-      {
-        "task": "verify_lc",
-        "job_name": "earth_vs_size_batman_${index}",
-        "lc_source": "archive",
-        "lc_directory": "test_output",
-        "lc_filename": "evsize2_${index}.gz"
-      },
-      {
-        "task": "transit_search",
-        "job_name": "earth_vs_size_batman_${index}",
-        "lc_source": "archive",
-        "lc_duration": 730,
-        "tda_name": "tls",
-        "lc_directory": "test_output",
-        "lc_filename": "evsize2_${index}.gz",
-        "search_settings": {}
+    {
+      "task": "psls_synthesise",
+      "job_name": "earth_vs_size_psls_${index}",
+      "lc_directory": "test_output",
+      "lc_filename": "evsize1_${index}.gz",
+      "lc_specs": {
+        "duration": 730,
+        "planet_radius": "${size}",
+        "orbital_period": 240,
+        "semi_major_axis": 1,
+        "orbital_angle": 0
       }
-    ]
+    },
+    {
+      "task": "verify_lc",
+      "job_name": "earth_vs_size_psls_${index}",
+      "lc_source": "archive",
+      "lc_directory": "test_output",
+      "lc_filename": "evsize1_${index}.gz"
+    },
+    {
+      "task": "transit_search",
+      "job_name": "earth_vs_size_psls_${index}",
+      "lc_source": "archive",
+      "lc_duration": 730,
+      "tda_name": "tls",
+      "lc_directory": "test_output",
+      "lc_filename": "evsize1_${index}.gz",
+      "search_settings": {}
+    },
+    {
+      "task": "batman_synthesise",
+      "job_name": "earth_vs_size_batman_${index}",
+      "lc_directory": "test_output",
+      "lc_filename": "evsize2_${index}.gz",
+      "lc_specs": {
+        "duration": 730,
+        "planet_radius": "${size}",
+        "orbital_period": 240,
+        "semi_major_axis": 1,
+        "orbital_angle": 0,
+        "noise": 0.000315
+      }
+    },
+    {
+      "task": "verify_lc",
+      "job_name": "earth_vs_size_batman_${index}",
+      "lc_source": "archive",
+      "lc_directory": "test_output",
+      "lc_filename": "evsize2_${index}.gz"
+    },
+    {
+      "task": "transit_search",
+      "job_name": "earth_vs_size_batman_${index}",
+      "lc_source": "archive",
+      "lc_duration": 730,
+      "tda_name": "tls",
+      "lc_directory": "test_output",
+      "lc_filename": "evsize2_${index}.gz",
+      "search_settings": {}
+    }
   ]
 }

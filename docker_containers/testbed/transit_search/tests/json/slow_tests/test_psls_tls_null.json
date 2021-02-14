@@ -1,35 +1,33 @@
 {
-  "test_name": "test_psls_tls_null",
+  "job_name": "test_psls_tls_null",
   "task_list": [
-    [
-      {
-        "task": "psls_synthesise",
-        "lc_directory": "test_output",
-        "lc_filename": "test_psls_tls_null.gz",
-        "lc_specs": {
-          "duration": 55,
-          "planet_radius": 1,
-          "orbital_period": 10,
-          "semi_major_axis": 0.1,
-          "orbital_angle": 0,
-          "nsr": 1000
-        }
-      },
-      {
-        "task": "verify_lc",
-        "lc_source": "archive",
-        "lc_directory": "test_output",
-        "lc_filename": "test_psls_tls_null.gz"
-      },
-      {
-        "task": "transit_search",
-        "lc_source": "archive",
-        "lc_duration": 55,
-        "tda_name": "tls",
-        "lc_directory": "test_output",
-        "lc_filename": "test_psls_tls_null.gz",
-        "search_settings": {}
+    {
+      "task": "psls_synthesise",
+      "lc_directory": "test_output",
+      "lc_filename": "test_psls_tls_null.gz",
+      "lc_specs": {
+        "duration": 55,
+        "planet_radius": 1,
+        "orbital_period": 10,
+        "semi_major_axis": 0.1,
+        "orbital_angle": 0,
+        "nsr": 1000
       }
-    ]
+    },
+    {
+      "task": "verify_lc",
+      "lc_source": "archive",
+      "lc_directory": "test_output",
+      "lc_filename": "test_psls_tls_null.gz"
+    },
+    {
+      "task": "transit_search",
+      "lc_source": "archive",
+      "lc_duration": 55,
+      "tda_name": "tls",
+      "lc_directory": "test_output",
+      "lc_filename": "test_psls_tls_null.gz",
+      "search_settings": {}
+    }
   ]
 }
