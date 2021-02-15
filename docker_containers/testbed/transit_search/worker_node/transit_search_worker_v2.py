@@ -37,26 +37,31 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
     # Extract list of the jobs we are to do
     job_descriptor = json.loads(body)
 
-    # Check that job description is a dictionary
-    assert isinstance(job_descriptor, dict)
-
     # Define results target
     results_target = "rabbitmq"
 
-    # Do each task in list
+    # Instantiate worker
     worker = task_runner.TaskRunner(results_target=results_target)
     try:
+        # Check that job description is a dictionary
+        if not isinstance(job_descriptor, dict):
+            bad_message = job_descriptor
+            job_descriptor = {'job_name': 'untitled'}
+            raise ValueError("Bad message was not a dictionary: <{}>".format(bad_message))
+
+        # Do requested task
         worker.do_work(job_name=job_descriptor.get('job_name', 'untitled'),
                        job_parameters=job_descriptor.get('job_parameters', {}),
                        clean_up_products=job_descriptor.get('clean_up', True),
                        task_list=job_descriptor['task_list'],
                        )
-    except:
+    except Exception:
         error_message = traceback.format_exc()
         result_log = ResultsToRabbitMQ(results_target=results_target)
 
         # File result to message queue
         result_log.record_result(job_name=job_descriptor['job_name'],
+                                 parameters=job_descriptor.get('job_parameters', {}),
                                  task_name='error', timestamp=time.time(),
                                  result=error_message)
 

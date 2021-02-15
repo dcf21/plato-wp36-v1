@@ -37,7 +37,8 @@ class ResultsToRabbitMQ:
         self.queue = queue
         self.results_target = results_target
 
-    def record_result(self, job_name, tda_code, target_name, task_name, parameters, timestamp, result, result_extended):
+    def record_result(self, job_name, task_name, parameters, timestamp, result,
+                      tda_code="", target_name="", result_extended=None):
         """
         Create a new entry in the message queue for transit detection results.
 

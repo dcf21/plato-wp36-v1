@@ -8,7 +8,7 @@ Observation:
 # Instrument parameters
 Instrument:
   Sampling : {sampling_cadence:f} # Sampling cadence of each camera [s]
-    IntegrationTime: {integration_time:f} # Integration time [s]
+  IntegrationTime: {integration_time:f} # Integration time [s]
   NGroup : 4 # Number of camera groups (1 -> 4)
   NCamera : 6 # Number of cameras per group (1 -> 6)
   TimeShift : 6.25 # Time shift between camera groups [s]
