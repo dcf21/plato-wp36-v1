@@ -1,11 +1,14 @@
 {
-  "job_name": "test_batman_synthesise_earth",
+  "job_name": "test730_batman_synthesise_earth",
+  "clean_up": 0,
   "task_list": [
     {
       "task": "batman_synthesise",
-      "lc_directory": "test_output",
-      "lc_filename": "test_earth_batman.gz",
-      "lc_specs": {
+      "target": {
+        "filename": "test730_earth_batman.gz",
+        "source": "archive"
+      },
+      "specs": {
         "duration": 730,
         "planet_radius": 0.089114866,
         "orbital_period": 365,
@@ -14,10 +17,11 @@
       }
     },
     {
-      "task": "verify_lc",
-      "lc_source": "archive",
-      "lc_directory": "test_output",
-      "lc_filename": "test_earth_batman.gz"
+      "task": "verify",
+      "source": {
+        "filename": "test730_earth_batman.gz",
+        "source": "archive"
+      }
     }
   ]
 }

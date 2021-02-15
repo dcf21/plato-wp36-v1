@@ -21,7 +21,7 @@ class TaskTimer:
     and also CPU time.
     """
 
-    def __init__(self, job_name, tda_code="", target_name="", task_name="null", lc_length=0,
+    def __init__(self, job_name, tda_code="", target_name="", task_name="null", parameters={},
                  time_logger=RunTimesToRabbitMQ()):
         """
         Create a new timer.
@@ -42,10 +42,10 @@ class TaskTimer:
             The name of the processing step being performed on the lightcurve.
         :type task_name:
             str
-        :param lc_length:
-            The length of the lightcurve (seconds)
-        :type lc_length:
-            float
+        :param parameters:
+            A dictionary of parameter values associated with this task.
+        :type parameters:
+            dict
         :param time_logger:
             The handle to the message queue where this time measurement is to be recorded.
         """
@@ -58,7 +58,7 @@ class TaskTimer:
         self.tda_code = tda_code
         self.target_name = target_name
         self.task_name = task_name
-        self.lc_length = lc_length
+        self.parameters = parameters
         self.time_logger = time_logger
 
     @staticmethod
@@ -113,7 +113,7 @@ class TaskTimer:
             tda_code=self.tda_code,
             target_name=self.target_name,
             task_name=self.task_name,
-            lc_length=self.lc_length,
+            parameters=self.parameters,
             timestamp=self.start_time['wall_clock'],
             run_time_wall_clock=run_times['wall_clock'],
             run_time_cpu=run_times['cpu']

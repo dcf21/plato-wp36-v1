@@ -16,10 +16,10 @@
   "task_list": [
     {
       "task": "psls_synthesise",
-      "job_name": "tls_timing_long_periods",
-      "lc_directory": "test_output",
-      "lc_filename": "ttlp_${index}.gz",
-      "lc_specs": {
+      "target": {
+        "filename": "ttlp_${index}.gz"
+      },
+      "specs": {
         "duration": "${lc_length}",
         "planet_radius": 0.089114866,
         "orbital_period": 365,
@@ -29,12 +29,12 @@
     },
     {
       "task": "transit_search",
-      "job_name": "tls_timing_long_periods",
+      "source": {
+        "filename": "ttlp_${index}.gz"
+      },
       "lc_source": "archive",
       "lc_duration": "${lc_length}",
       "tda_name": "tls",
-      "lc_directory": "test_output",
-      "lc_filename": "ttlp_${index}.gz",
       "search_settings": {
         "period_min": 90
       }

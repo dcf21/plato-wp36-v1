@@ -72,17 +72,17 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
         # Loop over TDAs
         for tda_name in available_tdas:
             # Loop over lightcurves
-            for lc_filename in lightcurve_list:
+            for lightcurve_filename in lightcurve_list:
                 task_list = [
                     {
                         'task': 'transit_search',
-                        'job_name': job_name,
-                        'lc_source': 'lcsg',
+                        'source': {
+                            'source': 'lcsg',
+                            'directory': lightcurves_directory,
+                            'filename': lightcurve_filename
+                        },
                         'lc_duration': lc_duration,
-                        'tda_name': tda_name,
-                        'lc_directory': lightcurves_directory,
-                        'lc_filename': lc_filename,
-                        "search_settings": {}
+                        'tda_name': tda_name
                     }
                 ]
 

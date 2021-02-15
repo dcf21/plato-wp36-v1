@@ -1,11 +1,14 @@
 {
-  "job_name": "test_batman_tls",
+  "job_name": "test015_batman_tls",
+  "clean_up": 0,
   "task_list": [
     {
       "task": "batman_synthesise",
-      "lc_directory": "test_output",
-      "lc_filename": "test_batman_tls.gz",
-      "lc_specs": {
+      "target": {
+        "filename": "test015_batman_tls.gz",
+        "source": "archive"
+      },
+      "specs": {
         "duration": 15,
         "planet_radius": 0.1,
         "orbital_period": 1,
@@ -15,19 +18,20 @@
       }
     },
     {
-      "task": "verify_lc",
-      "lc_source": "archive",
-      "lc_directory": "test_output",
-      "lc_filename": "test_batman_tls.gz"
+      "task": "verify",
+      "source": {
+        "filename": "test015_batman_tls.gz",
+        "source": "archive"
+      }
     },
     {
       "task": "transit_search",
-      "lc_source": "archive",
+      "source": {
+        "filename": "test015_batman_tls.gz",
+        "source": "archive"
+      },
       "lc_duration": 15,
-      "tda_name": "tls",
-      "lc_directory": "test_output",
-      "lc_filename": "test_batman_tls.gz",
-      "search_settings": {}
+      "tda_name": "tls"
     }
   ]
 }

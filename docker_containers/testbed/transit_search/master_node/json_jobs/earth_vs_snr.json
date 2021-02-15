@@ -13,10 +13,10 @@
   "task_list": [
     {
       "task": "psls_synthesise",
-      "job_name": "earth_vs_snr_${index}",
-      "lc_directory": "test_output",
-      "lc_filename": "evs_${index}.gz",
-      "lc_specs": {
+      "target": {
+        "filename": "evs_${index}.gz"
+      },
+      "specs": {
         "duration": 730,
         "planet_radius": 0.089114866,
         "orbital_period": 240,
@@ -26,21 +26,18 @@
       }
     },
     {
-      "task": "verify_lc",
-      "job_name": "earth_vs_snr_${index}",
-      "lc_source": "archive",
-      "lc_directory": "test_output",
-      "lc_filename": "evs_${index}.gz"
+      "task": "verify",
+      "source": {
+        "filename": "evs_${index}.gz"
+      }
     },
     {
       "task": "transit_search",
-      "job_name": "earth_vs_snr_${index}",
-      "lc_source": "archive",
+      "source": {
+        "filename": "evs_${index}.gz"
+      },
       "lc_duration": 730,
-      "tda_name": "tls",
-      "lc_directory": "test_output",
-      "lc_filename": "evs_${index}.gz",
-      "search_settings": {}
+      "tda_name": "tls"
     }
   ]
 }

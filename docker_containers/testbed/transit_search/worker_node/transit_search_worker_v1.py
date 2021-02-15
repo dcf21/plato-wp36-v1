@@ -46,8 +46,11 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
     # Do each task in list
     worker = task_runner.TaskRunner(results_target=results_target)
     try:
-        worker.do_work(job_name=job_descriptor['job_name'],
-                       task_list=job_descriptor['task_list'])
+        worker.do_work(job_name=job_descriptor.get('job_name', 'untitled'),
+                       job_parameters=job_descriptor.get('job_parameters', {}),
+                       clean_up_products=job_descriptor.get('clean_up', True),
+                       task_list=job_descriptor['task_list'],
+                       )
     except:
         error_message = traceback.format_exc()
         result_log = ResultsToRabbitMQ(results_target=results_target)

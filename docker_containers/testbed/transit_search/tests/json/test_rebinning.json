@@ -1,0 +1,46 @@
+{
+  "job_name": "test_rebinning",
+  "clean_up": 0,
+  "task_list": [
+    {
+      "task": "psls_synthesise",
+      "target": {
+        "filename": "test_rebinning_1.gz",
+        "source": "archive"
+      },
+      "specs": {
+        "duration": 730,
+        "planet_radius": 0.089114866,
+        "orbital_period": 365,
+        "semi_major_axis": 1,
+        "orbital_angle": 0
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "test_rebinning_1.gz",
+        "source": "archive"
+      }
+    },
+    {
+      "task": "binning",
+      "cadence": 300,
+      "source": {
+        "filename": "test_rebinning_1.gz",
+        "source": "archive"
+      },
+      "target": {
+        "filename": "test_rebinning_2.gz",
+        "source": "archive"
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "test_rebinning_2.gz",
+        "source": "archive"
+      }
+    }
+  ]
+}

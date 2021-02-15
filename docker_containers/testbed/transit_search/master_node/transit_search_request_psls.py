@@ -30,7 +30,7 @@ available_tdas = ['tls']
 # Directory for input lightcurves, within the <datadir_input> directory
 lightcurves_directory = "psls_output"
 
-# Create list of all LCSG lightcurves
+# Create list of all lightcurves we are to generate
 lightcurve_specs = [
     {
         'filename': 'lc0001'
@@ -55,14 +55,19 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
         for tda_name in available_tdas:
             # Loop over lightcurves
             for lc_info in lightcurve_specs:
+                storage = {
+                    'source': 'archive',
+                    'directory': lightcurves_directory,
+                    'filename': lc_info['filename']
+
+                }
+
                 task_list = [
                     # 1) Synthesise LC using PSLS
                     {
                         'task': 'psls_synthesise',
-                        'job_name': job_name,
-                        'lc_directory': lightcurves_directory,
-                        'lc_filename': lc_info['filename'],
-                        'lc_specs': {
+                        'target': storage,
+                        'specs': {
                             'duration': lc_duration,  # days
                             'planet_radius': 0.1,  # Jupiter radii
                             'orbital_period': 1,  # days
@@ -72,22 +77,15 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
                     },
                     # 2) Verify lightcurve
                     {
-                        'task': 'verify_lc',
-                        'job_name': job_name,
-                        'lc_source': 'archive',
-                        'lc_directory': lightcurves_directory,
-                        'lc_filename': lc_info['filename']
+                        'task': 'verify',
+                        'source': storage
                     },
                     # 3) Perform transit search on LC
                     {
                         'task': 'transit_search',
-                        'job_name': job_name,
-                        'lc_source': 'archive',
+                        'source': storage,
                         'lc_duration': lc_duration,
-                        'tda_name': tda_name,
-                        'lc_directory': lightcurves_directory,
-                        'lc_filename': lc_info['filename'],
-                        "search_settings": {}
+                        'tda_name': tda_name
                     }
                 ]
 

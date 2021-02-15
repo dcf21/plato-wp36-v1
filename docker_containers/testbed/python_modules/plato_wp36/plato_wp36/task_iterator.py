@@ -50,6 +50,7 @@ class TaskIterator:
 
         # Extract job information from input data structure
         job_name = job_descriptor.get('job_name', 'untitled')
+        clean_up = job_descriptor.get('clean_up', True)
         iterations = job_descriptor.get('iterations', null_iteration)
         task_list = job_descriptor.get('task_list', [])
 
@@ -71,18 +72,27 @@ class TaskIterator:
         # Create list of all the task descriptions in this grid of tasks
         task_descriptions = []
         for counter, grid_point in enumerate(parameter_combinations):
+            # Convert task list template into a JSON string
             item = json.dumps(task_list)
             template = Template(item)
+
+            # Compile dictionary of iteration values
             format_tokens = {
                 "index": "{:06d}".format(counter)
             }
             for index, setting in enumerate(iterations):
                 format_tokens[setting['name']] = grid_point[index]
 
+            # Substitute the iteration values into the task list
+            task_list = json.loads(template.substitute(**format_tokens))
+
+            # Create job for this particular permutation of iterator values
             task_descriptions.append(
                 {
                     'job_name': job_name,
-                    'task_list': json.loads(template.substitute(**format_tokens))
+                    'iteration_values': format_tokens,
+                    'clean_up': clean_up,
+                    'task_list': task_list
                 }
             )
 
@@ -145,4 +155,7 @@ class TaskIterator:
         # Loop over tasks
         worker = task_runner.TaskRunner(results_target="logging")
         for message in task_descriptions:
-            worker.do_work(job_name=message['job_name'], task_list=message['task_list'])
+            worker.do_work(job_name=message.get('job_name', job_name),
+                           job_parameters=job_descriptor.get('job_parameters', {}),
+                           clean_up_products=job_descriptor.get('clean_up', True),
+                           task_list=message['task_list'])

@@ -34,7 +34,7 @@ class RunTimesToRabbitMQ:
         self.queue = queue
         self.results_target = results_target
 
-    def record_timing(self, job_name, tda_code, target_name, task_name, lc_length, timestamp,
+    def record_timing(self, job_name, tda_code, target_name, task_name, parameters, timestamp,
                       run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the message queue for a new code performance measurement.
@@ -55,10 +55,10 @@ class RunTimesToRabbitMQ:
             The name of the processing step being performed on the lightcurve.
         :type task_name:
             str
-        :param lc_length:
-            The length of the lightcurve (seconds)
-        :type lc_length:
-            float
+        :param parameters:
+            A dictionary of parameter values associated with this task.
+        :type parameters:
+            dict
         :param timestamp:
             The unix time stamp when this test was performed.
         :type timestamp:
@@ -81,7 +81,7 @@ class RunTimesToRabbitMQ:
             'tda_code': tda_code,
             'target_name': target_name,
             'task_name': task_name,
-            'lc_length': lc_length,
+            'parameters': parameters,
             'timestamp': timestamp,
             'run_time_wall_clock': run_time_wall_clock,
             'run_time_cpu': run_time_cpu
@@ -155,7 +155,7 @@ class RunTimesToMySQL:
                                tda_code=message['tda_code'],
                                target_name=message['target_name'],
                                task_name=message['task_name'],
-                               lc_length=message['lc_length'],
+                               parameters=message['parameters'],
                                timestamp=message['timestamp'],
                                run_time_wall_clock=message['run_time_wall_clock'],
                                run_time_cpu=message['run_time_cpu']
@@ -165,7 +165,7 @@ class RunTimesToMySQL:
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_timing(self, job_name, tda_code, target_name, task_name, lc_length, timestamp,
+    def record_timing(self, job_name, tda_code, target_name, task_name, parameters, timestamp,
                       run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the database for a new code performance measurement.
@@ -186,10 +186,10 @@ class RunTimesToMySQL:
             The name of the processing step being performed on the lightcurve.
         :type task_name:
             str
-        :param lc_length:
-            The length of the lightcurve (seconds)
-        :type lc_length:
-            float
+        :param parameters:
+            A dictionary of parameter values associated with this task.
+        :type parameters:
+            dict
         :param timestamp:
             The unix time stamp when this test was performed.
         :type timestamp:
@@ -211,7 +211,7 @@ class RunTimesToMySQL:
             tda_code=tda_code,
             target_name=target_name,
             task_name=task_name,
-            lc_length=lc_length,
+            parameters=parameters,
             timestamp=timestamp,
             run_time_wall_clock=run_time_wall_clock,
             run_time_cpu=run_time_cpu

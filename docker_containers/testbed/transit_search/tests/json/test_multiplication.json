@@ -1,20 +1,25 @@
 {
-  "job_name": "test_multiplication",
+  "job_name": "test015_multiplication",
+  "clean_up": 0,
   "task_list": [
     {
       "task": "psls_synthesise",
-      "lc_directory": "test_output",
-      "lc_filename": "test_multiplication_1.gz",
-      "lc_specs": {
+      "target": {
+        "filename": "test015_multiplication_1.gz",
+        "source": "archive"
+      },
+      "specs": {
         "duration": 15,
         "enable_transit": 0
       }
     },
     {
       "task": "batman_synthesise",
-      "lc_directory": "test_output",
-      "lc_filename": "test_multiplication_2.gz",
-      "lc_specs": {
+      "target": {
+        "filename": "test015_multiplication_2.gz",
+        "source": "archive"
+      },
+      "specs": {
         "duration": 15,
         "planet_radius": 0.1,
         "orbital_period": 1,
@@ -24,28 +29,34 @@
     },
     {
       "task": "multiplication",
-      "lc_source": "archive",
-      "input_1_directory": "test_output",
-      "input_1_filename": "test_multiplication_1.gz",
-      "input_2_directory": "test_output",
-      "input_2_filename": "test_multiplication_2.gz",
-      "output_directory": "test_output",
-      "output_filename": "test_multiplication_output.gz"
+      "input_1": {
+        "filename": "test015_multiplication_1.gz",
+        "source": "archive"
+      },
+      "input_2": {
+        "filename": "test015_multiplication_2.gz",
+        "source": "archive"
+      },
+      "output": {
+        "filename": "test015_multiplication_output.gz",
+        "source": "archive"
+      }
     },
     {
-      "task": "verify_lc",
-      "lc_source": "archive",
-      "lc_directory": "test_output",
-      "lc_filename": "test_multiplication_output.gz"
+      "task": "verify",
+      "source": {
+        "filename": "test015_multiplication_output.gz",
+        "source": "archive"
+      }
     },
     {
       "task": "transit_search",
-      "lc_source": "archive",
+      "source": {
+        "filename": "test015_multiplication_output.gz",
+        "source": "archive"
+      },
       "lc_duration": 15,
-      "tda_name": "tls",
-      "lc_directory": "test_output",
-      "lc_filename": "test_multiplication_output.gz",
-      "search_settings": {}
+      "tda_name": "tls"
     }
   ]
 }

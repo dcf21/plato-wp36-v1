@@ -37,7 +37,7 @@ class ResultsToRabbitMQ:
         self.queue = queue
         self.results_target = results_target
 
-    def record_result(self, job_name, tda_code, target_name, task_name, lc_length, timestamp, result, result_extended):
+    def record_result(self, job_name, tda_code, target_name, task_name, parameters, timestamp, result, result_extended):
         """
         Create a new entry in the message queue for transit detection results.
 
@@ -57,10 +57,10 @@ class ResultsToRabbitMQ:
             The name of the processing step being performed on the lightcurve.
         :type task_name:
             str
-        :param lc_length:
-            The length of the lightcurve (seconds)
-        :type lc_length:
-            float
+        :param parameters:
+            A dictionary of parameter values associated with this task.
+        :type parameters:
+            dict
         :param timestamp:
             The unix time stamp when this test was performed.
         :type timestamp:
@@ -84,11 +84,10 @@ class ResultsToRabbitMQ:
             os.system("mkdir -p '{}'".format(result_extended_directory))
 
             # Create a filename for the extended results of this test
-            json_filename = "{}_{}_{}_{}_{:08.1f}.json.gz".format(job_name,
-                                                                  task_name,
-                                                               tda_code,
-                                                               os.path.split(target_name)[1],
-                                                               lc_length / 86400)
+            json_filename = "{}_{}_{}_{}.json.gz".format(job_name,
+                                                         task_name,
+                                                         tda_code,
+                                                         os.path.split(target_name)[1])
             json_out_path = os.path.join(result_extended_directory, json_filename)
 
             # Save extended results file
@@ -101,7 +100,7 @@ class ResultsToRabbitMQ:
             'tda_code': tda_code,
             'target_name': target_name,
             'task_name': task_name,
-            'lc_length': lc_length,
+            'parameters': parameters,
             'timestamp': timestamp,
             'result': result_json,
             'result_filename': json_filename
@@ -175,7 +174,7 @@ class ResultsToMySQL:
                                tda_code=message['tda_code'],
                                target_name=message['target_name'],
                                task_name=message['task_name'],
-                               lc_length=message['lc_length'],
+                               parameters=message['parameters'],
                                timestamp=message['timestamp'],
                                result=message['result'],
                                result_filename=message['result_filename']
@@ -185,7 +184,7 @@ class ResultsToMySQL:
         channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()
 
-    def record_result(self, job_name, tda_code, target_name, task_name, lc_length, timestamp, result, result_filename):
+    def record_result(self, job_name, tda_code, target_name, task_name, parameters, timestamp, result, result_filename):
         """
         Create a new entry in the database for a transit detection result.
 
@@ -205,10 +204,10 @@ class ResultsToMySQL:
             The name of the processing step being performed on the lightcurve.
         :type task_name:
             str
-        :param lc_length:
-            The length of the lightcurve (seconds)
-        :type lc_length:
-            float
+        :param parameters:
+            A dictionary of parameter values associated with this task.
+        :type parameters:
+            dict
         :param timestamp:
             The unix time stamp when this test was performed.
         :type timestamp:
@@ -230,7 +229,7 @@ class ResultsToMySQL:
             tda_code=tda_code,
             target_name=target_name,
             task_name=task_name,
-            lc_length=lc_length,
+            parameters=parameters,
             timestamp=timestamp,
             result=result,
             result_filename=result_filename

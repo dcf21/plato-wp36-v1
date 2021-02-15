@@ -1,11 +1,14 @@
 {
-  "job_name": "test_psls_tls_null",
+  "job_name": "test015_psls_tls_null",
+  "clean_up": 0,
   "task_list": [
     {
       "task": "psls_synthesise",
-      "lc_directory": "test_output",
-      "lc_filename": "test_psls_tls_null.gz",
-      "lc_specs": {
+      "target": {
+        "filename": "test015_psls_tls_null.gz",
+        "source": "archive"
+      },
+      "specs": {
         "enable_transit": 0,
         "duration": 15,
         "planet_radius": 0.1,
@@ -15,19 +18,20 @@
       }
     },
     {
-      "task": "verify_lc",
-      "lc_source": "archive",
-      "lc_directory": "test_output",
-      "lc_filename": "test_psls_tls_null.gz"
+      "task": "verify",
+      "source": {
+        "filename": "test015_psls_tls_null.gz",
+        "source": "archive"
+      }
     },
     {
       "task": "transit_search",
-      "lc_source": "archive",
+      "source": {
+        "filename": "test015_psls_tls_null.gz",
+        "source": "archive"
+      },
       "lc_duration": 15,
-      "tda_name": "tls",
-      "lc_directory": "test_output",
-      "lc_filename": "test_psls_tls_null.gz",
-      "search_settings": {}
+      "tda_name": "tls"
     }
   ]
 }

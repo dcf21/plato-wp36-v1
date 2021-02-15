@@ -70,7 +70,7 @@ CREATE TABLE eas_run_times (
     server_id INTEGER NOT NULL,
     target_id INTEGER NOT NULL,
     task_id INTEGER NOT NULL,
-    lc_length REAL NOT NULL,
+    parameters TEXT,
     timestamp REAL NOT NULL,
     run_time_wall_clock REAL,
     run_time_cpu REAL,
@@ -89,7 +89,7 @@ CREATE TABLE eas_results (
     server_id INTEGER NOT NULL,
     target_id INTEGER NOT NULL,
     task_id INTEGER NOT NULL,
-    lc_length REAL NOT NULL,
+    parameters TEXT,
     timestamp REAL NOT NULL,
     results LONGTEXT,
     result_filename VARCHAR(1024),
@@ -329,7 +329,7 @@ CREATE TABLE eas_results (
         db.close()
         return code_id
 
-    def record_timing(self, job_name, tda_code, target_name, task_name, lc_length, timestamp,
+    def record_timing(self, job_name, tda_code, target_name, task_name, parameters, timestamp,
                       run_time_wall_clock, run_time_cpu):
         """
         Create a new entry in the database for a new code performance measurement.
@@ -350,10 +350,10 @@ CREATE TABLE eas_results (
             The name of the processing step being performed on the lightcurve.
         :type task_name:
             str
-        :param lc_length:
-            The length of the lightcurve (seconds)
-        :type lc_length:
-            float
+        :param parameters:
+            A dictionary of parameter values associated with this task.
+        :type parameters:
+            dict
         :param timestamp:
             The unix time stamp when this test was performed.
         :type timestamp:
@@ -391,14 +391,14 @@ CREATE TABLE eas_results (
 
         c.execute("""
 INSERT INTO eas_run_times
-(job_id, code_id, server_id, target_id, task_id, lc_length, timestamp, run_time_wall_clock, run_time_cpu)
+(job_id, code_id, server_id, target_id, task_id, parameters, timestamp, run_time_wall_clock, run_time_cpu)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """, (job_id, code_id, server_id, target_id, task_id, lc_length, timestamp,
+        """, (job_id, code_id, server_id, target_id, task_id, json.dumps(parameters), timestamp,
               run_time_wall_clock, run_time_cpu))
         db.commit()
         db.close()
 
-    def record_result(self, job_name, tda_code, target_name, task_name, lc_length, timestamp, result, result_filename):
+    def record_result(self, job_name, tda_code, target_name, task_name, parameters, timestamp, result, result_filename):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -418,10 +418,10 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
             The name of the processing step being performed on the lightcurve.
         :type task_name:
             str
-        :param lc_length:
-            The length of the lightcurve (seconds)
-        :type lc_length:
-            float
+        :param parameters:
+            A dictionary of parameter values associated with this task.
+        :type parameters:
+            dict
         :param timestamp:
             The unix time stamp when this test was performed.
         :type timestamp:
@@ -474,9 +474,9 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
         # Commit results to MySQL
         c.execute("""
 INSERT INTO eas_results
-(job_id, code_id, server_id, target_id, task_id, lc_length, timestamp, result_filename)
+(job_id, code_id, server_id, target_id, task_id, parameters, timestamp, result_filename)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
-""", (job_id, code_id, server_id, target_id, task_id, lc_length, timestamp, result_filename))
+""", (job_id, code_id, server_id, target_id, task_id, json.dumps(parameters), timestamp, result_filename))
 
         # Fetch UID of the record we just created
         uid = db.insert_id()
