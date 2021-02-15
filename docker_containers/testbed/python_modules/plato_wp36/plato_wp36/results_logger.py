@@ -76,6 +76,7 @@ class ResultsToRabbitMQ:
 
         # Convert results data structure to JSON
         result_json = json.dumps(result)
+        json_filename = ""
 
         # Store extended results of this task as gzipped JSON output (if it's too big to fit in the database)
         if result_extended is not None:

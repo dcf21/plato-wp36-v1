@@ -40,7 +40,7 @@ ORDER BY x.timestamp;
     # Loop over error messages
     for item in results_list:
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} | {:22s} | {}\n{}\n\n".format(
+        output.write("{} | {:36s} | {}\n{}\n\n".format(
             time_string,
             item['host'], item['parameters'],
             item['results']

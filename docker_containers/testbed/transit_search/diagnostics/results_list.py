@@ -40,10 +40,9 @@ ORDER BY x.timestamp;
     # Loop over results
     for item in results_list:
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} |{:22s}|{:18s}|{:32s}|{:18s}|{}|{}|{}\n".format(
+        output.write("{} |{:36s}|{:18s}|{:32s}|{:36s}|{}|{}|{}\n".format(
             time_string,
-            item['job'], item['task'], item['host'],
-            item['target'],
+            item['job'], item['task'], item['host'], item['target'],
             item['results'], item['result_filename'],
             item['parameters']
         ))
