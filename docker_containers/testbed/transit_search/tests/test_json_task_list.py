@@ -17,8 +17,15 @@ import json
 
 # Read command-line arguments
 parser = argparse.ArgumentParser(description=__doc__)
+
+# Filename for JSON descriptor of tests to run
 parser.add_argument('--tasks', default="json/test_batman_synthesise_earth.json", type=str,
                     dest='tasks', help='The JSON file listing the tasks we are to perform')
+
+# Flush previous simultaneous detections?
+parser.add_argument('--local', dest='local', action='store_true')
+parser.add_argument('--cluster', dest='local', action='store_false')
+parser.set_defaults(local=True)
 
 args = parser.parse_args()
 
@@ -50,5 +57,9 @@ logger.info("Running tests <{}>".format(args.tasks))
 job_descriptor_json = open(args.tasks).read()
 job_descriptor = json.loads(job_descriptor_json)
 
-# Run jobs immediately
-task_iterator.TaskIterator.run_tasks_locally(job_descriptor=job_descriptor)
+if args.local:
+    # Run jobs immediately
+    task_iterator.TaskIterator.run_tasks_locally(job_descriptor=job_descriptor)
+else:
+    # Run jobs on Kubernetes cluster
+    task_iterator.TaskIterator.submit_tasks_to_rabbitmq(job_descriptor=job_descriptor)
