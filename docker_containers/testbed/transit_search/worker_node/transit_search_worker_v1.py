@@ -65,7 +65,7 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
         # File result to message queue
         result_log.record_result(job_name=job_descriptor['job_name'],
                                  parameters=job_descriptor.get('job_parameters', {}),
-                                 task_name='error', timestamp=time.time(),
+                                 task_name='error_message', timestamp=time.time(),
                                  result=error_message)
 
     # Acknowledge the message we've just processed

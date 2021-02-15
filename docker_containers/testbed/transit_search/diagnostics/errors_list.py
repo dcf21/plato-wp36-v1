@@ -24,7 +24,7 @@ def results_list():
     # Fetch list of error messages
     c.execute("""
 SELECT
-    lc_length, timestamp, results, result_filename,
+    parameters, timestamp, results, result_filename,
     j.name AS job, tc.name AS tda, s.hostname AS host, t1.name AS target, t2.name AS task
 FROM eas_results x
 INNER JOIN eas_jobs j ON j.job_id=x.job_id
@@ -40,9 +40,9 @@ ORDER BY x.timestamp;
     # Loop over error messages
     for item in results_list:
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} | {:22s}\n{}\n\n".format(
+        output.write("{} | {:22s} | {}\n{}\n\n".format(
             time_string,
-            item['host'],
+            item['host'], item['parameters'],
             item['results']
         ))
 

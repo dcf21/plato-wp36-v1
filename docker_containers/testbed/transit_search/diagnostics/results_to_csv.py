@@ -32,10 +32,6 @@ def results_to_csv():
     c.execute("SELECT code_id, name FROM eas_tda_codes ORDER BY name;")
     code_list = c.fetchall()
 
-    # Fetch list of LC durations
-    c.execute("SELECT DISTINCT lc_length FROM eas_results ORDER BY lc_length;")
-    lc_lengths = c.fetchall()
-
     # Loop over jobs
     for job in job_list:
 
@@ -51,21 +47,19 @@ def results_to_csv():
                 if c.fetchone()['COUNT(*)'] < 1:
                     continue
 
-                # Loop over lightcurve lengths
-                for lc_length in lc_lengths:
-                    output.write("\n\n{}  --  {} -- {} -- {}\n\n".format(job['name'], task['name'],
-                                                                         code['name'], lc_length['lc_length']))
-                    # Fetch all results from this configuration
-                    c.execute("""
+                output.write("\n\n{}  --  {} -- {}\n\n".format(job['name'], task['name'], code['name']))
+
+                # Fetch all results from this configuration
+                c.execute("""
 SELECT results FROM eas_results
 WHERE job_id = %s AND
       code_id = %s AND
-      task_id = %s AND
-      lc_length BETWEEN %s-0.01 AND %s+0.01
-;
-""", (job['job_id'], code['code_id'], task['task_id'], lc_length['lc_length'], lc_length['lc_length']))
-                    for item in c.fetchall():
-                        output.write("{}\n".format(item['results']))
+      task_id = %s;
+""", (job['job_id'], code['code_id'], task['task_id']))
+
+                # Display results
+                for item in c.fetchall():
+                    output.write("{}\n".format(item['results']))
 
                 # New line
                 output.write("\n")
