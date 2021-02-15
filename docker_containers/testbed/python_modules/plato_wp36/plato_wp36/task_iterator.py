@@ -15,6 +15,9 @@ import numpy as np
 import pika
 from plato_wp36 import task_runner
 
+# noinspection PyUnresolvedReferences
+from .constants import *
+
 
 class TaskIterator:
     """
@@ -85,15 +88,15 @@ class TaskIterator:
                 format_tokens[setting['name']] = grid_point[index]
 
             # Substitute the iteration values into the task list
-            task_list = json.loads(template.substitute(**format_tokens))
+            task_list_item = json.loads(template.substitute(**format_tokens))
 
             # Create job for this particular permutation of iterator values
             task_descriptions.append(
                 {
                     'job_name': job_name,
-                    'iteration_values': format_tokens,
+                    'job_parameters': format_tokens,
                     'clean_up': clean_up,
-                    'task_list': task_list
+                    'task_list': task_list_item
                 }
             )
 

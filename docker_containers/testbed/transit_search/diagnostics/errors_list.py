@@ -32,7 +32,7 @@ INNER JOIN eas_tda_codes tc ON tc.code_id=x.code_id
 INNER JOIN eas_servers s ON s.server_id=x.server_id
 INNER JOIN eas_targets t1 ON t1.target_id=x.target_id
 INNER JOIN eas_tasks t2 ON t2.task_id=x.task_id
-WHERE j.name="error_message"
+WHERE t2.name="error_message"
 ORDER BY x.timestamp;
 """)
     results_list = c.fetchall()
