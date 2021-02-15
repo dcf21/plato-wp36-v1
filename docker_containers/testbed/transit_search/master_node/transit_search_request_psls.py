@@ -91,6 +91,7 @@ def request_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", 
 
                 json_message = json.dumps({
                     'job_name': job_name,
+                    "clean_up": 0,
                     'task_list': task_list
                 })
 

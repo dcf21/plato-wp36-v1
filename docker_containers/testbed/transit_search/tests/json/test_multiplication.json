@@ -10,7 +10,7 @@
       },
       "specs": {
         "duration": 15,
-        "enable_transit": 0
+        "enable_transits": 0
       }
     },
     {

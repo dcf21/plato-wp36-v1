@@ -12,6 +12,7 @@ from math import log10
 from string import Template
 
 import numpy as np
+import pika
 from plato_wp36 import task_runner
 
 
@@ -127,11 +128,10 @@ class TaskIterator:
         logging.info("Running group of tasks <{}>".format(job_name))
 
         # Loop over tasks
-        for message in task_descriptions:
-            for task in message:
-                json_message = json.dumps(task)
-                logging.info("Sending message <{}>".format(json_message))
-                channel.basic_publish(exchange='', routing_key=queue, body=json_message)
+        for task in task_descriptions:
+            json_message = json.dumps(task)
+            logging.info("Sending message <{}>".format(json_message))
+            channel.basic_publish(exchange='', routing_key=queue, body=json_message)
 
     @staticmethod
     def run_tasks_locally(job_descriptor):

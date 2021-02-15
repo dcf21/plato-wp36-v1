@@ -18,12 +18,14 @@ defaults = {
     'duration': 730,  # days
     'master_seed': time.time(),
     'datadir_input': settings.settings['inDataPath'],
-    'enable_transit': True,
+    'enable_transits': True,
     'planet_radius': 1,  # Jupiter radii
     'orbital_period': 365,  # days
     'semi_major_axis': 1,  # AU
     'orbital_angle': 0,  # degrees
-    'nsr': 73  # noise-to-signal ratio (ppm/hr)
+    'nsr': 73,  # noise-to-signal ratio (ppm/hr)
+    'sampling_cadence': 25,  # sampling cadence, seconds
+    'mask_updates': False  # do we include mask updates?
 }
 
 
@@ -35,34 +37,25 @@ class PslsWrapper:
     def __init__(self,
                  mode=None,
                  duration=None,
-                 enable_transit=None,
+                 enable_transits=None,
                  planet_radius=None,
                  orbital_period=None,
                  semi_major_axis=None,
                  orbital_angle=None,
-                 nsr=None):
+                 nsr=None,
+                 sampling_cadence=None,
+                 mask_updates=None
+                 ):
         """
         Instantiate wrapper for synthesising lightcurves using PSLS
         """
 
         # Create dictionary of settings
         self.settings = defaults.copy()
-        if mode is not None:
-            self.settings['mode'] = mode
-        if duration is not None:
-            self.settings['duration'] = duration
-        if enable_transit is not None:
-            self.settings['enable_transit'] = enable_transit
-        if planet_radius is not None:
-            self.settings['planet_radius'] = planet_radius
-        if orbital_period is not None:
-            self.settings['orbital_period'] = orbital_period
-        if semi_major_axis is not None:
-            self.settings['semi_major_axis'] = semi_major_axis
-        if orbital_period is not None:
-            self.settings['orbital_angle'] = orbital_angle
-        if nsr is not None:
-            self.settings['nsr'] = nsr
+
+        self.configure(mode=mode, duration=duration, enable_transits=enable_transits, planet_radius=planet_radius,
+                       orbital_period=orbital_period, semi_major_axis=semi_major_axis, orbital_angle=orbital_angle,
+                       nsr=nsr, sampling_cadence=sampling_cadence, mask_updates=mask_updates)
 
         # Create temporary working directory
         identifier = "eas_psls"
@@ -83,12 +76,15 @@ class PslsWrapper:
     def configure(self,
                   mode=None,
                   duration=None,
-                  enable_transit=None,
+                  enable_transits=None,
                   planet_radius=None,
                   orbital_period=None,
                   semi_major_axis=None,
                   orbital_angle=None,
-                  nsr=None):
+                  nsr=None,
+                  sampling_cadence=None,
+                  mask_updates=None
+                  ):
         """
         Change settings for synthesising lightcurves using PSLS
         """
@@ -98,8 +94,8 @@ class PslsWrapper:
             self.settings['mode'] = mode
         if duration is not None:
             self.settings['duration'] = duration
-        if enable_transit is not None:
-            self.settings['enable_transit'] = enable_transit
+        if enable_transits is not None:
+            self.settings['enable_transits'] = enable_transits
         if planet_radius is not None:
             self.settings['planet_radius'] = planet_radius
         if orbital_period is not None:
@@ -110,6 +106,10 @@ class PslsWrapper:
             self.settings['orbital_angle'] = orbital_angle
         if nsr is not None:
             self.settings['nsr'] = nsr
+        if sampling_cadence is not None:
+            self.settings['sampling_cadence'] = sampling_cadence
+        if mask_updates is not None:
+            self.settings['mask_updates'] = mask_updates
 
     def synthesise(self):
         """
@@ -136,9 +136,16 @@ class PslsWrapper:
                File <{}> does not exist.\
             """.format(self.settings['mode'], yaml_template_filename)
 
-        # Create YAML configuration file for PSLS
+        # Make filename for YAML configuration file for PSLS
         yaml_template = open(yaml_template_filename).read()
         yaml_filename = "{}.yaml".format(run_identifier)
+
+        # Work out which systematics file we are to use
+        systematics_file = ("PLATO_systematics_BOL_V2.npy"
+                            if self.settings['mask_updates'] else
+                            "PLATO_systematics_BOL_FixedMask_V2.npy")
+
+        # Create YAML configuration file for PSLS
         with open(yaml_filename, "w") as out:
             out.write(
                 yaml_template.format(
@@ -146,11 +153,14 @@ class PslsWrapper:
                     master_seed=int(self.settings['master_seed']),
                     nsr=float(self.settings['nsr']),
                     datadir_input=settings.settings['inDataPath'],
-                    enable_transit=int(self.settings['enable_transit']),
+                    enable_transits=int(self.settings['enable_transits']),
                     planet_radius=float(self.settings['planet_radius']),
                     orbital_period=float(self.settings['orbital_period']),
                     semi_major_axis=float(self.settings['semi_major_axis']),
-                    orbital_angle=float(self.settings['orbital_angle'])
+                    orbital_angle=float(self.settings['orbital_angle']),
+                    sampling_cadence=float(self.settings['sampling_cadence']),
+                    integration_time=float(self.settings['sampling_cadence']) * 22 / 25,
+                    systematics=systematics_file
                 )
             )
 

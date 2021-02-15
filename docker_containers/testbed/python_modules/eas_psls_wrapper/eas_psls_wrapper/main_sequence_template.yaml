@@ -7,8 +7,8 @@ Observation:
 
 # Instrument parameters
 Instrument:
-  Sampling : 25. # Sampling cadence of each camera [s]
-  IntegrationTime : 21. # Integration time [s]
+  Sampling : {sampling_cadence:f} # Sampling cadence of each camera [s]
+    IntegrationTime: {integration_time:f} # Integration time [s]
   NGroup : 4 # Number of camera groups (1 -> 4)
   NCamera : 6 # Number of cameras per group (1 -> 6)
   TimeShift : 6.25 # Time shift between camera groups [s]
@@ -19,7 +19,8 @@ Instrument:
   Systematics:
     Enable : 1
 # The binary file containing the systematics parameters:
-    Table : {datadir_input}/psls_data/psls-1.3/systematics/PLATO_systematics_BOL_V2.npy
+    Table: {datadir_input}/psls_data/psls-1.3/systematics/{systematics}
+#    Table : PLATO_systematics_BOL_V2.npy
 #    Table : PLATO_systematics_BOL_FixedMask_V2.npy  
 #    Table : PLATO_systematics_BOL_P1_V2.npy 
 #    Table : PLATO_systematics_BOL_V0.npy  #   (version 0)
@@ -60,7 +61,7 @@ Granulation :
 
 # Transit parameters
 Transit : 
-  Enable: {enable_transit:d}
+  Enable: {enable_transits:d}
   PlanetRadius : {planet_radius:f}   # in jupiter radii
   OrbitalPeriod : {orbital_period:f}  # in days
   PlanetSemiMajorAxis : {semi_major_axis:f}  # in A.U.

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # results_database.py
 
-import os
-import socket
+import json
 import logging
+import os
 import shutil
+import socket
 
 from .connect_db import DatabaseConnector
 from .settings import settings

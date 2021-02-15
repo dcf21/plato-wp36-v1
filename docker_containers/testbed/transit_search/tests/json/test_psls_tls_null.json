@@ -9,7 +9,7 @@
         "source": "archive"
       },
       "specs": {
-        "enable_transit": 0,
+        "enable_transits": 0,
         "duration": 15,
         "planet_radius": 0.1,
         "orbital_period": 1,

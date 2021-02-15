@@ -191,7 +191,7 @@ class TaskRunner:
             dict
         :param specs:
             Specifications for the lightcurve we are to synthesise. The dictionary should define the following keys:
-            <duration>, <enable_transit>, <planet_radius>, <orbital_period>, <semi_major_axis>, <orbital_angle>
+            <duration>, <enable_transits>, <planet_radius>, <orbital_period>, <semi_major_axis>, <orbital_angle>
         :type specs:
             dict
         """
@@ -234,7 +234,7 @@ class TaskRunner:
             dict
         :param specs:
             Specifications for the lightcurve we are to synthesise. The dictionary should define the following keys:
-            <duration>, <enable_transit>, <planet_radius>, <orbital_period>, <semi_major_axis>, <orbital_angle>
+            <duration>, <enable_transits>, <planet_radius>, <orbital_period>, <semi_major_axis>, <orbital_angle>
         :type specs:
             dict
         """

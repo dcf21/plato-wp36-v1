@@ -40,6 +40,9 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
     # Extract list of the jobs we are to do
     job_descriptor = json.loads(body)
 
+    # Check that job description is a dictionary
+    assert isinstance(job_descriptor, dict)
+
     # Define results target
     results_target = "rabbitmq"
 
