@@ -2,10 +2,10 @@
   "job_name": "202102_planet_detection_limit",
   "task_list": [],
   "nested_tasks": [
-    "hot_jupiter_vs_size_batman.json",
-    "hot_jupiter_vs_size_psls.json",
-    "earth_vs_size_batman.json",
-    "earth_vs_size_psls.json",
-    "earth_vs_snr.json"
+    "json_jobs/202102_planet_detection_limit/hot_jupiter_vs_size_batman.json",
+    "json_jobs/202102_planet_detection_limit/hot_jupiter_vs_size_psls.json",
+    "json_jobs/202102_planet_detection_limit/earth_vs_size_batman.json",
+    "json_jobs/202102_planet_detection_limit/earth_vs_size_psls.json",
+    "json_jobs/202102_planet_detection_limit/earth_vs_snr.json"
   ]
 }

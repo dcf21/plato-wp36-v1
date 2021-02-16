@@ -2,9 +2,9 @@
   "job_name": "202102_tda_timing",
   "task_list": [],
   "nested_tasks": [
-    "tls_timing_long_periods.json",
-    "bls_timing_long_periods.json",
-    "tls_timing_full_span.json",
-    "bls_timing_full_span.json"
+    "json_jobs/202102_tda_timing/tls_timing_long_periods.json",
+    "json_jobs/202102_tda_timing/bls_timing_long_periods.json",
+    "json_jobs/202102_tda_timing/tls_timing_full_span.json",
+    "json_jobs/202102_tda_timing/bls_timing_full_span.json"
   ]
 }
