@@ -25,7 +25,8 @@ defaults = {
     'orbital_angle': 0,  # degrees
     'nsr': 73,  # noise-to-signal ratio (ppm/hr)
     'sampling_cadence': 25,  # sampling cadence, seconds
-    'mask_updates': False  # do we include mask updates?
+    'mask_updates': False,  # do we include mask updates?
+    'enable_systematics': False  # do we include systematics
 }
 
 
@@ -44,7 +45,8 @@ class PslsWrapper:
                  orbital_angle=None,
                  nsr=None,
                  sampling_cadence=None,
-                 mask_updates=None
+                 mask_updates=None,
+                 enable_systematics=None
                  ):
         """
         Instantiate wrapper for synthesising lightcurves using PSLS
@@ -55,7 +57,8 @@ class PslsWrapper:
 
         self.configure(mode=mode, duration=duration, enable_transits=enable_transits, planet_radius=planet_radius,
                        orbital_period=orbital_period, semi_major_axis=semi_major_axis, orbital_angle=orbital_angle,
-                       nsr=nsr, sampling_cadence=sampling_cadence, mask_updates=mask_updates)
+                       nsr=nsr, sampling_cadence=sampling_cadence, mask_updates=mask_updates,
+                       enable_systematics=enable_systematics)
 
         # Create temporary working directory
         identifier = "eas_psls"
@@ -83,7 +86,8 @@ class PslsWrapper:
                   orbital_angle=None,
                   nsr=None,
                   sampling_cadence=None,
-                  mask_updates=None
+                  mask_updates=None,
+                 enable_systematics=None
                   ):
         """
         Change settings for synthesising lightcurves using PSLS
@@ -110,6 +114,8 @@ class PslsWrapper:
             self.settings['sampling_cadence'] = sampling_cadence
         if mask_updates is not None:
             self.settings['mask_updates'] = mask_updates
+        if enable_systematics is not None:
+            self.settings['enable_systematics'] = enable_systematics
 
     def synthesise(self):
         """
@@ -145,6 +151,8 @@ class PslsWrapper:
                             if self.settings['mask_updates'] else
                             "PLATO_systematics_BOL_FixedMask_V2.npy")
 
+        enable_systematics = int(self.settings['enable_systematics'])
+
         # Create YAML configuration file for PSLS
         with open(yaml_filename, "w") as out:
             out.write(
@@ -160,7 +168,9 @@ class PslsWrapper:
                     orbital_angle=float(self.settings['orbital_angle']),
                     sampling_cadence=float(self.settings['sampling_cadence']),
                     integration_time=float(self.settings['sampling_cadence']) * 22 / 25,
-                    systematics=systematics_file
+                    systematics=systematics_file,
+                    enable_systematics=enable_systematics,
+                    noise_type="PLATO_SIMU" if enable_systematics else "PLATO_SCALING"
                 )
             )
 

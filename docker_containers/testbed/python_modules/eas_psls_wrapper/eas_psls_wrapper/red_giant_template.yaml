@@ -14,10 +14,10 @@ Instrument:
   TimeShift : 6.25 # Time shift between camera groups [s]
   RandomNoise:
     Enable: 1
-    Type: PLATO_SIMU #  either 'User' or 'PLATO_SCALING' or 'PLATO_SIMU'.
+    Type: {noise_type} #  either 'User' or 'PLATO_SCALING' or 'PLATO_SIMU'.
     NSR : {nsr:f} # User-specified Noise to Signal Ratio [ppm/hr] for a single camera. This value takes into account all random noises but does not include systematic errors.
   Systematics:
-    Enable : 1
+    Enable : {enable_systematics}
 # The binary file containing the systematics parameters:
     Table: {datadir_input}/psls_data/psls-1.3/systematics/{systematics}
 #    Table : PLATO_systematics_BOL_V2.npy

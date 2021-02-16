@@ -19,7 +19,7 @@ import json
 parser = argparse.ArgumentParser(description=__doc__)
 
 # Filename for JSON descriptor of tests to run
-parser.add_argument('--tasks', default="json/test_batman_synthesise_earth.json", type=str,
+parser.add_argument('--tasks', default="json/test_psls_synthesise_earth.json", type=str,
                     dest='tasks', help='The JSON file listing the tasks we are to perform')
 
 # Flush previous simultaneous detections?
