@@ -164,7 +164,7 @@ class RunTimesToMySQL:
                                timestamp=message['timestamp'],
                                run_time_wall_clock=message['run_time_wall_clock'],
                                run_time_cpu=message['run_time_cpu'],
-                               run_times_cpu_inc_children=message['run_times_cpu_inc_children']
+                               run_time_cpu_inc_children=message['run_time_cpu_inc_children']
                                )
 
         logging.info("Waiting for messages")
@@ -172,7 +172,7 @@ class RunTimesToMySQL:
         channel.start_consuming()
 
     def record_timing(self, job_name, tda_code, target_name, task_name, parameters, timestamp,
-                      run_time_wall_clock, run_time_cpu, run_times_cpu_inc_children):
+                      run_time_wall_clock, run_time_cpu, run_time_cpu_inc_children):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -225,5 +225,5 @@ class RunTimesToMySQL:
             timestamp=timestamp,
             run_time_wall_clock=run_time_wall_clock,
             run_time_cpu=run_time_cpu,
-            run_times_cpu_inc_children=run_times_cpu_inc_children
+            run_time_cpu_inc_children=run_time_cpu_inc_children
         )

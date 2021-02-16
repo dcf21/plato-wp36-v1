@@ -332,7 +332,7 @@ CREATE TABLE eas_results (
         return code_id
 
     def record_timing(self, job_name, tda_code, target_name, task_name, parameters, timestamp,
-                      run_time_wall_clock, run_time_cpu, run_times_cpu_inc_children):
+                      run_time_wall_clock, run_time_cpu, run_time_cpu_inc_children):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -401,7 +401,7 @@ INSERT INTO eas_run_times
  run_time_wall_clock, run_time_cpu, run_time_cpu_inc_children)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """, (job_id, code_id, server_id, target_id, task_id, json.dumps(parameters), timestamp,
-              run_time_wall_clock, run_time_cpu, run_times_cpu_inc_children))
+              run_time_wall_clock, run_time_cpu, run_time_cpu_inc_children))
         db.commit()
         db.close()
 
