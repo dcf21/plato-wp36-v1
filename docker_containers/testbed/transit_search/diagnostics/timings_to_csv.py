@@ -6,6 +6,7 @@
 Dump all of the run times from the MySQL database into a CSV file
 """
 
+import json
 import logging
 import os
 import sys
@@ -14,7 +15,19 @@ import argparse
 from plato_wp36 import connect_db, settings
 
 
-def timings_to_csv():
+def timings_to_csv(job=None, task=None):
+    """
+    List timings stored in the SQL database.
+
+    :param job:
+        Filter results by job name.
+    :type job:
+        str
+    :param task:
+        Filter results by task.
+    :type task:
+        str
+    """
     output = sys.stdout
 
     connector = connect_db.DatabaseConnector()
@@ -24,71 +37,72 @@ def timings_to_csv():
     c.execute("SELECT job_id, name FROM eas_jobs ORDER BY name;")
     job_list = c.fetchall()
 
+    if job is not None:
+        job_list = [item for item in job_list if item['name'] == job]
+
     # Fetch list of tasks
     c.execute("SELECT task_id, name FROM eas_tasks ORDER BY name;")
     task_list = c.fetchall()
 
+    if task is not None:
+        task_list = [item for item in task_list if item['name'] == task]
+
     # Fetch list of TDAs
     c.execute("SELECT code_id, name FROM eas_tda_codes ORDER BY name;")
     code_list = c.fetchall()
-
-    # Fetch list of LC durations
-    c.execute("SELECT DISTINCT lc_length FROM eas_run_times ORDER BY lc_length;")
-    lc_lengths = c.fetchall()
 
     # Loop over jobs
     for job in job_list:
 
         # Loop over tasks
         for task in task_list:
-            # Check whether we have any results to report
-            c.execute("SELECT COUNT(*) FROM eas_run_times WHERE job_id = %s AND task_id = %s;",
-                      (job['job_id'], task['task_id'])
-                      )
-            if c.fetchone()['COUNT(*)'] < 1:
-                continue
 
-            # Loop over timing metrics
-            for metric in ["run_time_wall_clock", "run_time_cpu"]:
+            # Loop over TDA codes
+            for code in code_list:
+                # Fetch list of all the parameters we need to display
+                c.execute("""
+SELECT run_time_wall_clock, run_time_cpu, parameters
+FROM eas_run_times WHERE job_id = %s AND task_id = %s AND code_id = %s;
+""", (job['job_id'], task['task_id'], code['code_id'])
+                          )
+                results = c.fetchall()
 
-                # Output heading for timings of a particular task
-                output.write("\n\n{}  --  {} ({})\n\n".format(job['name'], task['name'], metric))
+                # Abort if no database entries matched this search
+                if len(results) < 1:
+                    continue
 
-                # Print column headings
-                output.write(",{}\n".format(",".join([str(item['lc_length']) for item in lc_lengths])))
+                # Compile list of all the parameters we need to display
+                all_parameter_names = []
+                for row in results:
+                    for parameter in json.loads(row['parameters']):
+                        if parameter not in all_parameter_names:
+                            all_parameter_names.append(parameter)
 
-                # Loop over TDA codes
-                for code in code_list:
-                    # Check whether we have any results to report
-                    c.execute("SELECT COUNT(*) FROM eas_run_times WHERE job_id = %s AND task_id = %s AND code_id = %s;",
-                              (job['job_id'], task['task_id'], code['code_id'])
-                              )
-                    if c.fetchone()['COUNT(*)'] < 1:
-                        continue
+                # Sort parameter names
+                all_parameter_names.sort()
 
-                    # Print rows of table
-                    output.write(code['name'])
+                # Loop over timing metrics
+                for metric in ["run_time_wall_clock", "run_time_cpu"]:
 
-                    for lc_length in lc_lengths:
-                        # Average timings
-                        timings_sum = 0
-                        timings_count = 1e-8
-                        c.execute("""
-SELECT {} AS value FROM eas_run_times
-WHERE job_id = %s AND
-      code_id = %s AND
-      task_id = %s AND
-      lc_length BETWEEN %s-0.01 AND %s+0.01
-;
-""".format(metric), (job['job_id'], code['code_id'], task['task_id'], lc_length['lc_length'], lc_length['lc_length']))
-                        for item in c.fetchall():
-                            timings_sum += item['value']
-                            timings_count += 1
-                        if timings_count >= 1:
-                            output_value = "{:.1f}".format(timings_sum / timings_count)
-                        else:
-                            output_value = "x"
-                        output.write(",{}".format(output_value))
+                    # Display heading for this job
+                    output.write("\n\n{}  --  {} -- {} -- {}\n\n".format(job['name'], task['name'],
+                                                                         code['name'], metric))
+
+                    # Display column headings
+                    output.write("# ")
+                    for item in all_parameter_names:
+                        output.write("{:12}  ".format(item))
+                    output.write("\n")
+
+                    # Display results
+                    for row in results:
+                        # Display parameter values
+                        for item in all_parameter_names:
+                            parameters = json.loads(row['parameters'])
+                            output.write("{:12}  ".format(parameters.get(item, "--")))
+
+                        # Display results
+                        output.write("{:.1f}\n".format(row[metric]))
 
                     # New line
                     output.write("\n")
@@ -97,6 +111,8 @@ WHERE job_id = %s AND
 if __name__ == "__main__":
     # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--job', default=None, type=str, dest='job', help='Filter results by job name')
+    parser.add_argument('--task', default=None, type=str, dest='task', help='Filter results by job name')
     args = parser.parse_args()
 
     # Set up logging
@@ -112,4 +128,4 @@ if __name__ == "__main__":
     logger.info(__doc__.strip())
 
     # Dump timings
-    timings_to_csv()
+    timings_to_csv(job=args.job, task=args.task)

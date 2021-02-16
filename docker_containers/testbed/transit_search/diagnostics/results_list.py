@@ -15,7 +15,19 @@ import argparse
 from plato_wp36 import connect_db, settings
 
 
-def results_list():
+def results_list(job=None, task=None):
+    """
+    List results stored in the SQL database.
+
+    :param job:
+        Filter results by job name.
+    :type job:
+        str
+    :param task:
+        Filter results by task.
+    :type task:
+        str
+    """
     output = sys.stdout
 
     connector = connect_db.DatabaseConnector()
@@ -39,6 +51,11 @@ ORDER BY x.timestamp;
 
     # Loop over results
     for item in results_list:
+        # Filter results
+        if (job is not None and job != item['job']) or (task is not None and task != item['task']):
+            continue
+
+        # Display results
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
         output.write("{} |{:36s}|{:18s}|{:32s}|{:36s}|{}|{}|{}\n".format(
             time_string,
@@ -51,6 +68,8 @@ ORDER BY x.timestamp;
 if __name__ == "__main__":
     # Read command-line arguments
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--job', default=None, type=str, dest='job', help='Filter results by job name')
+    parser.add_argument('--task', default=None, type=str, dest='task', help='Filter results by job name')
     args = parser.parse_args()
 
     # Set up logging
@@ -66,4 +85,4 @@ if __name__ == "__main__":
     logger.info(__doc__.strip())
 
     # Dump results
-    results_list()
+    results_list(job=args.job, task=args.task)
