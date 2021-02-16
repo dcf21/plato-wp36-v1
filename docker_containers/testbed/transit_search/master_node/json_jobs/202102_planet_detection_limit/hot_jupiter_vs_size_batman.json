@@ -1,0 +1,43 @@
+{
+  "job_name": "hot_jupiter_vs_size_batman",
+  "iterations": [
+    {
+      "name": "size",
+      "log_range": [
+        "0.04",
+        "0.2",
+        "30"
+      ]
+    }
+  ],
+  "task_list": [
+    {
+      "task": "batman_synthesise",
+      "target": {
+        "filename": "hjvsize_batman_${index}.gz"
+      },
+      "specs": {
+        "duration": 90,
+        "planet_radius": "${size}",
+        "orbital_period": 4,
+        "semi_major_axis": 0.05,
+        "orbital_angle": 0,
+        "noise": 0.000315
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "hjvsize_batman_${index}.gz"
+      }
+    },
+    {
+      "task": "transit_search",
+      "source": {
+        "filename": "hjvsize_batman_${index}.gz"
+      },
+      "lc_duration": 90,
+      "tda_name": "tls"
+    }
+  ]
+}

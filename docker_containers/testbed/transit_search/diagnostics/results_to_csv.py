@@ -65,7 +65,7 @@ SELECT results, parameters
 FROM eas_results WHERE job_id = %s AND task_id = %s AND code_id = %s;
 """, (job['job_id'], task['task_id'], code['code_id'])
                           )
-                results = c.fetchall()
+                results = list(c.fetchall())
 
                 # Abort if no database entries matched this search
                 if len(results) < 1:
@@ -80,6 +80,11 @@ FROM eas_results WHERE job_id = %s AND task_id = %s AND code_id = %s;
 
                 # Sort parameter names
                 all_parameter_names.sort()
+
+                # Sort results by index
+                results.sort(
+                    key=lambda k: json.loads(k['parameters'])['index']
+                )
 
                 # Display heading for this job
                 output.write("\n\n{}  --  {} -- {}\n\n".format(job['name'], task['name'], code['name']))

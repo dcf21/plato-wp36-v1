@@ -36,7 +36,7 @@ def timings_list(job=None, task=None):
     # Fetch list of timings
     c.execute("""
 SELECT
-    parameters, timestamp, run_time_wall_clock, run_time_cpu,
+    parameters, timestamp, run_time_wall_clock, run_time_cpu, run_time_cpu_inc_children,
     j.name AS job, tc.name AS tda, s.hostname AS host, t1.name AS target, t2.name AS task
 FROM eas_run_times x
 INNER JOIN eas_jobs j ON j.job_id=x.job_id
@@ -56,10 +56,11 @@ ORDER BY x.timestamp;
 
         # Display results
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} |{:36s}|{:18s}|{:32s}|{:36s}|{:9.2f}|{:9.2f}|{:s}\n".format(
+        output.write("{} |{:36s}|{:18s}|{:32s}|{:36s}|{:9.2f}|{:9.2f}|{:9.2f}|{:s}\n".format(
             time_string,
             item['job'], item['task'], item['host'], item['target'],
-            item['run_time_wall_clock'], item['run_time_cpu'], item['parameters']
+            item['run_time_wall_clock'], item['run_time_cpu'], item['run_time_cpu_inc_children'],
+            item['parameters']
         ))
 
 

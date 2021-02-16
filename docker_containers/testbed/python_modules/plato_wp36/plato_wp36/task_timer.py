@@ -10,6 +10,7 @@ with TaskTimer( <settings> ):
 
 """
 
+import resource
 import time
 
 from .run_time_logger import RunTimesToRabbitMQ
@@ -74,7 +75,13 @@ class TaskTimer:
             'wall_clock': time.time(),
 
             # CPU core seconds
-            'cpu': time.process_time()
+            'cpu': time.process_time(),
+
+            # CPU core seconds as reported by <resource> package, including child processes
+            'cpu_inc_children': resource.getrusage(resource.RUSAGE_SELF).ru_utime +
+                            resource.getrusage(resource.RUSAGE_SELF).ru_stime +
+                            resource.getrusage(resource.RUSAGE_CHILDREN).ru_utime +
+                            resource.getrusage(resource.RUSAGE_CHILDREN).ru_stime
         }
 
     def __enter__(self):
@@ -116,5 +123,6 @@ class TaskTimer:
             parameters=self.parameters,
             timestamp=self.start_time['wall_clock'],
             run_time_wall_clock=run_times['wall_clock'],
-            run_time_cpu=run_times['cpu']
+            run_time_cpu=run_times['cpu'],
+            run_time_cpu_inc_children=run_times['cpu_inc_children']
         )

@@ -13,8 +13,6 @@ import sys
 import argparse
 from plato_wp36 import settings, task_iterator
 
-import json
-
 # Read command-line arguments
 parser = argparse.ArgumentParser(description=__doc__)
 
@@ -53,13 +51,9 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 logger.info("Running tests <{}>".format(args.tasks))
 
-# Extract list of the jobs we are to do
-job_descriptor_json = open(args.tasks).read()
-job_descriptor = json.loads(job_descriptor_json)
-
 if args.local:
     # Run jobs immediately
-    task_iterator.TaskIterator.run_tasks_locally(job_descriptor=job_descriptor)
+    task_iterator.TaskIterator.run_tasks_locally(from_file=args.tasks)
 else:
     # Run jobs on Kubernetes cluster
-    task_iterator.TaskIterator.submit_tasks_to_rabbitmq(job_descriptor=job_descriptor)
+    task_iterator.TaskIterator.submit_tasks_to_rabbitmq(from_file=args.tasks)

@@ -1,9 +1,17 @@
 {
-  "job_name": "tls_timing_long_periods",
+  "job_name": "tls_timing_full_span",
   "iterations": [
     {
       "name": "lc_length",
       "values": [
+        "7 * day",
+        "10 * day",
+        "14 * day",
+        "21 * day",
+        "28 * day",
+        "1.5 * month",
+        "2 * month",
+        "2.5 * month",
         "3 * month",
         "4 * month",
         "6 * month",
@@ -11,30 +19,30 @@
         "year",
         "2 * year"
       ]
+    }, {
+      "name": "cadence",
+      "values": [900, 25]
     }
   ],
   "task_list": [
     {
       "task": "psls_synthesise",
       "target": {
-        "filename": "ttlp_${index}.gz"
+        "filename": "ttfs_${index}.gz"
       },
       "specs": {
         "duration": "${lc_length}",
-        "enable_transits": 0
+        "enable_transits": 0,
+        "sampling_cadence": "${cadence}"
       }
     },
     {
       "task": "transit_search",
       "source": {
-        "filename": "ttlp_${index}.gz"
+        "filename": "ttfs_${index}.gz"
       },
-      "lc_source": "archive",
       "lc_duration": "${lc_length}",
-      "tda_name": "tls",
-      "search_settings": {
-        "period_min": 90
-      }
+      "tda_name": "tls"
     }
   ]
 }

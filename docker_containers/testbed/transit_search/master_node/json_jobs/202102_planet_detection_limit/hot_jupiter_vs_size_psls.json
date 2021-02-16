@@ -1,0 +1,42 @@
+{
+  "job_name": "hot_jupiter_vs_size_psls",
+  "iterations": [
+    {
+      "name": "size",
+      "log_range": [
+        "0.04",
+        "0.2",
+        "30"
+      ]
+    }
+  ],
+  "task_list": [
+    {
+      "task": "psls_synthesise",
+      "target": {
+        "filename": "hjvsize_psls_${index}.gz"
+      },
+      "specs": {
+        "duration": 90,
+        "planet_radius": "${size}",
+        "orbital_period": 4,
+        "semi_major_axis": 0.05,
+        "orbital_angle": 0
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "hjvsize_psls_${index}.gz"
+      }
+    },
+    {
+      "task": "transit_search",
+      "source": {
+        "filename": "hjvsize_psls_${index}.gz"
+      },
+      "lc_duration": 90,
+      "tda_name": "tls"
+    }
+  ]
+}

@@ -104,15 +104,37 @@ class TaskIterator:
         return task_descriptions
 
     @staticmethod
-    def submit_tasks_to_rabbitmq(job_descriptor, broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+    def submit_tasks_to_rabbitmq(from_file=None, job_descriptor=None,
+                                 broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
         """
         Populate message queue with a group of tasks defined in a JSON file, which may include iterations.
 
+        :param from_file:
+            Filename of JSON file from which we are to read a task list (optional).
+        :type from_file:
+            str
         :param job_descriptor:
             Job descriptor, with fields <job_name>, <task_list> and <iterations>.
         :type job_descriptor:
             dict
         """
+
+        # If task list supplied as filename of JSON file, read it now
+        if from_file is not None:
+            job_descriptor_json = open(from_file).read()
+            TaskIterator.submit_tasks_to_rabbitmq(job_descriptor=json.loads(job_descriptor_json),
+                                                  broker=broker, queue=queue)
+        if job_descriptor is None:
+            return
+
+        # Run any sub-jobs (allows JSON files to be nested)
+        if 'nested_tasks' in job_descriptor:
+            for subitem in job_descriptor['nested_tasks']:
+                TaskIterator.submit_tasks_to_rabbitmq(
+                    from_file=subitem,
+                    broker=broker, queue=queue
+                )
+
         # Job name
         job_name = job_descriptor.get('job_name', 'untitled')
 
@@ -137,15 +159,32 @@ class TaskIterator:
             channel.basic_publish(exchange='', routing_key=queue, body=json_message)
 
     @staticmethod
-    def run_tasks_locally(job_descriptor):
+    def run_tasks_locally(from_file=None, job_descriptor=None):
         """
         Run a group of tasks defined in a JSON file, which may include iterations.
 
+        :param from_file:
+            Filename of JSON file from which we are to read a task list (optional).
+        :type from_file:
+            str
         :param job_descriptor:
             Job descriptor, with fields <job_name>, <task_list> and <iterations>.
         :type job_descriptor:
             dict
         """
+
+        # If task list supplied as filename of JSON file, read it now
+        if from_file is not None:
+            job_descriptor_json = open(from_file).read()
+            TaskIterator.run_tasks_locally(job_descriptor=json.loads(job_descriptor_json))
+        if job_descriptor is None:
+            return
+
+        # Run any sub-jobs (allows JSON files to be nested)
+        if 'nested_tasks' in job_descriptor:
+            for subitem in job_descriptor['nested_tasks']:
+                TaskIterator.run_tasks_locally(from_file=subitem)
+
         # Job name
         job_name = job_descriptor.get('job_name', 'untitled')
 

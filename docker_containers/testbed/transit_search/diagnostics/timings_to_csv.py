@@ -61,11 +61,11 @@ def timings_to_csv(job=None, task=None):
             for code in code_list:
                 # Fetch list of all the parameters we need to display
                 c.execute("""
-SELECT run_time_wall_clock, run_time_cpu, parameters
+SELECT run_time_wall_clock, run_time_cpu, run_time_cpu_inc_children, parameters
 FROM eas_run_times WHERE job_id = %s AND task_id = %s AND code_id = %s;
 """, (job['job_id'], task['task_id'], code['code_id'])
                           )
-                results = c.fetchall()
+                results = list(c.fetchall())
 
                 # Abort if no database entries matched this search
                 if len(results) < 1:
@@ -81,8 +81,13 @@ FROM eas_run_times WHERE job_id = %s AND task_id = %s AND code_id = %s;
                 # Sort parameter names
                 all_parameter_names.sort()
 
+                # Sort results by index
+                results.sort(
+                    key=lambda k: json.loads(k['parameters'])['index']
+                )
+
                 # Loop over timing metrics
-                for metric in ["run_time_wall_clock", "run_time_cpu"]:
+                for metric in ["run_time_wall_clock", "run_time_cpu", "run_time_cpu_inc_children"]:
 
                     # Display heading for this job
                     output.write("\n\n{}  --  {} -- {} -- {}\n\n".format(job['name'], task['name'],

@@ -7,9 +7,6 @@ cwd=`pwd`
 # Redirect output to file
 exec &> results.log
 
-# Keep a record of the job definitions
-for all in ../master_node/json_jobs/* ; do echo "**** ${all} ****" ; cat $all ; done
-
 # Record results
 ./timings_list.py
 ./results_list.py

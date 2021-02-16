@@ -6,7 +6,6 @@
 Populate message queue with a group of tasks defined in a JSON file, which may include iterations.
 """
 
-import json
 import logging
 import os
 
@@ -32,9 +31,5 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 logger.info("Running tests <{}>".format(args.tasks))
 
-# Extract list of the jobs we are to do
-job_descriptor_json = open(args.tasks).read()
-job_descriptor = json.loads(job_descriptor_json)
-
 # Submit jobs into the RabbitMQ job queue
-task_iterator.TaskIterator.submit_tasks_to_rabbitmq(job_descriptor=job_descriptor)
+task_iterator.TaskIterator.submit_tasks_to_rabbitmq(from_file=args.tasks)

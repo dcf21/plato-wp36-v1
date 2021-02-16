@@ -75,6 +75,7 @@ CREATE TABLE eas_run_times (
     timestamp REAL NOT NULL,
     run_time_wall_clock REAL,
     run_time_cpu REAL,
+    run_time_cpu_inc_children REAL,
     FOREIGN KEY (job_id) REFERENCES eas_jobs (job_id),
     FOREIGN KEY (code_id) REFERENCES eas_tda_codes (code_id),
     FOREIGN KEY (server_id) REFERENCES eas_servers (server_id),
@@ -331,7 +332,7 @@ CREATE TABLE eas_results (
         return code_id
 
     def record_timing(self, job_name, tda_code, target_name, task_name, parameters, timestamp,
-                      run_time_wall_clock, run_time_cpu):
+                      run_time_wall_clock, run_time_cpu, run_times_cpu_inc_children):
         """
         Create a new entry in the database for a new code performance measurement.
 
@@ -367,6 +368,10 @@ CREATE TABLE eas_results (
             The run time of the step in CPU seconds
         :type run_time_cpu:
             float
+        :param run_time_cpu_inc_children:
+            The run time of the step in CPU seconds, including child processes
+        :type run_time_cpu_inc_children:
+            float
         :return:
             None
         """
@@ -392,10 +397,11 @@ CREATE TABLE eas_results (
 
         c.execute("""
 INSERT INTO eas_run_times
-(job_id, code_id, server_id, target_id, task_id, parameters, timestamp, run_time_wall_clock, run_time_cpu)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+(job_id, code_id, server_id, target_id, task_id, parameters, timestamp,
+ run_time_wall_clock, run_time_cpu, run_time_cpu_inc_children)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """, (job_id, code_id, server_id, target_id, task_id, json.dumps(parameters), timestamp,
-              run_time_wall_clock, run_time_cpu))
+              run_time_wall_clock, run_time_cpu, run_times_cpu_inc_children))
         db.commit()
         db.close()
 

@@ -6,7 +6,6 @@
 Locally run a group of tasks defined in a JSON file
 """
 
-import json
 import logging
 import os
 import sys
@@ -45,9 +44,5 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 logger.info("Running tests <{}>".format(args.tasks))
 
-# Extract list of the jobs we are to do
-job_descriptor_json = open(args.tasks).read()
-job_descriptor = json.loads(job_descriptor_json)
-
 # Run jobs immediately
-task_iterator.TaskIterator.run_tasks_locally(job_descriptor=job_descriptor)
+task_iterator.TaskIterator.run_tasks_locally(from_file=args.tasks)

@@ -1,0 +1,43 @@
+{
+  "job_name": "earth_vs_size_batman",
+  "iterations": [
+    {
+      "name": "size",
+      "log_range": [
+        "0.089114866/4",
+        "0.089114866*4",
+        "10"
+      ]
+    }
+  ],
+  "task_list": [
+    {
+      "task": "batman_synthesise",
+      "target": {
+        "filename": "evsize_batman_${index}.gz"
+      },
+      "specs": {
+        "duration": 730,
+        "planet_radius": "${size}",
+        "orbital_period": 240,
+        "semi_major_axis": 1,
+        "orbital_angle": 0,
+        "noise": 0.000315
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "evsize_batman_${index}.gz"
+      }
+    },
+    {
+      "task": "transit_search",
+      "source": {
+        "filename": "evsize_batman_${index}.gz"
+      },
+      "lc_duration": 730,
+      "tda_name": "tls"
+    }
+  ]
+}

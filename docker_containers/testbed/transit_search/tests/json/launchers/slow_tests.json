@@ -1,0 +1,13 @@
+{
+  "job_name": "launch_slow_tests",
+  "task_list": [],
+  "nested_tasks": [
+    "json/slow_tests/test_batman_tls.json",
+    "json/slow_tests/test_batman_tls_null.json",
+    "json/slow_tests/test_multiplication.json",
+    "json/slow_tests/test_psls_tls.json",
+    "json/slow_tests/test_psls_tls_null.json",
+    "json/quick_tests/test_batman_synthesise_earth.json"
+  ]
+}
+
