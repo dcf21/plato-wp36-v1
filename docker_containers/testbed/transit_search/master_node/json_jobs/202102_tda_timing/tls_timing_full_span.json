@@ -2,6 +2,10 @@
   "job_name": "tls_timing_full_span",
   "iterations": [
     {
+      "name": "cadence",
+      "values": [900, 25]
+    },
+    {
       "name": "lc_length",
       "values": [
         "7 * day",
@@ -19,9 +23,6 @@
         "year",
         "2 * year"
       ]
-    }, {
-      "name": "cadence",
-      "values": [900, 25]
     }
   ],
   "task_list": [
