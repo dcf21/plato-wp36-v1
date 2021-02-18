@@ -30,8 +30,8 @@ def quality_control(lc: LightcurveArbitraryRaster, metadata: dict):
         observed_period = metadata['period']
         period_offset = target_period / observed_period
 
-        # For now, pick an arbitrary target, of detection period to within 10%
-        if 0.9 < period_offset < 1.1:
+        # For now, pick an arbitrary target, of detection period to within 3%
+        if 0.97 < period_offset < 1.03:
             outcome = "PASS"
         else:
             outcome = "FAIL"

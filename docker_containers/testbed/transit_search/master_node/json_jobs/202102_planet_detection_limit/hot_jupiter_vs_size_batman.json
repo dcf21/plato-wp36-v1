@@ -2,6 +2,10 @@
   "job_name": "hot_jupiter_vs_size_batman",
   "iterations": [
     {
+      "name": "cadence",
+      "values": [900, 25]
+    },
+    {
       "name": "size",
       "log_range": [
         "0.01",
@@ -22,7 +26,7 @@
         "orbital_period": 4,
         "semi_major_axis": 0.05,
         "orbital_angle": 0,
-        "noise": 0.000315
+        "noise": "plato_noise"
       }
     },
     {

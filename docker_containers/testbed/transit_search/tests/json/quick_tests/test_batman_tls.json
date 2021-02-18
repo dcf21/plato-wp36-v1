@@ -14,7 +14,7 @@
         "orbital_period": 1,
         "semi_major_axis": 0.01,
         "orbital_angle": 0,
-        "noise": 0.000315
+        "noise": "plato_noise"
       }
     },
     {

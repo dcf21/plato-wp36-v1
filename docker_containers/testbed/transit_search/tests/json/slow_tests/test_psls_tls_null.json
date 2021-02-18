@@ -9,12 +9,12 @@
         "source": "archive"
       },
       "specs": {
+        "enable_transits": 0,
         "duration": 55,
         "planet_radius": 1,
         "orbital_period": 10,
         "semi_major_axis": 0.1,
-        "orbital_angle": 0,
-        "nsr": 1000
+        "orbital_angle": 0
       }
     },
     {

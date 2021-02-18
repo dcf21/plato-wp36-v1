@@ -195,15 +195,20 @@ class TaskRunner:
         :type specs:
             dict
         """
-        logging.info("Running PSLS synthesis")
         self.job_name = job_name
         out_id = os.path.join(
             target.get('directory', 'test_lightcurves'),
             target.get('filename', 'lightcurve.dat')
         )
 
+        logging.info("Running PSLS synthesis of <{}>".format(out_id))
+
+        # Record start time
+        start_time = time.time()
+
         # Open connections to transit results and run times to output message queues
         time_log = RunTimesToRabbitMQ(results_target=self.results_target)
+        result_log = ResultsToRabbitMQ(results_target=self.results_target)
 
         # Do synthesis
         with TaskTimer(job_name=job_name, target_name=out_id, task_name='psls_synthesis',
@@ -216,8 +221,15 @@ class TaskRunner:
         # Write output
         self.write_lightcurve(lightcurve=lc_object, target=target)
 
+        # Log LC metadata in results table
+        result_log.record_result(job_name=job_name, target_name=out_id,
+                                 task_name='psls_synthesis',
+                                 parameters=self.job_parameters, timestamp=start_time,
+                                 result=lc_object.metadata)
+
         # Close connection to message queue
         time_log.close()
+        result_log.close()
 
     def batman_synthesise(self, job_name, target, specs):
         """
@@ -238,15 +250,20 @@ class TaskRunner:
         :type specs:
             dict
         """
-        logging.info("Running Batman synthesis")
         self.job_name = job_name
         out_id = os.path.join(
             target.get('directory', 'test_lightcurves'),
             target.get('filename', 'lightcurve.dat')
         )
 
+        logging.info("Running Batman synthesis of <{}>".format(out_id))
+
+        # Record start time
+        start_time = time.time()
+
         # Open connections to transit results and run times to output message queues
         time_log = RunTimesToRabbitMQ(results_target=self.results_target)
+        result_log = ResultsToRabbitMQ(results_target=self.results_target)
 
         # Do synthesis
         with TaskTimer(job_name=job_name, target_name=out_id, task_name='batman_synthesis',
@@ -259,8 +276,15 @@ class TaskRunner:
         # Write output
         self.write_lightcurve(lightcurve=lc_object, target=target)
 
+        # Log LC metadata in results table
+        result_log.record_result(job_name=job_name, target_name=out_id,
+                                 task_name='batman_synthesis',
+                                 parameters=self.job_parameters, timestamp=start_time,
+                                 result=lc_object.metadata)
+
         # Close connection to message queue
         time_log.close()
+        result_log.close()
 
     def lightcurves_multiply(self, job_name, input_1, input_2, output):
         """
@@ -286,12 +310,13 @@ class TaskRunner:
         :type output:
             dict
         """
-        logging.info("Multiplying lightcurves")
         self.job_name = job_name
         out_id = os.path.join(
             output.get('directory', 'test_lightcurves'),
             output.get('filename', 'lightcurve.dat')
         )
+
+        logging.info("Multiplying lightcurves")
 
         # Open connections to transit results and run times to output message queues
         time_log = RunTimesToRabbitMQ(results_target=self.results_target)
@@ -304,7 +329,7 @@ class TaskRunner:
 
         # Multiply lightcurves together
         with TaskTimer(job_name=job_name, target_name=out_id, task_name='multiplication',
-                           parameters=self.job_parameters, time_logger=time_log):
+                       parameters=self.job_parameters, time_logger=time_log):
             result = lc_1 * lc_2
 
         # Store result
@@ -335,43 +360,63 @@ class TaskRunner:
 
         logging.info("Verifying <{input_id}>.".format(input_id=input_id))
 
+        # Record start time
+        start_time = time.time()
+
         # Open connections to transit results and run times to output message queues
         time_log = RunTimesToRabbitMQ(results_target=self.results_target)
+        result_log = ResultsToRabbitMQ(results_target=self.results_target)
 
         # Read input lightcurve
         lc = self.read_lightcurve(source=source)
 
         # Verify lightcurve
         with TaskTimer(job_name=job_name, target_name=input_id, task_name='verify',
-                           parameters=self.job_parameters, time_logger=time_log):
+                       parameters=self.job_parameters, time_logger=time_log):
+            output = {
+                'time_min': np.min(lc.times),
+                'time_max': np.max(lc.times),
+                'flux_min': np.min(lc.fluxes),
+                'flux_max': np.max(lc.fluxes)
+            }
+
             logging.info("Lightcurve <{}> time span {:.1f} to {:.1f}".format(input_id,
-                                                                             np.min(lc.times),
-                                                                             np.max(lc.times)))
+                                                                             output['time_min'],
+                                                                             output['time_max']))
 
             logging.info("Lightcurve <{}> flux range {:.6f} to {:.6f}".format(input_id,
-                                                                              np.min(lc.fluxes),
-                                                                              np.max(lc.fluxes)))
+                                                                              output['flux_min'],
+                                                                              output['flux_max']))
 
             # Run first code for checking LCs
             error_count = lc.check_fixed_step(verbose=True, max_errors=4)
 
             if error_count == 0:
                 logging.info("V1: Lightcurve <{}> has fixed step".format(input_id))
+                output['v1'] = True
             else:
-                logging.info(
-                    "V1: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(input_id, error_count))
+                logging.info("V1: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(input_id, error_count))
+                output['v1'] = False
 
             # Run second code for checking LCs
             error_count = lc.check_fixed_step_v2(verbose=True, max_errors=4)
 
             if error_count == 0:
                 logging.info("V2: Lightcurve <{}> has fixed step".format(input_id))
+                output['v2'] = True
             else:
-                logging.info(
-                    "V2: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(input_id, error_count))
+                logging.info("V2: Lightcurve <{}> doesn't have fixed step ({:d} errors)".format(input_id, error_count))
+                output['v2'] = False
+
+        # Log output to results table
+        result_log.record_result(job_name=job_name, target_name=input_id,
+                                 task_name='verify',
+                                 parameters=self.job_parameters, timestamp=start_time,
+                                 result=output)
 
         # Close connection to message queue
         time_log.close()
+        result_log.close()
 
     def rebin_lightcurve(self, job_name, cadence, source, target):
         """
@@ -412,7 +457,7 @@ class TaskRunner:
 
         # Re-bin lightcurve
         with TaskTimer(job_name=job_name, target_name=input_id, task_name='binning',
-                           parameters=self.job_parameters, time_logger=time_log):
+                       parameters=self.job_parameters, time_logger=time_log):
             start_time = np.min(lc.times)
             end_time = np.max(lc.times)
             new_times = np.arange(start_time, end_time, cadence / 86400)  # Array of times (days)
@@ -503,6 +548,10 @@ class TaskRunner:
 
         # Test whether transit detection was successful
         quality_control(lc=lc, metadata=output)
+
+        # Add additional metadata to results
+        for item in ['integrated_transit_power', 'pixels_in_transit', 'pixels_in_transit', 'mes']:
+            output[item] = lc.metadata.get(item, None)
 
         # Send result to message queue
         result_log.record_result(job_name=job_name, tda_code=tda_name, target_name=input_id,

@@ -257,8 +257,11 @@ class LightcurveArbitraryRaster:
         resampler = LightcurveResampler(input_lc=other)
         other_resampled = resampler.match_to_other_lightcurve(other=self)
 
-        # Merge metadata from the two input lightcurves
-        output_metadata = {**self.metadata, **other.metadata}
+        # Take metadata from the lightcurve with the strongest transit signal
+        if self.metadata['mes'] > other.metadata['mes']:
+            output_metadata = {**self.metadata}
+        else:
+            output_metadata = {**other.metadata}
 
         # Create output lightcurve
         result = LightcurveArbitraryRaster(

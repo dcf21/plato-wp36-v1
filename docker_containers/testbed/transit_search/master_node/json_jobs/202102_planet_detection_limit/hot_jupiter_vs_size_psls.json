@@ -2,6 +2,10 @@
   "job_name": "hot_jupiter_vs_size_psls",
   "iterations": [
     {
+      "name": "cadence",
+      "values": [900, 25]
+    },
+    {
       "name": "size",
       "log_range": [
         "0.01",
