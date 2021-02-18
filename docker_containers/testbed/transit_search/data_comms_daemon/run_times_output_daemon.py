@@ -9,7 +9,9 @@ Listen for run times which are broadcast through RabbitMQ, and record results in
 import logging
 import os
 import time
+import traceback
 
+import MySQLdb
 import argparse
 from pika.exceptions import AMQPConnectionError
 from plato_wp36 import run_time_logger, settings
@@ -22,6 +24,10 @@ def run_times_output_daemon():
             output_connection.read_from_rabbitmq()
         except AMQPConnectionError:
             logging.info("AMPQ connection failure")
+            time.sleep(30)
+        except MySQLdb.OperationalError:
+            logging.info("MySQL connection failure")
+            logging.error(traceback.format_exc())
             time.sleep(30)
 
 
