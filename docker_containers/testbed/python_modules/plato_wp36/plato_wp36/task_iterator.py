@@ -8,12 +8,16 @@ Locally run a group of tasks defined in a JSON file, which may include iteration
 import itertools
 import json
 import logging
+import os
+import time
+import traceback
 from math import log10
 from string import Template
 
 import numpy as np
 import pika
 from plato_wp36 import task_runner
+from plato_wp36.results_logger import ResultsToRabbitMQ
 
 # noinspection PyUnresolvedReferences
 from .constants import *
@@ -180,6 +184,9 @@ class TaskIterator:
         if job_descriptor is None:
             return
 
+        # Make sure we return to working directory after handling any exceptions
+        cwd = os.getcwd()
+
         # Run any sub-jobs (allows JSON files to be nested)
         if 'nested_tasks' in job_descriptor:
             for subitem in job_descriptor['nested_tasks']:
@@ -195,9 +202,23 @@ class TaskIterator:
         task_descriptions = iteration_expander.expand_task_list(job_descriptor=job_descriptor)
 
         # Loop over tasks
-        worker = task_runner.TaskRunner(results_target="logging")
+        results_target = "logging"
+
+        worker = task_runner.TaskRunner(results_target=results_target)
         for message in task_descriptions:
-            worker.do_work(job_name=message.get('job_name', job_name),
-                           job_parameters=job_descriptor.get('job_parameters', {}),
-                           clean_up_products=job_descriptor.get('clean_up', True),
-                           task_list=message['task_list'])
+            try:
+                worker.do_work(job_name=message.get('job_name', job_name),
+                               job_parameters=job_descriptor.get('job_parameters', {}),
+                               clean_up_products=job_descriptor.get('clean_up', True),
+                               task_list=message['task_list'])
+            except Exception:
+                error_message = "\n\n\n !!!! \n\n\n{}".format(traceback.format_exc())
+                result_log = ResultsToRabbitMQ(results_target=results_target)
+
+                # File result to message queue
+                result_log.record_result(job_name=message.get('job_name', job_name),
+                                         parameters=job_descriptor.get('job_parameters', {}),
+                                         task_name='error_message', timestamp=time.time(),
+                                         result=error_message)
+            finally:
+                os.chdir(cwd)

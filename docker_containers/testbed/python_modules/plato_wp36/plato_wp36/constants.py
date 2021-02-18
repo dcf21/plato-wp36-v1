@@ -15,3 +15,11 @@ jupiter_radius = 71492e3  # metres
 phy_AU = 149597870700  # metres
 
 plato_noise = 0.000315  # noise in a 25-sec cadence pixel, from PSLS
+
+bls_kovacs = "bls_kovacs"
+bls_reference = "bls_reference"
+dst_v26 = "dst_v26"
+dst_v29 = "dst_v29"
+exotrans = "exotrans"
+qats = "qats"
+tls = "tls"

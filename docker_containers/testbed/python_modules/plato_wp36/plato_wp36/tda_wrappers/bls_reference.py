@@ -46,7 +46,7 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float, search
     # Find best period
     best_period = results.period[np.argmax(results.power)]
     results = {
-        'period': best_period,
+        'period': float(best_period / u.day),
         'power': np.max(results.power)
     }
 

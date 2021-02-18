@@ -118,7 +118,10 @@ class ResultsToRabbitMQ:
 
             channel.close()
         elif self.results_target == "logging":
-            logging.info(json_message)
+            if task_name=="error_message":
+                logging.error(json_message)
+            else:
+                logging.info(json_message)
         else:
             logging.info("Unknown target for results <{}>".format(self.results_target))
 

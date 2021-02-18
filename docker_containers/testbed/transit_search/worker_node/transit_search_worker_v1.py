@@ -37,6 +37,10 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
     """
     Perform a list of tasks sent to us via a RabbitMQ message
     """
+
+    # Make sure we return to working directory after handling any exceptions
+    cwd = os.getcwd()
+
     # Extract list of the jobs we are to do
     job_descriptor = json.loads(body)
 
@@ -67,6 +71,8 @@ def do_work(connection=None, channel=None, delivery_tag=None, body='[{"task":"nu
                                  parameters=job_descriptor.get('job_parameters', {}),
                                  task_name='error_message', timestamp=time.time(),
                                  result=error_message)
+    finally:
+        os.chdir(cwd)
 
     # Acknowledge the message we've just processed
     if connection is not None:

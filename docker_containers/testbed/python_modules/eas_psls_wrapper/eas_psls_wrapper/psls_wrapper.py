@@ -25,13 +25,13 @@ defaults = {
     'star_radius': sun_radius / jupiter_radius,  # Jupiter radii
     'planet_radius': 1,  # Jupiter radii
     'orbital_period': 365,  # days
-    'impact_parameter': None,  # Impact parameter (0-1); overrides <orbital_angle> if not None
     'semi_major_axis': 1,  # AU
     'orbital_angle': 0,  # degrees
+    'impact_parameter': None,  # Impact parameter (0-1); overrides <orbital_angle> if not None
     'nsr': 73,  # noise-to-signal ratio (ppm/hr)
     'sampling_cadence': 25,  # sampling cadence, seconds
     'mask_updates': False,  # do we include mask updates?
-    'enable_systematics': False  # do we include systematics
+    'enable_systematics': False  # do we include systematics?
 }
 
 
@@ -222,13 +222,24 @@ class PslsWrapper:
         flags = data[2]
 
         # Compute MES statistic
-        if not self['enable_transits']:
+        if not self.settings['enable_transits']:
             integrated_transit_power = 0
             pixels_in_transit = 0
             pixels_out_of_transit = len(times)
             mes = 0
         else:
-            batman_instance = BatmanWrapper(noise=plato_noise, **self.settings)
+            batman_instance = BatmanWrapper(duration=self.settings['duration'],
+                                            eccentricity=0,
+                                            t0=0,
+                                            star_radius=self.settings['star_radius'],
+                                            planet_radius=self.settings['planet_radius'],
+                                            orbital_period=self.settings['orbital_period'],
+                                            semi_major_axis=self.settings['semi_major_axis'],
+                                            orbital_angle=self.settings['orbital_angle'],
+                                            impact_parameter=self.settings['impact_parameter'],
+                                            noise=plato_noise,
+                                            sampling_cadence=self.settings['sampling_cadence']
+                )
             batman_lc = batman_instance.synthesise()
             integrated_transit_power = batman_lc.metadata['integrated_transit_power']
             pixels_in_transit = batman_lc.metadata['pixels_in_transit']

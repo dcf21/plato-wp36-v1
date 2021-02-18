@@ -25,7 +25,7 @@ defaults = {
     'impact_parameter': None,  # Impact parameter (0-1); overrides <orbital_angle> if not None
     'noise': 0,
     'sampling_cadence': 25,  # sampling cadence, seconds
-    'threads': None  # Number of threads to use; None means use all available CPU core
+    'threads': 1  # Number of threads to use. None means use all available CPU core. DO NOT SET != 1!!!
 }
 
 
@@ -180,7 +180,12 @@ class BatmanWrapper:
         integrated_transit_power = np.sum(np.ones_like(flux) - flux)
         pixels_in_transit = np.count_nonzero(flux < 1)
         pixels_out_of_transit = len(flux) - pixels_in_transit
-        mes = integrated_transit_power / noise_per_pixel / sqrt(pixels_in_transit)
+        if pixels_in_transit < 1:
+            mes = 0
+        elif noise_per_pixel<=0:
+            mes = np.inf
+        else:
+            mes = integrated_transit_power / noise_per_pixel / sqrt(pixels_in_transit)
 
         # Add noise to lightcurve
         noise = np.random.normal(0, noise_per_pixel, size=len(flux))
