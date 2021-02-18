@@ -465,7 +465,7 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         db, c = connector.connect_db()
 
         # Look up JSON data structure containing the result of this run
-        if result_filename is not None:
+        if (result_filename is not None) and result_filename:
             input_directory = os.path.join(settings['dataPath'], "scratch")
             output_directory = os.path.join(settings['dataPath'], "json_out")
 
