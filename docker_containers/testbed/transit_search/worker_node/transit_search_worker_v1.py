@@ -22,6 +22,7 @@ import traceback
 
 import argparse
 import pika
+from pika.exceptions import AMQPConnectionError
 from plato_wp36 import settings, task_runner
 from plato_wp36.results_logger import ResultsToRabbitMQ
 
@@ -95,22 +96,27 @@ def message_callback(channel, method_frame, properties, body, args):
     threads.append(t)
 
 
-def run_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+def run_worker_tasks(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
     """
     Set up a RabbitMQ consumer to call the <message_callback> function whenever we receive a message
     telling us to do some work.
     """
-    connection = pika.BlockingConnection(pika.URLParameters(url=broker))
-    channel = connection.channel()
-    channel.basic_qos(prefetch_count=1)
-    channel.queue_declare(queue=queue)
+    while True:
+        try:
+            connection = pika.BlockingConnection(pika.URLParameters(url=broker))
+            channel = connection.channel()
+            channel.basic_qos(prefetch_count=1)
+            channel.queue_declare(queue=queue)
 
-    threads = []
-    on_message_callback = functools.partial(message_callback, args=(connection, threads))
-    channel.basic_consume(queue=queue, on_message_callback=on_message_callback)
+            threads = []
+            on_message_callback = functools.partial(message_callback, args=(connection, threads))
+            channel.basic_consume(queue=queue, on_message_callback=on_message_callback)
 
-    logging.info('Waiting for messages. To exit press CTRL+C')
-    channel.start_consuming()
+            logging.info('Waiting for messages. To exit press CTRL+C')
+            channel.start_consuming()
+        except AMQPConnectionError:
+            logging.info("AMPQ connection failure")
+            time.sleep(30)
 
 
 if __name__ == "__main__":
@@ -131,4 +137,4 @@ if __name__ == "__main__":
     logger.info(__doc__.strip())
 
     # Enter infinite loop of listening for RabbitMQ messages telling us to do work
-    run_transit_searches()
+    run_worker_tasks()

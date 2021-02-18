@@ -56,9 +56,9 @@ ORDER BY x.timestamp;
 
         # Display results
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} |{:36s}|{:18s}|{:32s}|{:36s}|{:9.2f}|{:9.2f}|{:9.2f}|{:s}\n".format(
+        output.write("{} |{:36s}|{:18s}|{:46s}|{:9.2f}|{:9.2f}|{:9.2f}|{:s}\n".format(
             time_string,
-            item['job'], item['task'], item['host'], item['target'],
+            item['job'], item['task'], item['target'],
             item['run_time_wall_clock'], item['run_time_cpu'], item['run_time_cpu_inc_children'],
             item['parameters']
         ))

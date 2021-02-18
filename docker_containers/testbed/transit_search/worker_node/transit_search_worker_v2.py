@@ -19,6 +19,7 @@ import traceback
 
 import argparse
 import pika
+from pika.exceptions import AMQPConnectionError
 from plato_wp36 import settings, task_runner
 from plato_wp36.results_logger import ResultsToRabbitMQ
 
@@ -96,14 +97,19 @@ def receive(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
         return body
 
 
-def run_transit_searches(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
+def run_worker_tasks(broker="amqp://guest:guest@rabbitmq-service:5672", queue="tasks"):
     """
     Set up a very simple RabbitMQ consumer to receive messages from the job queue, one by one
     """
     logging.info('Waiting for messages. To exit press CTRL+C')
     while True:
         # Fetch next message from queue
-        message = receive(broker=broker, queue=queue)
+        try:
+            message = receive(broker=broker, queue=queue)
+        except AMQPConnectionError:
+            logging.info("AMPQ connection failure")
+            time.sleep(30)
+            continue
 
         # If no message received then wait for work
         if message is None:
@@ -132,4 +138,4 @@ if __name__ == "__main__":
     logger.info(__doc__.strip())
 
     # Enter infinite loop of listening for RabbitMQ messages telling us to do work
-    run_transit_searches()
+    run_worker_tasks()

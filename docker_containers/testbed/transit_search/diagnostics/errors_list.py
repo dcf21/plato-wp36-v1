@@ -58,9 +58,9 @@ ORDER BY x.timestamp;
 
         # Display results
         time_string = datetime.utcfromtimestamp(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        output.write("{} | {:36s} | {}\n{}\n\n".format(
-            time_string,
-            item['host'], item['parameters'],
+        output.write("{} |{:36s}|{:18s}|{:46s}| {}\n{}\n\n".format(
+            time_string, item['job'], item['task'], item['target'],
+            item['parameters'],
             json.loads(item['results'])
         ))
 

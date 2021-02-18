@@ -6,16 +6,23 @@
 Listen for transit-detection results which are broadcast through RabbitMQ, and record results in output database
 """
 
-import os
-import argparse
 import logging
+import os
+import time
 
+import argparse
+from pika.exceptions import AMQPConnectionError
 from plato_wp36 import results_logger, settings
 
 
 def results_output_daemon():
-    output_connection = results_logger.ResultsToMySQL()
-    output_connection.read_from_rabbitmq()
+    while True:
+        try:
+            output_connection = results_logger.ResultsToMySQL()
+            output_connection.read_from_rabbitmq()
+        except AMQPConnectionError:
+            logging.info("AMPQ connection failure")
+            time.sleep(30)
 
 
 if __name__ == "__main__":

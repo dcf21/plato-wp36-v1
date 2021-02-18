@@ -25,7 +25,8 @@
         "planet_radius": "${size}",
         "orbital_period": 4,
         "semi_major_axis": 0.05,
-        "orbital_angle": 0
+        "orbital_angle": 0,
+        "sampling_cadence": "${cadence}"
       }
     },
     {
