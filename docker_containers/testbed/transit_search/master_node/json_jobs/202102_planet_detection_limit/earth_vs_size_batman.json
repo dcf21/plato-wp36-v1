@@ -2,6 +2,10 @@
   "job_name": "earth_vs_size_batman",
   "iterations": [
     {
+      "name": "tda",
+      "values": ["tls", "bls_reference"]
+    },
+    {
       "name": "cadence",
       "values": [900, 25]
     },

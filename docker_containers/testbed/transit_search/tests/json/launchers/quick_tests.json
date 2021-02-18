@@ -3,8 +3,8 @@
   "task_list": [],
   "nested_tasks": [
     "json/quick_tests/test_batman_synthesise_earth.json",
-    "json/quick_tests/test_batman_tls.json",
-    "json/quick_tests/test_batman_tls_null.json",
+    "json/quick_tests/test_batman.json",
+    "json/quick_tests/test_batman_null.json",
     "json/quick_tests/test_error.json",
     "json/quick_tests/test_multiplication.json",
     "json/quick_tests/test_null_task.json",

@@ -1,11 +1,21 @@
 {
-  "job_name": "test015_batman_tls_null",
+  "job_name": "test015_batman",
+  "iterations": [
+    {
+      "name": "tda",
+      "values": ["tls", "bls_reference", "bls_kovacs"]
+    },
+    {
+      "name": "cadence",
+      "values": [900, 25]
+    }
+  ],
   "clean_up": 0,
   "task_list": [
     {
       "task": "batman_synthesise",
       "target": {
-        "filename": "test015_batman_tls_null.gz",
+        "filename": "test015_batman_${cadence}_${tda}.gz",
         "source": "archive"
       },
       "specs": {
@@ -13,25 +23,25 @@
         "planet_radius": 0.1,
         "orbital_period": 1,
         "semi_major_axis": 0.01,
-        "orbital_angle": 90,
+        "orbital_angle": 0,
         "noise": "plato_noise"
       }
     },
     {
       "task": "verify",
       "source": {
-        "filename": "test015_batman_tls_null.gz",
+        "filename": "test015_batman_${cadence}_${tda}.gz",
         "source": "archive"
       }
     },
     {
       "task": "transit_search",
       "source": {
-        "filename": "test015_batman_tls_null.gz",
+        "filename": "test015_batman_${cadence}_${tda}.gz",
         "source": "archive"
       },
       "lc_duration": 15,
-      "tda_name": "tls"
+      "tda_name": "${tda}"
     }
   ]
 }

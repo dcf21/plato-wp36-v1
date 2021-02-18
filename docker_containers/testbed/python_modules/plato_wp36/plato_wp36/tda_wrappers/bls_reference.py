@@ -43,7 +43,12 @@ def process_lightcurve(lc: LightcurveArbitraryRaster, lc_duration: float, search
                               minimum_n_transit=2,
                               frequency_factor=2.0)
 
-    results = {}
+    # Find best period
+    best_period = results.period[np.argmax(results.power)]
+    results = {
+        'period': best_period,
+        'power': np.max(results.power)
+    }
 
     # Extended results to save to disk
     results_extended = results
