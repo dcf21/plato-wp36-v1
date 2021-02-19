@@ -1,0 +1,36 @@
+{
+  "job_name": "test015_psls_qats",
+  "clean_up": 0,
+  "task_list": [
+    {
+      "task": "psls_synthesise",
+      "target": {
+        "filename": "test015_psls_qats.gz",
+        "source": "archive"
+      },
+      "specs": {
+        "duration": 15,
+        "planet_radius": 0.1,
+        "orbital_period": 1,
+        "semi_major_axis": 0.01,
+        "orbital_angle": 0
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "test015_psls_qats.gz",
+        "source": "archive"
+      }
+    },
+    {
+      "task": "transit_search",
+      "source": {
+        "filename": "test015_psls_qats.gz",
+        "source": "archive"
+      },
+      "lc_duration": 15,
+      "tda_name": "qats"
+    }
+  ]
+}

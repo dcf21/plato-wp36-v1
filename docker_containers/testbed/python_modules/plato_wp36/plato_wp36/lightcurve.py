@@ -596,3 +596,17 @@ class LightcurveFixedStep:
         self.flags = flags
         self.flags_set = True
         self.metadata = metadata
+
+    def time_value(self, index):
+        """
+        Return the time value associated with a particular index in this lightcurve.
+
+        :param index:
+            The index of the time point within the lightcurve
+        :type index:
+            float
+        :return:
+            The time value, in days
+        """
+
+        return self.time_start + index * self.time_step

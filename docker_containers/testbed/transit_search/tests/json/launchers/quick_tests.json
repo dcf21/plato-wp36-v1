@@ -8,6 +8,7 @@
     "json/quick_tests/test_error.json",
     "json/quick_tests/test_multiplication.json",
     "json/quick_tests/test_null_task.json",
+    "json/quick_tests/test_psls_qats.json",
     "json/quick_tests/test_psls_synthesise_earth.json",
     "json/quick_tests/test_psls_tls.json",
     "json/quick_tests/test_psls_tls_null.json",
