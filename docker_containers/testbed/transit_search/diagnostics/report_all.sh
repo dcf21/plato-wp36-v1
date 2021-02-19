@@ -12,4 +12,5 @@ exec &> results.log
 ./results_list.py
 ./timings_to_csv.py
 ./results_to_csv.py
+./pass_fail_to_csv.py
 
