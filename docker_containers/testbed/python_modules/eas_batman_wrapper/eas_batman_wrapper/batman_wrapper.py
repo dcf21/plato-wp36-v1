@@ -89,31 +89,31 @@ class BatmanWrapper:
 
         # Create dictionary of settings
         if duration is not None:
-            self.settings['duration'] = float(duration)
+            self.settings['duration'] = float(eval(str(duration)))
         if eccentricity is not None:
-            self.settings['eccentricity'] = float(eccentricity)
+            self.settings['eccentricity'] = float(eval(str(eccentricity)))
         if t0 is not None:
-            self.settings['t0'] = float(t0)
+            self.settings['t0'] = float(eval(str(t0)))
         if star_radius is not None:
-            self.settings['star_radius'] = float(star_radius)
+            self.settings['star_radius'] = float(eval(str(star_radius)))
         if planet_radius is not None:
-            self.settings['planet_radius'] = float(planet_radius)
+            self.settings['planet_radius'] = float(eval(str(planet_radius)))
         if orbital_period is not None:
-            self.settings['orbital_period'] = float(orbital_period)
+            self.settings['orbital_period'] = float(eval(str(orbital_period)))
         if semi_major_axis is not None:
-            self.settings['semi_major_axis'] = float(semi_major_axis)
+            self.settings['semi_major_axis'] = float(eval(str(semi_major_axis)))
         if orbital_angle is not None:
-            self.settings['orbital_angle'] = float(orbital_angle)
+            self.settings['orbital_angle'] = float(eval(str(orbital_angle)))
             self.settings['impact_parameter'] = None
         if impact_parameter is not None:
-            self.settings['impact_parameter'] = float(impact_parameter)
+            self.settings['impact_parameter'] = float(eval(str(impact_parameter)))
             self.settings['orbital_angle'] = None
         if noise is not None:
             self.settings['noise'] = float(eval(str(noise)))
         if sampling_cadence is not None:
-            self.settings['sampling_cadence'] = float(sampling_cadence)
+            self.settings['sampling_cadence'] = float(eval(str(sampling_cadence)))
         if threads is not None:
-            self.settings['threads'] = int(threads)
+            self.settings['threads'] = int(eval(str(threads)))
 
     def synthesise(self):
         """

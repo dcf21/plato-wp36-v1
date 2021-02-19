@@ -108,31 +108,31 @@ class PslsWrapper:
         if mode is not None:
             self.settings['mode'] = mode
         if duration is not None:
-            self.settings['duration'] = float(duration)
+            self.settings['duration'] = float(eval(str(duration)))
         if enable_transits is not None:
-            self.settings['enable_transits'] = int(enable_transits)
+            self.settings['enable_transits'] = int(eval(str(enable_transits)))
         if star_radius is not None:
-            self.settings['star_radius'] = float(star_radius)
+            self.settings['star_radius'] = float(eval(str(star_radius)))
         if planet_radius is not None:
-            self.settings['planet_radius'] = float(planet_radius)
+            self.settings['planet_radius'] = float(eval(str(planet_radius)))
         if orbital_period is not None:
-            self.settings['orbital_period'] = float(orbital_period)
+            self.settings['orbital_period'] = float(eval(str(orbital_period)))
         if semi_major_axis is not None:
-            self.settings['semi_major_axis'] = float(semi_major_axis)
+            self.settings['semi_major_axis'] = float(eval(str(semi_major_axis)))
         if orbital_angle is not None:
-            self.settings['orbital_angle'] = float(orbital_angle)
+            self.settings['orbital_angle'] = float(eval(str(orbital_angle)))
             self.settings['impact_parameter'] = None
         if impact_parameter is not None:
-            self.settings['impact_parameter'] = float(impact_parameter)
+            self.settings['impact_parameter'] = float(eval(str(impact_parameter)))
             self.settings['orbital_angle'] = None
         if nsr is not None:
-            self.settings['nsr'] = float(nsr)
+            self.settings['nsr'] = float(eval(str(nsr)))
         if sampling_cadence is not None:
-            self.settings['sampling_cadence'] = float(sampling_cadence)
+            self.settings['sampling_cadence'] = float(eval(str(sampling_cadence)))
         if mask_updates is not None:
-            self.settings['mask_updates'] = int(mask_updates)
+            self.settings['mask_updates'] = int(eval(str(mask_updates)))
         if enable_systematics is not None:
-            self.settings['enable_systematics'] = int(enable_systematics)
+            self.settings['enable_systematics'] = int(eval(str(enable_systematics)))
 
     def synthesise(self):
         """

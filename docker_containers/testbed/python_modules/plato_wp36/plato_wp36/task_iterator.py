@@ -67,14 +67,18 @@ class TaskIterator:
         for item in iterations:
             if 'values' in item:
                 parameter_values.append([eval(str(val)) for val in item['values']])
-            if 'linear_range' in item:
+            elif 'linear_range' in item:
                 parameter_values.append(np.linspace(eval(str(item['linear_range'][0])),
                                                     eval(str(item['linear_range'][1])),
                                                     eval(str(item['linear_range'][2]))))
-            if 'log_range' in item:
+            elif 'log_range' in item:
                 parameter_values.append(np.logspace(log10(eval(str(item['log_range'][0]))),
                                                     log10(eval(str(item['log_range'][1]))),
                                                     eval(str(item['log_range'][2]))))
+            else:
+                raise ValueError(
+                    "Iteration values should be specified as either <values>, <linear_range> or <log_range"
+                )
         parameter_combinations = itertools.product(*parameter_values)
 
         # Create list of all the task descriptions in this grid of tasks

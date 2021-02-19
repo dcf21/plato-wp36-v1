@@ -18,7 +18,7 @@
       },
       "specs": {
         "duration": 730,
-        "planet_radius": 0.089114866,
+        "planet_radius": "Rearth",
         "orbital_period": 240,
         "semi_major_axis": 1,
         "orbital_angle": 0,

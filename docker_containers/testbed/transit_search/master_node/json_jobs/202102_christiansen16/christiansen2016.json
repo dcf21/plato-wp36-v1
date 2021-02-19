@@ -1,0 +1,59 @@
+{
+  "job_name": "christiansen2016",
+  "iterations": [
+    {
+      "name": "size",
+      "linear_range": [
+        "Rearth*0.25",
+        "Rearth*7",
+        "10"
+      ]
+    },
+    {
+      "name": "period",
+      "linear_range": [
+        "0.5",
+        "500",
+        "10"
+      ]
+    },
+    {
+      "name": "impact",
+      "linear_range": [
+        "0",
+        "1",
+        "5"
+      ]
+    }
+  ],
+  "task_list": [
+    {
+      "task": "psls_synthesise",
+      "target": {
+        "filename": "christiansen.gz"
+      },
+      "specs": {
+        "duration": 730,
+        "planet_radius": "${size}",
+        "orbital_period": "${period}",
+        "impact_parameter": "${impact}",
+        "semi_major_axis": "pow(${period}/365.25, 2/3)",
+        "sampling_cadence": 900
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "christiansen.gz"
+      }
+    },
+    {
+      "task": "transit_search",
+      "source": {
+        "filename": "christiansen.gz"
+      },
+      "lc_duration": 730,
+      "tda_name": "tls"
+    }
+  ]
+}

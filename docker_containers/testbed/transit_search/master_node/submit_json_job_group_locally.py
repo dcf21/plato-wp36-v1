@@ -15,7 +15,7 @@ from plato_wp36 import settings, task_iterator
 
 # Read command-line arguments
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--tasks', default="json_jobs/earth_vs_size.json", type=str,
+parser.add_argument('--tasks', default="json_jobs/202102_christiansen16/christiansen2016.json", type=str,
                     dest='tasks', help='The JSON file listing the tasks we are to perform')
 
 args = parser.parse_args()

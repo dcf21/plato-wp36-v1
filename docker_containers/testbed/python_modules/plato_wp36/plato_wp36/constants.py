@@ -14,6 +14,8 @@ earth_radius = 6371e3  # metres
 jupiter_radius = 71492e3  # metres
 phy_AU = 149597870700  # metres
 
+Rearth = 0.08911486  # Jupiter radii
+
 plato_noise = 0.000315  # noise in a 25-sec cadence pixel, from PSLS
 
 bls_kovacs = "bls_kovacs"
