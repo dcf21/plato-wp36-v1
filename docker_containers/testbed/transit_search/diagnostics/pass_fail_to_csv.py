@@ -100,12 +100,17 @@ FROM eas_results WHERE job_id = %s AND task_id = %s AND code_id = %s;
                     # Display parameter values
                     for item in all_parameter_names:
                         parameters = json.loads(row['parameters'])
-                        output.write("{:12}  ".format(parameters.get(item, "--")))
+                        value_string = parameters.get(item, "--")
+                        try:
+                            value_float = float(value_string)
+                            output.write("{:12.8f}  ".format(value_float))
+                        except ValueError:
+                            output.write("{:12}  ".format(str(value_string)))
 
                     # Display results
                     result_dict = json.loads(row['results'])
                     output.write("{} {}\n".format(result_dict.get('mes', -1),
-                                                  result_dict.get('outcome', 'FAIL') == 'PASS'))
+                                                  int(result_dict.get('outcome', 'FAIL') == 'PASS')))
 
                 # New line
                 output.write("\n")
