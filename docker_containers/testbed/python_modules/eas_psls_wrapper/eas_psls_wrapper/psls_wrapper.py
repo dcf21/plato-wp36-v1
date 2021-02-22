@@ -9,7 +9,7 @@ import hashlib
 import os
 import random
 import time
-from math import acos, pi
+from math import asin, pi
 
 import numpy as np
 from eas_batman_wrapper.batman_wrapper import BatmanWrapper
@@ -165,7 +165,7 @@ class PslsWrapper:
 
         # Work out inclination of orbit
         if self.settings['impact_parameter'] is not None:
-            orbital_angle = acos(self.settings['impact_parameter'] * self.settings['star_radius'] /
+            orbital_angle = asin(self.settings['impact_parameter'] * self.settings['star_radius'] /
                                  (self.settings['semi_major_axis'] * (phy_AU / jupiter_radius))
                                  ) * 180 / pi
         else:

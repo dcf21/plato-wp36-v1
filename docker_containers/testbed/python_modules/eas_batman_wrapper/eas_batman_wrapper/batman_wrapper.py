@@ -6,7 +6,7 @@ Class for synthesising lightcurves using Batman.
 """
 
 import multiprocessing
-from math import acos, pi, sqrt
+from math import asin, pi, sqrt
 
 import batman
 import numpy as np
@@ -137,7 +137,7 @@ class BatmanWrapper:
 
         # orbital inclination (in degrees)
         if self.settings['impact_parameter'] is not None:
-            orbital_angle = acos(self.settings['impact_parameter'] * self.settings['star_radius'] /
+            orbital_angle = asin(self.settings['impact_parameter'] * self.settings['star_radius'] /
                                  (self.settings['semi_major_axis'] * (phy_AU / jupiter_radius))
                                  ) * 180 / pi
         else:
