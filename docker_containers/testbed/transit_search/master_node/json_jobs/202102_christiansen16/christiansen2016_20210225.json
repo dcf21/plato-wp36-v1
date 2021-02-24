@@ -1,0 +1,83 @@
+{
+  "job_name": "christiansen2016",
+  "iterations": [
+    {
+      "name": "size",
+      "linear_range": [
+        "Rearth*0.25",
+        "Rearth*2",
+        "12"
+      ]
+    },
+    {
+      "name": "period",
+      "linear_range": [
+        "0.5",
+        "380",
+        "12"
+      ]
+    },
+    {
+      "name": "impact",
+      "linear_range": [
+        "0",
+        "1",
+        "6"
+      ]
+    }
+  ],
+  "task_list": [
+    {
+      "task": "psls_synthesise",
+      "target": {
+        "filename": "christiansen_A.gz"
+      },
+      "specs": {
+        "duration": 730,
+        "sampling_cadence": 900,
+        "enable_transits": 0
+      }
+    },
+    {
+      "task": "batman_synthesise",
+      "target": {
+        "filename": "christiansen_B.gz"
+      },
+      "specs": {
+        "duration": 730,
+        "planet_radius": "${size}",
+        "t0": "random.random() * 200",
+        "orbital_period": "${period}",
+        "impact_parameter": "${impact}",
+        "semi_major_axis": "pow(${period}/365.25, 2/3)",
+        "sampling_cadence": 900
+      }
+    },
+    {
+      "task": "multiplication",
+      "input_1": {
+        "filename": "christiansen_A.gz"
+      },
+      "input_2": {
+        "filename": "christiansen_B.gz"
+      },
+      "output": {
+        "filename": "christiansen.gz"
+      }
+    },
+    {
+      "task": "verify",
+      "source": {
+        "filename": "christiansen.gz"
+      }
+    },
+    {
+      "task": "transit_search",
+      "source": {
+        "filename": "christiansen.gz"
+      },
+      "lc_duration": 730,
+      "tda_name": "tls"
+    }
+  ]
+}

@@ -6,6 +6,8 @@ Class for synthesising lightcurves using Batman.
 """
 
 import multiprocessing
+# noinspection PyUnresolvedReferences
+import random
 from math import asin, pi, sqrt
 
 import batman
@@ -182,7 +184,7 @@ class BatmanWrapper:
         pixels_out_of_transit = len(flux) - pixels_in_transit
         if pixels_in_transit < 1:
             mes = 0
-        elif noise_per_pixel<=0:
+        elif noise_per_pixel <= 0:
             mes = np.inf
         else:
             mes = integrated_transit_power / noise_per_pixel / sqrt(pixels_in_transit)
