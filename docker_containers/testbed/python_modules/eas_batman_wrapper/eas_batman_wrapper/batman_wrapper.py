@@ -26,6 +26,7 @@ defaults = {
     'orbital_angle': 0,  # degrees
     'impact_parameter': None,  # Impact parameter (0-1); overrides <orbital_angle> if not None
     'noise': 0,
+    'mes_assume_noise': None,
     'sampling_cadence': 25,  # sampling cadence, seconds
     'threads': 1  # Number of threads to use. None means use all available CPU core. DO NOT SET != 1!!!
 }
@@ -47,6 +48,7 @@ class BatmanWrapper:
                  orbital_angle=None,
                  impact_parameter=None,
                  noise=None,
+                 mes_assume_noise=None,
                  sampling_cadence=None,
                  threads=None
                  ):
@@ -60,7 +62,8 @@ class BatmanWrapper:
                        star_radius=star_radius, planet_radius=planet_radius,
                        orbital_period=orbital_period, semi_major_axis=semi_major_axis,
                        orbital_angle=orbital_angle, impact_parameter=impact_parameter,
-                       noise=noise, sampling_cadence=sampling_cadence, threads=threads)
+                       noise=noise, mes_assume_noise=mes_assume_noise,
+                       sampling_cadence=sampling_cadence, threads=threads)
 
         self.active = True
 
@@ -82,6 +85,7 @@ class BatmanWrapper:
                   orbital_angle=None,
                   impact_parameter=None,
                   noise=None,
+                  mes_assume_noise=None,
                   sampling_cadence=None,
                   threads=None
                   ):
@@ -112,6 +116,8 @@ class BatmanWrapper:
             self.settings['orbital_angle'] = None
         if noise is not None:
             self.settings['noise'] = float(eval(str(noise)))
+        if mes_assume_noise is not None:
+            self.settings['mes_assume_noise'] = float(eval(str(mes_assume_noise)))
         if sampling_cadence is not None:
             self.settings['sampling_cadence'] = float(eval(str(sampling_cadence)))
         if threads is not None:
@@ -178,16 +184,21 @@ class BatmanWrapper:
         # Work out noise level per pixel
         noise_per_pixel = self.settings['noise'] * sqrt(25 / time_step)
 
+        if self.settings['mes_assume_noise'] is not None:
+            mes_assume_noise_per_pixel = self.settings['mes_assume_noise'] * sqrt(25 / time_step)
+        else:
+            mes_assume_noise_per_pixel = noise_per_pixel
+
         # Calculate multiple event statistic (MES) for this LC
         integrated_transit_power = np.sum(np.ones_like(flux) - flux)
         pixels_in_transit = np.count_nonzero(flux < 1)
         pixels_out_of_transit = len(flux) - pixels_in_transit
         if pixels_in_transit < 1:
             mes = 0
-        elif noise_per_pixel <= 0:
+        elif mes_assume_noise_per_pixel <= 0:
             mes = np.inf
         else:
-            mes = integrated_transit_power / noise_per_pixel / sqrt(pixels_in_transit)
+            mes = integrated_transit_power / mes_assume_noise_per_pixel / sqrt(pixels_in_transit)
 
         # Add noise to lightcurve
         noise = np.random.normal(0, noise_per_pixel, size=len(flux))

@@ -237,9 +237,9 @@ class PslsWrapper:
                                             semi_major_axis=self.settings['semi_major_axis'],
                                             orbital_angle=self.settings['orbital_angle'],
                                             impact_parameter=self.settings['impact_parameter'],
-                                            noise=plato_noise,
+                                            noise=plato_noise * (self.settings['nsr'] / 73),
                                             sampling_cadence=self.settings['sampling_cadence']
-                )
+                                            )
             batman_lc = batman_instance.synthesise()
             integrated_transit_power = batman_lc.metadata['integrated_transit_power']
             pixels_in_transit = batman_lc.metadata['pixels_in_transit']

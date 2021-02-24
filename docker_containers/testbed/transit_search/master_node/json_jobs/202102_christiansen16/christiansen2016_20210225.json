@@ -50,6 +50,8 @@
         "orbital_period": "${period}",
         "impact_parameter": "${impact}",
         "semi_major_axis": "pow(${period}/365.25, 2/3)",
+        "noise": 0,
+        "mes_assume_noise": "plato_noise",
         "sampling_cadence": 900
       }
     },
