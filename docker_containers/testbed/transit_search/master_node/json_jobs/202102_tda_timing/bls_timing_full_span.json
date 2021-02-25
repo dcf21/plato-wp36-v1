@@ -3,7 +3,7 @@
   "iterations": [
     {
       "name": "cadence",
-      "values": [900, 25]
+      "values": [25, 50, 600]
     },
     {
       "name": "lc_length",
@@ -21,6 +21,7 @@
         "6 * month",
         "9 * month",
         "year",
+        "1.5 * year",
         "2 * year"
       ]
     }
