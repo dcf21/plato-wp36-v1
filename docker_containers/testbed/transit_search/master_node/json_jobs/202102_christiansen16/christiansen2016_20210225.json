@@ -34,7 +34,7 @@
       },
       "specs": {
         "duration": 730,
-        "sampling_cadence": 900,
+        "sampling_cadence": 600,
         "enable_transits": 0
       }
     },
@@ -52,7 +52,7 @@
         "semi_major_axis": "pow(${period}/365.25, 2/3)",
         "noise": 0,
         "mes_assume_noise": "plato_noise",
-        "sampling_cadence": 900
+        "sampling_cadence": 600
       }
     },
     {
