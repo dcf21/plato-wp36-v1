@@ -321,12 +321,12 @@ class LightcurveArbitraryRaster:
         # Merge metadata from the two input lightcurves
         output_metadata = {**self.metadata, **other.metadata}
 
-        # Create output lightcurve
+        # Create output lightcurve. Remove first and last data points due to edge effects
         result = LightcurveArbitraryRaster(
-            times=self.times,
-            fluxes=self.fluxes * other_resampled.fluxes,
-            uncertainties=np.hypot(self.uncertainties, other_resampled.uncertainties),
-            flags=np.hypot(self.flags, other_resampled.flags),
+            times=self.times[1:-1],
+            fluxes=(self.fluxes * other_resampled.fluxes)[1:-1],
+            uncertainties=np.hypot(self.uncertainties, other_resampled.uncertainties)[1:-1],
+            flags=np.hypot(self.flags, other_resampled.flags)[1:-1],
             metadata=output_metadata
         )
 
