@@ -1,1 +1,3 @@
-Store log files from tests we have run here
+### Logging
+
+This directory contains some example output from demo runs of the test-bench.

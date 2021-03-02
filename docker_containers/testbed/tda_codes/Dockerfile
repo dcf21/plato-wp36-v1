@@ -34,7 +34,7 @@ FROM plato/eas:v1
 # *** tls
 # No files need to be copied
 
-# Now build all transit detection codes in turn
+# Now build all transit-detection codes in turn
 COPY bls_reference/build.sh build.sh
 RUN ./build.sh
 COPY bls_kovacs/build.sh build.sh

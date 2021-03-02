@@ -8,14 +8,14 @@ from plato_wp36.lightcurve import LightcurveArbitraryRaster
 
 def quality_control(lc: LightcurveArbitraryRaster, metadata: dict):
     """
-    Determine whether the metadata returned by a transit detection algorithm is a successful detection, or a failure.
+    Determine whether the metadata returned by a transit-detection algorithm is a successful detection, or a failure.
 
     :param lc:
         The lightcurve object containing the input lightcurve.
     :type lc:
         LightcurveArbitraryRaster
     :param metadata:
-        The metadata dictionary returned by the transit detection code.
+        The metadata dictionary returned by the transit-detection code.
     :type metadata:
         Dict
     :return:

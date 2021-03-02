@@ -33,7 +33,7 @@ time_periods = [
     #    2 * 365.25
 ]
 
-# Look up a list of all of the transit detection algorithms we have available
+# Look up a list of all of the transit-detection algorithms we have available
 available_tdas = fetch_tda_list.fetch_tda_list()
 
 # Directory for input lightcurves, within the <datadir_input> directory

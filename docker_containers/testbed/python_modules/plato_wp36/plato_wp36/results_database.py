@@ -341,7 +341,7 @@ CREATE TABLE eas_results (
         :type job_name:
             str
         :param tda_code:
-            The name of the Transit Detection Algorithm being used.
+            The name of the Transit-detection Algorithm being used.
         :type tda_code:
             str
         :param target_name:
@@ -414,7 +414,7 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         :type job_name:
             str
         :param tda_code:
-            The name of the Transit Detection Algorithm being used.
+            The name of the Transit-detection Algorithm being used.
         :type tda_code:
             str
         :param target_name:

@@ -2,7 +2,7 @@
 # fetch_tda_list.py
 
 """
-Module for fetching the list of transit detection algorithms available inside the current Docker
+Module for fetching the list of transit-detection algorithms available inside the current Docker
 container
 """
 

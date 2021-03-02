@@ -40,14 +40,14 @@ class ResultsToRabbitMQ:
     def record_result(self, job_name, task_name, parameters, timestamp, result,
                       tda_code="", target_name="", result_extended=None):
         """
-        Create a new entry in the message queue for transit detection results.
+        Create a new entry in the message queue for transit-detection results.
 
         :param job_name:
             Specify the name of the job that these tasks is part of.
         :type job_name:
             str
         :param tda_code:
-            The name of the Transit Detection Algorithm being used.
+            The name of the Transit-detection Algorithm being used.
         :type tda_code:
             str
         :param target_name:
@@ -191,14 +191,14 @@ class ResultsToMySQL:
 
     def record_result(self, job_name, tda_code, target_name, task_name, parameters, timestamp, result, result_filename):
         """
-        Create a new entry in the database for a transit detection result.
+        Create a new entry in the database for a transit-detection result.
 
         :param job_name:
             Specify the name of the job that these tasks is part of.
         :type job_name:
             str
         :param tda_code:
-            The name of the Transit Detection Algorithm being used.
+            The name of the Transit-detection Algorithm being used.
         :type tda_code:
             str
         :param target_name:

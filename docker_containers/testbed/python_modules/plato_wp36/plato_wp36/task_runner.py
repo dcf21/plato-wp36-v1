@@ -488,7 +488,7 @@ class TaskRunner:
         :type lc_duration:
             float
         :param tda_name:
-            The name of the transit detection code to use.
+            The name of the transit-detection code to use.
         :type tda_name:
             str
         :param source:
@@ -541,12 +541,12 @@ class TaskRunner:
             elif tda_name == 'tls':
                 x = tls.process_lightcurve(lc=lc, lc_duration=lc_duration, search_settings=search_settings)
             else:
-                assert False, "Unknown transit detection code <{}>".format(tda_name)
+                assert False, "Unknown transit-detection code <{}>".format(tda_name)
 
             # Extract output
             output, output_extended = x
 
-        # Test whether transit detection was successful
+        # Test whether transit-detection was successful
         quality_control(lc=lc, metadata=output)
 
         # Add additional metadata to results

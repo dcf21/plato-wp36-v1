@@ -1,6 +1,6 @@
 # Algorithm speed test
 
-The scripts in this directory provide a command-line interface for launching timed tests of how long transit detection codes take to run. They should be run inside a Docker container where the codes have been installed.
+The scripts in this directory provide a command-line interface for launching timed tests of how long transit-detection codes take to run. They should be run inside a Docker container where the codes have been installed.
 
 To insert a test into a job queue, run the script:
 
